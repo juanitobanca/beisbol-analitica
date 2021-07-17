@@ -24,15 +24,20 @@ UPDATE
 UPDATE
   agg_batting_stats
   SET
+    -- dash percentages
     atBatsPerHomeRunsPercentage = IF(homeRuns > 0, atBats / homeRuns, NULL)
-  , battedBallsInPlayPercentage = IF(atBats - strikeOuts - homeRuns - sacFlies > 0,(singles + doubles + triples) / (atBats - strikeOuts - homeRuns + sacFlies), NULL)
+  , battingAverageOnBallsInPlay = IF(atBats - strikeOuts - homeRuns + sacFlies > 0,(singles + doubles + triples) / (atBats - strikeOuts - homeRuns + sacFlies), NULL)
   , battingAverage = IF(atBats > 0, hits / atBats, NULL)
-  , extraBaseHitPercentage = IF(hits > 0, (doubles + triples + homeRuns) / hits, NULL)
-  , extraBasePercentage = IF(plateAppearances > 0, (doubles + triples + homeRuns) / plateAppearances, NULL)
-  , homeRunsPerPlateAppearancesPercentage = IF(plateAppearances > 0, homeRuns / plateAppearances, NULL)
-  , inPlayPercentage = IF(plateAppearances > 0, (atBats - strikeOuts - homeRuns - sacFlies) / plateAppearances, NULL)
-  , isolatedPower = IF(atBats > 0, (doubles + 2 * triples + 3 * homeRuns) / atBats, NULL)
   , onBasePercentage = IF(plateAppearances > 0, (hits + walks + hitByPitch) / plateAppearances, NULL)
+  , extraBasePercentage = IF(plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch > 0, (doubles + triples + homeRuns) / (plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch), NULL)
+  , onFirstBasePercentage = IF(plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch  > 0, (singles + unintentionalWalks) / (plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch), NULL)
+  , strikeOutsOverBaseOnBallsPercentage = IF( strikeOuts + unintentionalWalks > 0, strikeOuts / ( strikeOuts + unintentionalWalks ), NULL)
+  , homeRunPercentage = IF(plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch  > 0, (homeRuns) / (plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch ), NULL)
+
+  , extraBaseHitPercentage = IF(hits > 0, (doubles + triples + homeRuns) / hits, NULL)
+  , inPlayPercentage = IF(plateAppearances > 0, (atBats - strikeOuts - homeRuns) / plateAppearances, NULL)
+  , homeRunsPerPlateAppearancesPercentage = IF(plateAppearances > 0, homeRuns / plateAppearances, NULL)
+  , isolatedPower = IF(atBats > 0, (doubles + 2 * triples + 3 * homeRuns) / atBats, NULL)
   , onBasePlusSluggingPercentage = IF(plateAppearances > 0, (hits + walks + hitByPitch) / plateAppearances, 0 ) + IF(atBats > 0, totalBases / atBats, 0)
   , powerSpeed = IF(homeRuns + stolenBases > 0, 2 * homeRuns * stolenBases / (homeRuns + stolenBases), NULL)
   , runsCreated = IF(walks + atBats > 0, (singles + doubles + triples + homeRuns + walks) * totalBases / (atBats + walks), NULL)
