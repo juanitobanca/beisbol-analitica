@@ -35,8 +35,8 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_team_performance_stats(',
                                 homeTeamId AS teamId,
                                 homeScore runs,
                                 awayScore runsAllowed,
-                                homeWins wins,
-                                homeLosses losses,
+                                IF( homeIsWinner = 1, 1,  0 ) wins,
+                                IF( awayIsWinner = 1, 1,  0 ) losses,
                                 attendance
                                 FROM games
 
@@ -52,8 +52,8 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_team_performance_stats(',
                                 awayTeamId AS teamId,
                                 awayScore runs,
                                 homeScore runsAllowed,
-                                awayWins wins,
-                                awayLosses losses,
+                                IF( awayIsWinner = 1, 1,  0 ) wins,
+                                IF( homeIsWinner = 1, 1,  0 ) losses,
                                 attendance
                                 FROM games
                             ), d AS
