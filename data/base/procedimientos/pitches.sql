@@ -35,7 +35,9 @@ INSERT INTO pitches(
     hardness,
     location,
     coordX,
-    coordY
+    coordY,
+    heatMapFour,
+    heatMapEight
   )
 SELECT
   gamePk,
@@ -65,7 +67,29 @@ SELECT
   hardness,
   location,
   coordX,
-  coordY
+  coordY,
+  CASE
+    WHEN y <= 43 THEN 'FHP'
+    WHEN x >= 125 AND y >= 2.41 * x - 258.25 THEN 'RF1'
+    WHEN x >= 125 AND y >= x-82 THEN 'RF2'
+    WHEN x >= 125 THEN 'FRF'
+    WHEN x <= 125 AND y >= -2.41 * x + 344.25 THEN 'LF1'
+    WHEN x <= 125 AND y >= -x + 169  THEN 'LF2'
+    WHEN x <= 125 THEN 'FLF'
+  END heatMapFour,
+  CASE
+    WHEN y <= 43 THEN 'FHP'
+    WHEN x >= 125 AND y >= 5.03 * x - 585.75 THEN 'RF1'
+    WHEN x >= 125 AND y >= 2.41 * x - 258.25 THEN 'RF2'
+    WHEN x >= 125 AND y >= 1.5 * x - 144.5 THEN 'RF3'
+    WHEN x >= 125 AND y >= x-82 THEN 'RF4'
+    WHEN x >= 125 THEN 'FRF'
+    WHEN x <= 125 AND y >= -5.03 * x + 671.75 THEN 'LF1'
+    WHEN x <= 125 AND y >= -2.41 * x + 344.25 THEN 'LF2'
+    WHEN x <= 125 AND y >= -1.5 * x + 230.5 THEN 'LF3'
+    WHEN x <= 125 AND y >= -x + 169  THEN 'LF4'
+    WHEN x <= 125 THEN 'FLF'
+  END heatMapEight
 FROM stg_play_pitch
 WHERE
   1 = 1
