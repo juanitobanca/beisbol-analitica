@@ -62,13 +62,16 @@ CALL agg_team_performance_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamTy
 CALL agg_team_performance_stats_derived_metrics();
 
 -- Aggregated Batting Stats
+-- Dash
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2', 'AGGREGATED', @insert_stmt );
-CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,playerId', 'AGGREGATED', @insert_stmt );
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,teamId', 'AGGREGATED', @insert_stmt );
-CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,teamId,playerId', 'AGGREGATED', @insert_stmt );
-CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType', 'AGGREGATED', @insert_stmt );
+CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamType,playerId', 'AGGREGATED', @insert_stmt );
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamType', 'AGGREGATED', @insert_stmt );
+CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,teamId,playerId', 'AGGREGATED', @insert_stmt );
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,venueId', 'AGGREGATED', @insert_stmt );
+-- Others
+CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,playerId', 'AGGREGATED', @insert_stmt );
+CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType', 'AGGREGATED', @insert_stmt );
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamType', 'AGGREGATED', @insert_stmt );
 
 -- Cumulative Batting Stats

@@ -24,16 +24,20 @@ UPDATE
 UPDATE
   agg_batting_stats
   SET
-    -- dash percentages
-    atBatsPerHomeRunsPercentage = IF(homeRuns > 0, atBats / homeRuns, NULL)
+    singlesPercentage = IF( hits > 0, singles / hits, NULL )
+  , doublesPercentage = IF( hits > 0, doubles / hits, NULL )
+  , triplesPercentage = IF( hits > 0, triples / hits, NULL )
+  , homeRunsPercentage = IF( hits > 0, homeRuns / hits, NULL )
+  , strikeOutsPercentage = IF( atbats > 0, strikeOuts / plateAppearances, NULL)
+  , walksPercentage = IF( atbats > 0, (unintentionalWalks + intentionalWalks ) / plateAppearances, NULL)
+  , hitsPercentage = IF( atbats > 0, hits  / plateAppearances, NULL)
   , battingAverageOnBallsInPlay = IF(atBats - strikeOuts - homeRuns + sacFlies > 0,(singles + doubles + triples) / (atBats - strikeOuts - homeRuns + sacFlies), NULL)
   , battingAverage = IF(atBats > 0, hits / atBats, NULL)
   , onBasePercentage = IF(plateAppearances > 0, (hits + walks + hitByPitch) / plateAppearances, NULL)
-  , extraBasePercentage = IF(plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch > 0, (doubles + triples + homeRuns) / (plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch), NULL)
+  , extraBasePercentage = IF(atbats > 0, (doubles + triples + homeRuns) / atbats, NULL)
   , onFirstBasePercentage = IF(plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch  > 0, (singles + unintentionalWalks) / (plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch), NULL)
-  , strikeOutsOverBaseOnBallsPercentage = IF( strikeOuts + unintentionalWalks > 0, strikeOuts / ( strikeOuts + unintentionalWalks ), NULL)
-  , homeRunPercentage = IF(plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch  > 0, (homeRuns) / (plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch ), NULL)
-
+  , homeRunPercentage = IF(atbats  > 0, homeRuns / atbats, NULL)
+  , atBatsPerHomeRunsPercentage = IF(homeRuns > 0, atBats / homeRuns, NULL)
   , extraBaseHitPercentage = IF(hits > 0, (doubles + triples + homeRuns) / hits, NULL)
   , inPlayPercentage = IF(plateAppearances > 0, (atBats - strikeOuts - homeRuns) / plateAppearances, NULL)
   , homeRunsPerPlateAppearancesPercentage = IF(plateAppearances > 0, homeRuns / plateAppearances, NULL)
