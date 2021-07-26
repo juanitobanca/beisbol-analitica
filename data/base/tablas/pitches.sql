@@ -39,7 +39,9 @@ CREATE TABLE pitches (
   hardness VARCHAR(100),
   location INTEGER,
   coordX DOUBLE,
-  coordY DOUBLE
+  coordY DOUBLE,
+  heatMapFour VARCHAR(10),
+  heatMapEight VARCHAR(10)
 ) ENGINE = INNODB;
 
 ALTER TABLE pitches ADD INDEX(gamePk, atBatIndex);
