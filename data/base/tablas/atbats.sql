@@ -72,6 +72,10 @@ CREATE TABLE atbats (
   lineDriveBunts INTEGER,
   -- Heat Maps
   -- HM 4: 4 quadrants
+  heatMapFourRightFieldOne INTEGER,
+  heatMapFourRightFieldTwo INTEGER,
+  heatMapFourLeftFieldOne INTEGER,
+  heatMapFourLeftFieldTwo INTEGER,
   heatMapFourFoulHomePlate INTEGER,
   heatMapFourFoulLeftField INTEGER,
   heatMapFourFoulRightField INTEGER,
@@ -104,6 +108,14 @@ CREATE TABLE atbats (
   heatMapFourLeftFieldTwoPopUpBunts INTEGER,
   heatMapFourLeftFieldTwoLineDriveBunts INTEGER,
   -- HM8: 8 octants
+  heatMapEightRightFieldOne INTEGER,
+  heatMapEightRightFieldTwo INTEGER,
+  heatMapEightRightFieldThree INTEGER,
+  heatMapEightRightFieldFour INTEGER,
+  heatMapEightLeftFieldOne INTEGER,
+  heatMapEightLeftFieldTwo INTEGER,
+  heatMapEightLeftFieldThree INTEGER,
+  heatMapEightLeftFieldFour  INTEGER,
   heatMapEightFoulHomePlate INTEGER,
   heatMapEightFoulLeftField INTEGER,
   heatMapEightFoulRightField INTEGER,
