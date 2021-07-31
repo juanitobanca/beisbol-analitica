@@ -236,11 +236,7 @@ INNER JOIN
       SUM(IF( trajectory = 'bunt_popup' AND heatMapEight = 'LF4', 1, 0 )) AS heatMapEightLeftFieldFourPopUpBunts,
       SUM(IF( trajectory = 'bunt_line_drive' AND heatMapEight = 'LF4', 1, 0 )) AS heatMapEightLeftFieldFourLineDriveBunts
     FROM pitches
-    WHERE ( gamePk, atBatIndex ) NOT IN ( -- Only update deltas.
-                                          SELECT gamePk, atBatIndex
-                                          FROM atbats
-                                          WHERE balls IS NOT NULL
-                                        )
+
     GROUP BY 1, 2
 ) p
 ON a.gamePk = p.gamePk
@@ -364,7 +360,62 @@ SET a.balls = p.balls,
     a.heatMapEightLeftFieldOne  = p.heatMapEightLeftFieldOne,
     a.heatMapEightLeftFieldTwo = p.heatMapEightLeftFieldTwo,
     a.heatMapEightLeftFieldThree = p.heatMapEightLeftFieldThree,
-    a.heatMapEightLeftFieldFour = p.heatMapEightLeftFieldFour;
+    a.heatMapEightLeftFieldFour = p.heatMapEightLeftFieldFour,
+    a.heatMapEightRightFieldOneFlyBalls= p.heatMapEightRightFieldOneFlyBalls,
+    a.heatMapEightRightFieldOneGroundBalls= p.heatMapEightRightFieldOneGroundBalls,
+    a.heatMapEightRightFieldOneLineDrives= p.heatMapEightRightFieldOneLineDrives,
+    a.heatMapEightRightFieldOnePopUps= p.heatMapEightRightFieldOnePopUps,
+    a.heatMapEightRightFieldOneGroundBunts= p.heatMapEightRightFieldOneGroundBunts,
+    a.heatMapEightRightFieldOnePopUpBunts= p.heatMapEightRightFieldOnePopUpBunts,
+    a.heatMapEightRightFieldOneLineDriveBunts= p.heatMapEightRightFieldOneLineDriveBunts,
+    a.heatMapEightRightFieldTwoFlyBalls= p.heatMapEightRightFieldTwoFlyBalls,
+    a.heatMapEightRightFieldTwoGroundBalls= p.heatMapEightRightFieldTwoGroundBalls,
+    a.heatMapEightRightFieldTwoLineDrives= p.heatMapEightRightFieldTwoLineDrives,
+    a.heatMapEightRightFieldTwoPopUps= p.heatMapEightRightFieldTwoPopUps,
+    a.heatMapEightRightFieldTwoGroundBunts= p.heatMapEightRightFieldTwoGroundBunts,
+    a.heatMapEightRightFieldTwoPopUpBunts= p.heatMapEightRightFieldTwoPopUpBunts,
+    a.heatMapEightRightFieldTwoLineDriveBunts= p.heatMapEightRightFieldTwoLineDriveBunts,
+    a.heatMapEightRightFieldThreeFlyBalls= p.heatMapEightRightFieldThreeFlyBalls,
+    a.heatMapEightRightFieldThreeGroundBalls= p.heatMapEightRightFieldThreeGroundBalls,
+    a.heatMapEightRightFieldThreeLineDrives= p.heatMapEightRightFieldThreeLineDrives,
+    a.heatMapEightRightFieldThreePopUps= p.heatMapEightRightFieldThreePopUps,
+    a.heatMapEightRightFieldThreeGroundBunts= p.heatMapEightRightFieldThreeGroundBunts,
+    a.heatMapEightRightFieldThreePopUpBunts= p.heatMapEightRightFieldThreePopUpBunts,
+    a.heatMapEightRightFieldThreeLineDriveBunts= p.heatMapEightRightFieldThreeLineDriveBunts,
+    a.heatMapEightRightFieldFourFlyBalls= p.heatMapEightRightFieldFourFlyBalls,
+    a.heatMapEightRightFieldFourGroundBalls= p.heatMapEightRightFieldFourGroundBalls,
+    a.heatMapEightRightFieldFourLineDrives= p.heatMapEightRightFieldFourLineDrives,
+    a.heatMapEightRightFieldFourPopUps= p.heatMapEightRightFieldFourPopUps,
+    a.heatMapEightRightFieldFourGroundBunts= p.heatMapEightRightFieldFourGroundBunts,
+    a.heatMapEightRightFieldFourPopUpBunts= p.heatMapEightRightFieldFourPopUpBunts,
+    a.heatMapEightRightFieldFourLineDriveBunts= p.heatMapEightRightFieldFourLineDriveBunts,
+    a.heatMapEightLeftFieldOneFlyBalls= p.heatMapEightLeftFieldOneFlyBalls,
+    a.heatMapEightLeftFieldOneGroundBalls= p.heatMapEightLeftFieldOneGroundBalls,
+    a.heatMapEightLeftFieldOneLineDrives= p.heatMapEightLeftFieldOneLineDrives,
+    a.heatMapEightLeftFieldOnePopUps= p.heatMapEightLeftFieldOnePopUps,
+    a.heatMapEightLeftFieldOneGroundBunts= p.heatMapEightLeftFieldOneGroundBunts,
+    a.heatMapEightLeftFieldOnePopUpBunts= p.heatMapEightLeftFieldOnePopUpBunts,
+    a.heatMapEightLeftFieldOneLineDriveBunts= p.heatMapEightLeftFieldOneLineDriveBunts,
+    a.heatMapEightLeftFieldTwoFlyBalls= p.heatMapEightLeftFieldTwoFlyBalls,
+    a.heatMapEightLeftFieldTwoGroundBalls= p.heatMapEightLeftFieldTwoGroundBalls,
+    a.heatMapEightLeftFieldTwoLineDrives= p.heatMapEightLeftFieldTwoLineDrives,
+    a.heatMapEightLeftFieldTwoPopUps= p.heatMapEightLeftFieldTwoPopUps,
+    a.heatMapEightLeftFieldTwoGroundBunts= p.heatMapEightLeftFieldTwoGroundBunts,
+    a.heatMapEightLeftFieldTwoPopUpBunts= p.heatMapEightLeftFieldTwoPopUpBunts,
+    a.heatMapEightLeftFieldTwoLineDriveBunts= p.heatMapEightLeftFieldTwoLineDriveBunts,
+    a.heatMapEightLeftFieldThreeFlyBalls= p.heatMapEightLeftFieldThreeFlyBalls,
+    a.heatMapEightLeftFieldThreeGroundBalls= p.heatMapEightLeftFieldThreeGroundBalls,
+    a.heatMapEightLeftFieldThreeLineDrives= p.heatMapEightLeftFieldThreeLineDrives,
+    a.heatMapEightLeftFieldThreePopUps= p.heatMapEightLeftFieldThreePopUps,
+    a.heatMapEightLeftFieldThreeGroundBunts= p.heatMapEightLeftFieldThreeGroundBunts,
+    a.heatMapEightLeftFieldThreePopUpBunts= p.heatMapEightLeftFieldThreePopUpBunts,
+    a.heatMapEightLeftFieldThreeLineDriveBunts= p.heatMapEightLeftFieldThreeLineDriveBunts,
+    a.heatMapEightLeftFieldFourGroundBalls= p.heatMapEightLeftFieldFourGroundBalls,
+    a.heatMapEightLeftFieldFourLineDrives= p.heatMapEightLeftFieldFourLineDrives,
+    a.heatMapEightLeftFieldFourPopUps= p.heatMapEightLeftFieldFourPopUps,
+    a.heatMapEightLeftFieldFourGroundBunts= p.heatMapEightLeftFieldFourGroundBunts,
+    a.heatMapEightLeftFieldFourPopUpBunts= p.heatMapEightLeftFieldFourPopUpBunts,
+    a.heatMapEightLeftFieldFourLineDriveBunts= p.heatMapEightLeftFieldFourLineDriveBunts;
 
 COMMIT;
 
