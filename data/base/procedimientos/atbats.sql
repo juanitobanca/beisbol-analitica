@@ -236,7 +236,11 @@ INNER JOIN
       SUM(IF( trajectory = 'bunt_popup' AND heatMapEight = 'LF4', 1, 0 )) AS heatMapEightLeftFieldFourPopUpBunts,
       SUM(IF( trajectory = 'bunt_line_drive' AND heatMapEight = 'LF4', 1, 0 )) AS heatMapEightLeftFieldFourLineDriveBunts
     FROM pitches
-
+    WHERE ( gamePk, atBatIndex ) NOT IN ( -- Only update deltas.
+                                              SELECT gamePk, atBatIndex
+                                              FROM atbats
+                                              WHERE balls IS NOT NULL
+                                            )
     GROUP BY 1, 2
 ) p
 ON a.gamePk = p.gamePk
@@ -416,6 +420,28 @@ SET a.balls = p.balls,
     a.heatMapEightLeftFieldFourGroundBunts= p.heatMapEightLeftFieldFourGroundBunts,
     a.heatMapEightLeftFieldFourPopUpBunts= p.heatMapEightLeftFieldFourPopUpBunts,
     a.heatMapEightLeftFieldFourLineDriveBunts= p.heatMapEightLeftFieldFourLineDriveBunts;
+
+-- Update Where the BIP landed ( HM4, HM8 )
+UPDATE
+  atbats a
+INNER JOIN (
+  SELECT
+    gamePk,
+    atBatIndex,
+    pitchNumber,
+    heatMapFour,
+    heatMapEight
+  FROM pitches
+) p
+  ON (
+    a.gamePk = p.gamePk
+    AND a.atBatIndex = p.atBatIndex
+    AND a.pitches = p.pitchNumber
+  )
+  SET a.heatMapFour = p.heatMapFour
+  ,   a.heatMapEight = p.heatMapEight
+  WHERE 1 = 1
+  AND   a.heatMapEight IS NULL;
 
 COMMIT;
 
