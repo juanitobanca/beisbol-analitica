@@ -29,6 +29,7 @@ CALL defensive_substitutions();
 CALL game_player_fielding_outs();
 CALL game_battery_fielding_stats();
 CALL game_player_split_stats();
+CALL game_player_balls_in_play_heatmaps();
 CALL major_leagues();
 
 
