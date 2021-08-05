@@ -190,7 +190,9 @@ CALL pf_park_factors();
 
 -- Update attributes on Agg Tables
 CALL update_table_attributes('agg_batting_stats', @update_stmt);
+CALL update_table_attributes('agg_pitching_split_stats', @update_stmt);
 CALL update_table_attributes('agg_pitching_stats', @update_stmt);
+CALL update_table_attributes('agg_pitching_balls_in_play_heatmaps', @update_stmt);
 CALL update_table_attributes('agg_fielding_stats', @update_stmt);
 CALL update_table_attributes('pf_park_factors', @update_stmt);
 CALL update_table_attributes('agg_team_performance_stats', @update_stmt);

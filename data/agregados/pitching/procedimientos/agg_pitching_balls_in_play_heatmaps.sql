@@ -140,7 +140,7 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_pitching_balls_in_play_heatmaps (', p
                                 g.venueId,
                                 IF( g.homeTeamId = bs.pitchingTeamId, "home", "away" ) teamType,
                                 bs.pitchingTeamId AS teamId,
-                                bs.batterId AS playerId,
+                                bs.pitcherId AS playerId,
                                 batSide,
                                 pitchHand,
                                 menOnBase,
