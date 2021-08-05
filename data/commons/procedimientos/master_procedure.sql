@@ -127,6 +127,17 @@ CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,teamId,playerId', 'AG
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType', 'AGGREGATED', @insert_stmt );
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamType', 'AGGREGATED', @insert_stmt );
 
+-- Pitching Heat Maps
+CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2', @insert_stmt );
+CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,teamId', @insert_stmt );
+CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,teamId,teamType,playerId', @insert_stmt );
+CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,teamId,teamType', @insert_stmt );
+CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,teamId,playerId', @insert_stmt );
+CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,venueId', @insert_stmt );
+CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,playerId', @insert_stmt );
+CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType', @insert_stmt );
+CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,venueId,teamType', @insert_stmt );
+
 -- Cumulative Pitching Stats
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2', 'CUMULATIVE', @insert_stmt );
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,playerId', 'CUMULATIVE', @insert_stmt );
