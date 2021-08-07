@@ -8,7 +8,8 @@ CREATE PROCEDURE agg_pitching_balls_in_play_heatmaps( IN p_grouping_fields VARCH
 BEGIN
 
 SET @insert_stmt = CONCAT('INSERT INTO agg_pitching_balls_in_play_heatmaps (', p_grouping_fields,',',
-                          ' -- HM 4: 4 quadrants
+                          ' games,
+                            -- HM 4: 4 quadrants
                             heatMapFourLeftFieldOneOneSingles,
                             heatMapFourLeftFieldOneDoubles,
                             heatMapFourLeftFieldOneTriples,
@@ -373,7 +374,8 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_pitching_balls_in_play_heatmaps (', p
                                 ON g.gamePk = bs.gamePk
                             )
                             SELECT ', p_grouping_fields, ',',
-                            '   -- HM4: 4 quarters
+                            '   COUNT(DISTINCT gamePk) games,
+                                -- HM4: 4 quarters
                                 SUM(heatMapFourLeftFieldOneOneSingles) AS heatMapFourLeftFieldOneOneSingles,
                                 SUM(heatMapFourLeftFieldOneDoubles) AS heatMapFourLeftFieldOneDoubles,
                                 SUM(heatMapFourLeftFieldOneTriples) AS heatMapFourLeftFieldOneTriples,

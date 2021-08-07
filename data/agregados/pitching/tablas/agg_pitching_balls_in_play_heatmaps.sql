@@ -16,6 +16,8 @@ CREATE TABLE agg_pitching_balls_in_play_heatmaps (
   batSide VARCHAR(1),
   pitchHand VARCHAR(1),
   menOnBase VARCHAR(10),
+  games INTEGER,
+  -- HM4: 4 quadrants
   heatMapFourLeftFieldOneOneSingles INTEGER,
   heatMapFourLeftFieldOneDoubles INTEGER,
   heatMapFourLeftFieldOneTriples INTEGER,
