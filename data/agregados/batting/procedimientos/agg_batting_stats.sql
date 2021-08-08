@@ -96,6 +96,7 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_batting_stats(',
                             SELECT
                                 gamePk,
                                 batterId,
+                                pitchingTeamId AS opposingTeamId,
                                 SUM(balks) AS balks,
                                 SUM(batterInterferences) AS batterInterferences,
                                 SUM(bunts) AS bunts,
@@ -152,8 +153,14 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_batting_stats(',
                                 SUM(popupBunts) AS popupBunts,
                                 SUM(lineDriveBunts) AS lineDriveBunts
                             FROM game_player_split_stats
-                            GROUP BY 1, 2
-                            ), d AS
+                            GROUP BY 1, 2, 3
+                            ), officials AS
+                            (
+                                SELECT gamePk, officialId
+                                FROM game_officials
+                                WHERE position  = "Home Plate"
+                            ),
+                            d AS
                             (
                             SELECT ',
                                 IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),
@@ -242,6 +249,8 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_batting_stats(',
                             INNER JOIN game_split_stats ss
                                 ON bs.gamePk = ss.gamePk
                                 AND bs.playerId = ss.batterId
+                            LEFT JOIN officials o
+                                ON g.gamePk = o.gamePk
                             WHERE gameType2 IN ("PS","RS")
                             GROUP BY ',
                                 IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),

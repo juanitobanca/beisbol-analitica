@@ -13,6 +13,8 @@ CREATE TABLE agg_pitching_stats (
   teamType VARCHAR(10),
   venueId INTEGER,
   teamId INTEGER,
+  opposingTeamId INTEGER,
+  officialId INTEGER,
   playerId INTEGER,
   batSide VARCHAR(1),
   pitchHand VARCHAR(1),
@@ -193,7 +195,9 @@ CREATE TABLE agg_pitching_stats (
   majorLeague VARCHAR(10),
   playerName VARCHAR(100),
   teamName VARCHAR(100),
-  venueName VARCHAR(100)
+  venueName VARCHAR(100),
+  officialName VARCHAR(100),
+  opposingTeamName VARCHAR(100)
 );
 
 ALTER TABLE agg_pitching_stats ADD INDEX(groupingId);
@@ -203,3 +207,5 @@ ALTER TABLE agg_pitching_stats ADD INDEX(seasonId);
 ALTER TABLE agg_pitching_stats ADD INDEX(venueId);
 ALTER TABLE agg_pitching_stats ADD INDEX(teamId);
 ALTER TABLE agg_pitching_stats ADD INDEX(playerId);
+ALTER TABLE agg_pitching_stats ADD INDEX(opposingTeamId);
+ALTER TABLE agg_pitching_stats ADD INDEX(officialId);

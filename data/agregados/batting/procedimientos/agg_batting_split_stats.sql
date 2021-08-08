@@ -76,13 +76,12 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_batting_stats (', p_grouping_fields,'
                             groundBunts,
                             popupBunts,
                             lineDriveBunts,
-                            heatMapEightLeftFieldFourLineDriveBunts,
                             groupingId,
                             groupingDescription
                             )
                         WITH bs AS (
                             SELECT
-                                *
+                                *, pitchingTeamId as opposingTeamId
                             FROM game_player_split_stats
                             ),
                             g AS (
@@ -95,6 +94,11 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_batting_stats (', p_grouping_fields,'
                                 homeTeamId
                             FROM games
                             WHERE gameType2 IN ("PS","RS")
+                            ), officials AS
+                            (
+                                SELECT gamePk, officialId
+                                FROM game_officials
+                                WHERE position  = "Home Plate"
                             ),
                             data AS (
                             SELECT
@@ -106,6 +110,8 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_batting_stats (', p_grouping_fields,'
                                 IF( g.homeTeamId = bs.battingTeamId, "home", "away" ) teamType,
                                 bs.battingTeamId AS teamId,
                                 bs.batterId AS playerId,
+                                bs.opposingTeamId,
+                                o.officialId,
                                 batSide,
                                 pitchHand,
                                 menOnBase,
@@ -176,10 +182,12 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_batting_stats (', p_grouping_fields,'
                                 popUps,
                                 groundBunts,
                                 popupBunts,
-                                lineDriveBunts,
+                                lineDriveBunts
                             FROM g
                             INNER JOIN bs
                                 ON g.gamePk = bs.gamePk
+                            LEFT JOIN officials o
+                                ON g.gamePk = o.gamePk
                             )
                             SELECT ', p_grouping_fields, ',',
                             '   SUM(atbats) AS atbats,

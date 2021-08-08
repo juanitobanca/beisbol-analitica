@@ -59,6 +59,31 @@ BEGIN
    PREPARE update_stmt_sql FROM @update_stmt;
    EXECUTE update_stmt_sql;
 
+   SET @update_stmt = CONCAT('UPDATE ',tbl, ' AS tbl
+                              LEFT JOIN (
+                                 SELECT DISTINCT officialId, CONCAT( firstName, " ", lastName ) officialName
+                                 FROM officials
+                                 ) p
+                              ON tbl.officialId = p.officialId
+                              SET tbl.officialName = p.officialName;'
+                           );
+   SELECT @update_stmt;
+   PREPARE update_stmt_sql FROM @update_stmt;
+   EXECUTE update_stmt_sql;
+
+   SET @update_stmt = CONCAT('UPDATE ',tbl, ' AS tbl
+                              LEFT JOIN (
+                                 SELECT DISTINCT majorLeagueId, seasonId, homeTeamId teamId, homeTeamName opposingTeamName
+                                 FROM games
+                                 ) t
+                              ON tbl.majorLeagueId = t.majorLeagueId
+                              AND tbl.seasonId = t.seasonId
+                              AND tbl.teamId = t.teamId
+                              SET tbl.opposingTeamName = t.opposingTeamName'
+                           );
+   SELECT @update_stmt;
+   PREPARE update_stmt_sql FROM @update_stmt;
+   EXECUTE update_stmt_sql;
 
 END //
 

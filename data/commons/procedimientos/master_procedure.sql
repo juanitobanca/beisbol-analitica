@@ -74,6 +74,9 @@ CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,venueId', 'AGGREGATED'
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,playerId', 'AGGREGATED', @insert_stmt );
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType', 'AGGREGATED', @insert_stmt );
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamType', 'AGGREGATED', @insert_stmt );
+CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,officialId', 'AGGREGATED', @insert_stmt );
+CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,opposingTeamId', 'AGGREGATED', @insert_stmt );
+
 
 -- Batting Heat Maps
 CALL agg_batting_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2', @insert_stmt );
@@ -111,6 +114,7 @@ CALL agg_batting_split_stats( 'majorLeagueId,seasonId,gameType2,teamId,playerId,
 CALL agg_batting_split_stats( 'majorLeagueId,seasonId,gameType2,teamId,batSide,pitchHand', @insert_stmt );
 CALL agg_batting_split_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType,batSide', @insert_stmt );
 CALL agg_batting_split_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType,pitchHand', @insert_stmt );
+CALL agg_batting_split_stats( 'majorLeagueId,seasonId,gameType2,officialId,batSide', @insert_stmt );
 
 -- Derived Batting metrics
 CALL agg_batting_derived_metrics();
@@ -126,6 +130,8 @@ CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,teamId', 'AGGREGATED'
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,teamId,playerId', 'AGGREGATED', @insert_stmt );
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType', 'AGGREGATED', @insert_stmt );
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamType', 'AGGREGATED', @insert_stmt );
+CALL agg_pitching_stats( 'majorLeagueId,seasonId,officialId', 'AGGREGATED', @insert_stmt );
+CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,opposingTeamId', 'AGGREGATED', @insert_stmt );
 
 -- Pitching Heat Maps
 CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2', @insert_stmt );
@@ -161,6 +167,8 @@ CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,teamId,playerId
 CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,teamId,batSide,pitchHand', @insert_stmt );
 CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType,batSide', @insert_stmt );
 CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType,pitchHand', @insert_stmt );
+CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,officialId,batSide', @insert_stmt );
+
 
 -- Derived Pitching Metrics
 CALL agg_pitching_derived_metrics();
@@ -188,6 +196,10 @@ CALL agg_fielding_derived_metrics();
 -- Park Factors
 CALL pf_park_factors();
 
+-- Heat Map Park Factors
+CALL pf_heat_map_park_factors();
+
+
 -- Update attributes on Agg Tables
 CALL update_table_attributes('agg_batting_stats', @update_stmt);
 CALL update_table_attributes('agg_pitching_split_stats', @update_stmt);
@@ -195,6 +207,7 @@ CALL update_table_attributes('agg_pitching_stats', @update_stmt);
 CALL update_table_attributes('agg_pitching_balls_in_play_heatmaps', @update_stmt);
 CALL update_table_attributes('agg_fielding_stats', @update_stmt);
 CALL update_table_attributes('pf_park_factors', @update_stmt);
+CALL update_table_attributes('pf_heat_map_park_factors', @update_stmt);
 CALL update_table_attributes('agg_team_performance_stats', @update_stmt);
 
 -- Clean Staging Tables
