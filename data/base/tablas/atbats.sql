@@ -26,8 +26,8 @@ CREATE TABLE atbats (
   pitchHand VARCHAR(1),
   menOnBase VARCHAR(10),
   description VARCHAR(700),
-  heatMapFour VARCHAR(10),
-  heatMapEight VARCHAR(10)
+  HM4 VARCHAR(10),
+  HM8 VARCHAR(10)
 ) ENGINE = INNODB;
 
 ALTER TABLE atbats ADD PRIMARY KEY(gamePk, atBatIndex);
