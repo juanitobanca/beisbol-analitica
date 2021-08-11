@@ -36,7 +36,7 @@ INSERT INTO pitches(
     location,
     coordX,
     coordY,
-    heatMapFour,
+     HM4,
     heatMapEight
   )
 SELECT
@@ -132,7 +132,8 @@ LEFT JOIN (
   And   ( p.startBalls Is Null Or p.startStrikes Is Null );
 
 UPDATE pitches
-SET heatMapFour = CASE
+SET
+HM4 = CASE
     WHEN CoordY <= 43 THEN 'FHP'
     WHEN CoordX >= 125 AND CoordY >= 2.41 * CoordX - 258.25 THEN 'RF1'
     WHEN CoordX >= 125 AND CoordY >= CoordX-82 THEN 'RF2'
@@ -141,7 +142,7 @@ SET heatMapFour = CASE
     WHEN CoordX <= 125 AND CoordY >= -CoordX + 169  THEN 'LF2'
     WHEN CoordX <= 125 THEN 'FLF'
   END,
-heatMapEight = CASE
+HM8 = CASE
     WHEN CoordY <= 43 THEN 'FHP'
     WHEN CoordX >= 125 AND CoordY >= 5.03 * CoordX - 585.75 THEN 'RF1'
     WHEN CoordX >= 125 AND CoordY >= 2.41 * CoordX - 258.25 THEN 'RF2'

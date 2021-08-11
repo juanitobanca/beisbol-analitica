@@ -86,5 +86,4 @@ CREATE TABLE game_player_split_stats (
   lineDriveBunts INTEGER
 );
 
-ALTER TABLE game_player_split_stats ADD INDEX(gamePk, battingTeamId, batterId);
-ALTER TABLE game_player_split_stats ADD INDEX(gamePk, pitchingTeamId, pitcherId);
+ALTER TABLE game_player_split_stats ADD INDEX(gamePk, atBatIndex);

@@ -1,22 +1,20 @@
 USE baseball;
 
-DROP TABLE agg_batting_balls_in_play_heatmaps;
+DROP TABLE game_player_balls_in_play_heatmaps;
 
-CREATE TABLE agg_batting_balls_in_play_heatmaps (
-  groupingId INTEGER UNSIGNED,
-  groupingDescription VARCHAR(255),
-  majorLeagueId INTEGER,
-  seasonId DOUBLE,
-  gameDate DATE,
-  gameType2 VARCHAR(10),
-  teamType VARCHAR(10),
-  venueId INTEGER,
-  teamId INTEGER,
-  playerId INTEGER,
+CREATE TABLE game_player_balls_in_play_heatmaps (
+  gamePk INTEGER,
+  atBatIndex INTEGER,
+  battingTeamId INTEGER,
+  batterId INTEGER,
   batSide VARCHAR(1),
+  pitchingTeamId INTEGER,
+  pitcherId INTEGER,
   pitchHand VARCHAR(1),
   menOnBase VARCHAR(10),
-  games INTEGER,
+  -- These metrics come from pitches
+  -- Heat Maps
+  -- HM 4: 4 quadrants
   HM4_RF1 INTEGER,
   HM4_RF2 INTEGER,
   HM4_LF1 INTEGER,
@@ -179,18 +177,7 @@ CREATE TABLE agg_batting_balls_in_play_heatmaps (
   HM8_LF4_PU INTEGER,
   HM8_LF4_GBNT INTEGER,
   HM8_LF4_PUB INTEGER,
-  HM8_LF4_LDB INTEGER,
-  -- Atributos
-  majorLeague VARCHAR(10),
-  playerName VARCHAR(100),
-  teamName VARCHAR(100),
-  venueName VARCHAR(100)
-) ENGINE = INNODB;
+  HM8_LF4_LDB INTEGER
+);
 
-ALTER TABLE agg_batting_stats ADD INDEX(groupingId);
-ALTER TABLE agg_batting_stats ADD INDEX(groupingDescription(255));
-ALTER TABLE agg_batting_stats ADD INDEX(majorLeagueId);
-ALTER TABLE agg_batting_stats ADD INDEX(seasonId);
-ALTER TABLE agg_batting_stats ADD INDEX(venueId);
-ALTER TABLE agg_batting_stats ADD INDEX(teamId);
-ALTER TABLE agg_batting_stats ADD INDEX(playerId);
+ALTER TABLE game_player_balls_in_play_heatmaps ADD INDEX(gamePk, atBatIndex);
