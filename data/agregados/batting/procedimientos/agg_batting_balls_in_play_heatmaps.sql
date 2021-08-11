@@ -211,7 +211,6 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_batting_balls_in_play_heatmaps (', p_
                                 HM4_FHP,
                                 HM4_FLF,
                                 HM4_FRF,
-                                HM4_F,
                                 HM4_LF1_X1B,
                                 HM4_LF1_X2B,
                                 HM4_LF1_X3B,
@@ -272,7 +271,6 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_batting_balls_in_play_heatmaps (', p_
                                 HM8_FHP,
                                 HM8_FLF,
                                 HM8_FRF,
-                                HM8_F,
                                 HM8_LF1_X1B,
                                 HM8_LF1_X2B,
                                 HM8_LF1_X3B,
@@ -382,7 +380,6 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_batting_balls_in_play_heatmaps (', p_
                                 SUM(HM4_FHP),
                                 SUM(HM4_FLF),
                                 SUM(HM4_FRF),
-                                SUM(HM4_FRF + HM4_FLF)
                                 SUM(HM4_LF1_X1B),
                                 SUM(HM4_LF1_X2B),
                                 SUM(HM4_LF1_X3B),
@@ -442,7 +439,6 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_batting_balls_in_play_heatmaps (', p_
                                 SUM(HM8_FHP),
                                 SUM(HM8_FLF),
                                 SUM(HM8_FRF),
-                                SUM(HM8_FRF + HM8_FLF)
                                 SUM(HM8_LF1_X1B),
                                 SUM(HM8_LF1_X2B),
                                 SUM(HM8_LF1_X3B),
