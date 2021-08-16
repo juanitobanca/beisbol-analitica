@@ -18,16 +18,15 @@ SELECT DISTINCT
   teamId,
   playerId,
   /* Data issue, MLB */
-  CASE WHEN gamePk = 237178 AND teamId = 2291 AND playerId =  534721 THEN 2
-  ELSE battingOrder
-  END battingOrder
+  battingOrder
 FROM stg_box_team_batting_order
 WHERE
   gamePk NOT IN (
     SELECT
       gamePk
     FROM game_batting_orders
-  );
+  )
+AND battingOrder IS NOT NULL;
 
 COMMIT;
 
