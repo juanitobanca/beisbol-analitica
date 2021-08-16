@@ -24,52 +24,52 @@ UPDATE
 UPDATE
   agg_batting_stats
   SET
-    singlesPercentage = IF( hits > 0, singles / hits, NULL )
-  , doublesPercentage = IF( hits > 0, doubles / hits, NULL )
-  , triplesPercentage = IF( hits > 0, triples / hits, NULL )
-  , homeRunsPercentage = IF( hits > 0, homeRuns / hits, NULL )
-  , strikeOutsPercentage = IF( atbats > 0, strikeOuts / plateAppearances, NULL)
-  , walksPercentage = IF( atbats > 0, (unintentionalWalks + intentionalWalks ) / plateAppearances, NULL)
-  , hitsPercentage = IF( atbats > 0, hits  / plateAppearances, NULL)
-  , battingAverageOnBallsInPlay = IF(atBats - strikeOuts - homeRuns + sacFlies > 0,(singles + doubles + triples) / (atBats - strikeOuts - homeRuns + sacFlies), NULL)
-  , battingAverage = IF(atBats > 0, hits / atBats, NULL)
-  , onBasePercentage = IF(plateAppearances > 0, (hits + walks + hitByPitch) / plateAppearances, NULL)
-  , extraBasePercentage = IF(atbats > 0, (doubles + triples + homeRuns) / atbats, NULL)
-  , onFirstBasePercentage = IF(plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch  > 0, (singles + unintentionalWalks) / (plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch), NULL)
-  , homeRunPercentage = IF(atbats  > 0, homeRuns / atbats, NULL)
-  , atBatsPerHomeRunsPercentage = IF(homeRuns > 0, atBats / homeRuns, NULL)
-  , extraBaseHitPercentage = IF(hits > 0, (doubles + triples + homeRuns) / hits, NULL)
-  , inPlayPercentage = IF(plateAppearances > 0, (atBats - strikeOuts - homeRuns) / plateAppearances, NULL)
-  , homeRunsPerPlateAppearancesPercentage = IF(plateAppearances > 0, homeRuns / plateAppearances, NULL)
-  , isolatedPower = IF(atBats > 0, (doubles + 2 * triples + 3 * homeRuns) / atBats, NULL)
-  , onBasePlusSluggingPercentage = IF(plateAppearances > 0, (hits + walks + hitByPitch) / plateAppearances, 0 ) + IF(atBats > 0, totalBases / atBats, 0)
-  , powerSpeed = IF(homeRuns + stolenBases > 0, 2 * homeRuns * stolenBases / (homeRuns + stolenBases), NULL)
-  , runsCreated = IF(walks + atBats > 0, (singles + doubles + triples + homeRuns + walks) * totalBases / (atBats + walks), NULL)
-  , runScoredPercentage = IF(singles + doubles + triples + homeRuns + walks + hitByPitch - homeRuns > 0, (runs - homeRuns) / (singles + doubles + triples + homeRuns + walks + hitByPitch - homeRuns), NULL)
-  , secondBattingAverage = IF(atBats > 0, (walks + doubles + 2 * triples + 3 * homeRuns + stolenBases - caughtStealing) / atBats, NULL)
-  , sluggingPercentage = IF(atBats > 0, totalBases / atBats, NULL)
-  , stolenBasePercentage = IF(stolenBaseAttempts > 0, stolenBases / stolenBaseAttempts, NULL)
-  , strikeOutsPerPlateAppearancesPercentage = IF(plateAppearances > 0, strikeOuts / plateAppearances, NULL)
-  , walksPerPlateAppearancesPercentage = IF(plateAppearances > 0, walks / plateAppearances, NULL)
-  , walksPerStrikeOutsPercentage = IF(strikeOuts > 0, walks / strikeOuts, NULL);
+    singlesPercentage = ROUND(IF( hits > 0, singles / hits, NULL), 3 )
+  , doublesPercentage = ROUND(IF( hits > 0, doubles / hits, NULL), 3 )
+  , triplesPercentage = ROUND(IF( hits > 0, triples / hits, NULL), 3 )
+  , homeRunsPercentage = ROUND(IF( hits > 0, homeRuns / hits, NULL), 3 )
+  , strikeOutsPercentage = ROUND(IF( atbats > 0, strikeOuts / plateAppearances, NULL), 3 )
+  , walksPercentage = ROUND(IF( atbats > 0, (unintentionalWalks + intentionalWalks ) / plateAppearances, NULL), 3 )
+  , hitsPercentage = ROUND(IF( atbats > 0, hits  / plateAppearances, NULL), 3 )
+  , battingAverageOnBallsInPlay = ROUND(IF(atBats - strikeOuts - homeRuns + sacFlies > 0,(singles + doubles + triples) / (atBats - strikeOuts - homeRuns + sacFlies), NULL), 3 )
+  , battingAverage = ROUND(IF(atBats > 0, hits / atBats, NULL), 3 )
+  , onBasePercentage = ROUND(IF(plateAppearances > 0, (hits + walks + hitByPitch) / plateAppearances, NULL), 3 )
+  , extraBasePercentage = ROUND(IF(atbats > 0, (doubles + triples + homeRuns) / atbats, NULL), 3 )
+  , onFirstBasePercentage = ROUND(IF(plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch  > 0, (singles + unintentionalWalks) / (plateAppearances - sacFlies - sacBunts - intentionalWalks - hitByPitch), NULL), 3 )
+  , homeRunPercentage = ROUND(IF(atbats  > 0, homeRuns / atbats, NULL), 3 )
+  , atBatsPerHomeRunsPercentage = ROUND(IF(homeRuns > 0, atBats / homeRuns, NULL), 3 )
+  , extraBaseHitPercentage = ROUND(IF(hits > 0, (doubles + triples + homeRuns) / hits, NULL), 3 )
+  , inPlayPercentage = ROUND(IF(plateAppearances > 0, (atBats - strikeOuts - homeRuns) / plateAppearances, NULL), 3 )
+  , homeRunsPerPlateAppearancesPercentage = ROUND(IF(plateAppearances > 0, homeRuns / plateAppearances, NULL), 3 )
+  , isolatedPower = ROUND(IF(atBats > 0, (doubles + 2 * triples + 3 * homeRuns) / atBats, NULL), 3 )
+  , onBasePlusSluggingPercentage = ROUND(IF(plateAppearances > 0, (hits + walks + hitByPitch) / plateAppearances, 0 ) + IF(atBats > 0, totalBases / atBats, 0),3)
+  , powerSpeed = ROUND(IF(homeRuns + stolenBases > 0, 2 * homeRuns * stolenBases / (homeRuns + stolenBases), NULL), 3 )
+  , runsCreated = ROUND(IF(walks + atBats > 0, (singles + doubles + triples + homeRuns + walks) * totalBases / (atBats + walks), NULL), 3 )
+  , runScoredPercentage = ROUND(IF(singles + doubles + triples + homeRuns + walks + hitByPitch - homeRuns > 0, (runs - homeRuns) / (singles + doubles + triples + homeRuns + walks + hitByPitch - homeRuns), NULL), 3 )
+  , secondBattingAverage = ROUND(IF(atBats > 0, (walks + doubles + 2 * triples + 3 * homeRuns + stolenBases - caughtStealing) / atBats, NULL), 3 )
+  , sluggingPercentage = ROUND(IF(atBats > 0, totalBases / atBats, NULL), 3 )
+  , stolenBasePercentage = ROUND(IF(stolenBaseAttempts > 0, stolenBases / stolenBaseAttempts, NULL), 3 )
+  , strikeOutsPerPlateAppearancesPercentage = ROUND(IF(plateAppearances > 0, strikeOuts / plateAppearances, NULL), 3 )
+  , walksPerPlateAppearancesPercentage = ROUND(IF(plateAppearances > 0, walks / plateAppearances, NULL), 3 )
+  , walksPerStrikeOutsPercentage = ROUND(IF(strikeOuts > 0, walks / strikeOuts, NULL), 3 );
 
 UPDATE
   agg_batting_stats
-  SET zeroAndZeroSwingPercentage =IF( plateAppearances > 0, swingsZeroAndZero / plateAppearances, NULL ),
-      zeroAndOneSwingPercentage = IF( plateAppearances > 0, swingsZeroAndOne  / plateAppearances, NULL ),
-      zeroAndTwoSwingPercentage = IF( plateAppearances > 0, swingsZeroAndTwo  / plateAppearances, NULL ),
+  SET zeroAndZeroSwingPercentage =ROUND(IF( plateAppearances > 0, swingsZeroAndZero / plateAppearances, NULL), 3 ),
+      zeroAndOneSwingPercentage = ROUND(IF( plateAppearances > 0, swingsZeroAndOne  / plateAppearances, NULL), 3 ),
+      zeroAndTwoSwingPercentage = ROUND(IF( plateAppearances > 0, swingsZeroAndTwo  / plateAppearances, NULL), 3 ),
       -- 1 Ball(s)
-      oneAndZeroSwingPercentage = IF( plateAppearances > 0, swingsOneAndZero  / plateAppearances, NULL ),
-      oneAndOneSwingPercentage = IF( plateAppearances > 0, swingsOneAndOne  / plateAppearances, NULL ),
-      oneAndTwoSwingPercentage = IF( plateAppearances > 0, swingsOneAndTwo  / plateAppearances, NULL ),
+      oneAndZeroSwingPercentage = ROUND(IF( plateAppearances > 0, swingsOneAndZero  / plateAppearances, NULL), 3 ),
+      oneAndOneSwingPercentage = ROUND(IF( plateAppearances > 0, swingsOneAndOne  / plateAppearances, NULL), 3 ),
+      oneAndTwoSwingPercentage = ROUND(IF( plateAppearances > 0, swingsOneAndTwo  / plateAppearances, NULL), 3 ),
       -- 2 Ball(s)
-      twoAndZeroSwingPercentage = IF( plateAppearances > 0, swingsTwoAndZero  / plateAppearances, NULL ),
-      twoAndOneSwingPercentage = IF( plateAppearances > 0, swingsTwoAndOne  / plateAppearances, NULL ),
-      twoAndTwoSwingPercentage = IF( plateAppearances > 0, swingsTwoAndTwo  / plateAppearances, NULL ),
+      twoAndZeroSwingPercentage = ROUND(IF( plateAppearances > 0, swingsTwoAndZero  / plateAppearances, NULL), 3 ),
+      twoAndOneSwingPercentage = ROUND(IF( plateAppearances > 0, swingsTwoAndOne  / plateAppearances, NULL), 3 ),
+      twoAndTwoSwingPercentage = ROUND(IF( plateAppearances > 0, swingsTwoAndTwo  / plateAppearances, NULL), 3 ),
       -- 3 Ball(s)
-      threeAndZeroSwingPercentage = IF( plateAppearances > 0, swingsThreeAndZero  / plateAppearances, NULL ),
-      threeAndOneSwingPercentage = IF( plateAppearances > 0, swingsThreeAndOne  / plateAppearances, NULL ),
-      threeAndTwoSwingPercentage = IF( plateAppearances > 0, swingsThreeAndTwo  / plateAppearances, NULL );
+      threeAndZeroSwingPercentage = ROUND(IF( plateAppearances > 0, swingsThreeAndZero  / plateAppearances, NULL), 3 ),
+      threeAndOneSwingPercentage = ROUND(IF( plateAppearances > 0, swingsThreeAndOne  / plateAppearances, NULL), 3 ),
+      threeAndTwoSwingPercentage = ROUND(IF( plateAppearances > 0, swingsThreeAndTwo  / plateAppearances, NULL), 3 );
 
   COMMIT;
 

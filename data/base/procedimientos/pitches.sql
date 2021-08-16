@@ -35,9 +35,7 @@ INSERT INTO pitches(
     hardness,
     location,
     coordX,
-    coordY,
-     HM4,
-    heatMapEight
+    coordY
   )
 SELECT
   gamePk,
