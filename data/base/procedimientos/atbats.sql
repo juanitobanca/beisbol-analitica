@@ -62,6 +62,26 @@ WHERE
     FROM atbats
   );
 
+-- Stats from pitching
+UPDATE atbats a
+INNER JOIN
+(
+    SELECT
+      gamePk,
+      atBatIndex,
+      COUNT(1) pitches
+    FROM pitches
+    WHERE ( gamePk, atBatIndex ) NOT IN ( -- Only update deltas.
+                                          SELECT gamePk, atBatIndex
+                                          FROM atbats
+                                          WHERE pitches IS NOT NULL
+                                        )
+    GROUP BY 1,2
+) p
+ON a.gamePk = p.gamePk
+AND a.atBatIndex = p.atBatIndex
+SET a.pitches = p.pitches;
+
 -- Update batting/pitching teams
 UPDATE
   atbats a
@@ -86,8 +106,8 @@ INNER JOIN (
     gamePk,
     atBatIndex,
     pitchNumber,
-    heatMapFour,
-    heatMapEight
+    HM4,
+    HM8
   FROM pitches
 ) p
   ON (
@@ -95,10 +115,10 @@ INNER JOIN (
     AND a.atBatIndex = p.atBatIndex
     AND a.pitches = p.pitchNumber
   )
-  SET a.heatMapFour = p.heatMapFour
-  ,   a.heatMapEight = p.heatMapEight
+  SET a.HM4 = p.HM4
+  ,   a.HM8 = p.HM8
   WHERE 1 = 1
-  AND   a.heatMapEight IS NULL;
+  AND   a.HM8 IS NULL;
 
 COMMIT;
 
