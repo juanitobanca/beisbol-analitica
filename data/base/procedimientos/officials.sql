@@ -27,7 +27,7 @@ SELECT DISTINCT
 FROM stg_officials
 WHERE
   1 = 1
-  AND officialId IS NOT NULL
+  AND id IS NOT NULL
   AND id NOT IN (
     SELECT
       officialId
