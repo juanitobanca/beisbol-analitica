@@ -85,6 +85,9 @@ SELECT
   SUM(IF(event = 'Walk', 1, 0)) AS walks,
   SUM(IF(event = 'Wild Pitch', 1, 0)) AS wildPitches
 FROM atbats
+WHERE ( gamePk, atBatIndex ) NOT IN ( SELECT gamePk, atBatIndex
+                                      FROM game_player_split_stats
+                                    )
 GROUP BY
   1, 2, 3, 4, 5, 6, 7, 8, 9;
 
@@ -146,7 +149,7 @@ INNER JOIN
     WHERE ( gamePk, atBatIndex ) NOT IN ( -- Only update deltas.
                                               SELECT gamePk, atBatIndex
                                               FROM game_player_split_stats
-                                              WHERE balls IS NOT NULL
+                                              WHERE balls IS NULL
                                             )
     GROUP BY 1, 2
 ) p

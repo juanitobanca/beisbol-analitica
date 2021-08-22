@@ -154,6 +154,9 @@ SELECT
   SUM(IF( event = 'Home Run' AND HM8 = 'RF4', 1, 0) ) HM8_RF4_HR,
   SUM(IF( event In ( 'Single', 'Double', 'Triple', 'Home Run' ) AND HM8 = 'RF4', 1, 0) ) HM8_RF4_H
 FROM atbats
+WHERE ( gamePk, atBatIndex ) NOT IN ( SELECT gamePk, atBatIndex
+                                      FROM game_player_balls_in_play_heatmaps
+                                    )
 GROUP BY
   1, 2, 3, 4, 5, 6, 7, 8, 9;
 
@@ -165,7 +168,7 @@ INNER JOIN
     SELECT
       gamePk,
       atBatIndex,
-      -- HM4_
+      -- HM4
       SUM(IF( HM4 = 'FHP', 1, 0 )) AS HM4_FHP,
       SUM(IF( HM4 = 'FLF', 1, 0 )) AS HM4_FLF,
       SUM(IF( HM4 = 'FRF', 1, 0 )) AS HM4_FRF,
@@ -201,7 +204,7 @@ INNER JOIN
       SUM(IF( trajectory = 'bunt_grounder' AND HM4 = 'LF2', 1, 0 )) AS HM4_LF2_GBNT,
       SUM(IF( trajectory = 'bunt_popup' AND HM4 = 'LF2', 1, 0 )) AS HM4_LF2_PUB,
       SUM(IF( trajectory = 'bunt_line_drive' AND HM4 = 'LF2', 1, 0 )) AS HM4_LF2_LDB,
-      -- HM8_
+      -- HM8
       SUM(IF( HM4 = 'FHP', 1, 0 )) AS HM8_FHP,
       SUM(IF( HM4 = 'FLF', 1, 0 )) AS HM8_FLF,
       SUM(IF( HM4 = 'FRF', 1, 0 )) AS HM8_FRF,
@@ -273,7 +276,7 @@ INNER JOIN
     WHERE ( gamePk, atBatIndex ) NOT IN ( -- Only update deltas.
                                               SELECT gamePk, atBatIndex
                                               FROM game_player_balls_in_play_heatmaps
-                                              WHERE HM8_LF4_LDB IS NOT NULL
+                                              WHERE HM4_FHP IS  NULL
                                             )
     GROUP BY 1, 2
 ) p
