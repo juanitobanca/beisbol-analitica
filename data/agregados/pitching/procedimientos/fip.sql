@@ -28,7 +28,6 @@ INNER JOIN (
     SUM(IF(event = 'Home Run', runValue, 0)) weightHomeRun,
     SUM(IF(event = 'Out', runValue, 0)) weightOut
   FROM rem_event_run_value
-  WHERE aggregationType = 'AGGREGATED'
   GROUP BY
     1, 2
 ) w

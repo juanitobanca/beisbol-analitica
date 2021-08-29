@@ -67,9 +67,7 @@ SET @insert_stmt = CONCAT('INSERT INTO agg_fielding_stats (',
                             COUNT(DISTINCT gamePk) games,
                             SUM( putOuts ) putOuts,
                             SUM( assists + catcherInterferences + errors + putOuts ) totalChances,
-                            SUM( outs ) outsPlayed,
-                            agg_grouping_id("', p_grouping_fields, '") groupingId,
-                            agg_grouping_description("', p_grouping_fields, '") groupingDescription
+                            SUM( outs ) outsPlayed
                             FROM stats s
                             INNER JOIN  outs o
                             ON s.gamePk = o.outsGamePk
