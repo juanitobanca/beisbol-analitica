@@ -10,4 +10,4 @@ CREATE TABLE game_player_fielding_outs (
   outs INTEGER
 ) ENGINE = INNODB;
 
-ALTER TABLE game_player_fielding_outs ADD INDEX(gamePk, teamId, playerId);
+ALTER TABLE game_player_fielding_outs ADD INDEX(gamePk, playerId, positionAbbrev);
