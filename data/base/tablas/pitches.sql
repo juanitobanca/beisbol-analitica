@@ -38,6 +38,8 @@ CREATE TABLE pitches (
   trajectory VARCHAR(100),
   hardness VARCHAR(100),
   location INTEGER,
+  batStand VARCHAR(10),
+  pitchHand VARCHAR(10),
   coordX DOUBLE,
   coordY DOUBLE,
   HM4 VARCHAR(10),
