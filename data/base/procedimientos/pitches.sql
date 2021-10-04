@@ -89,7 +89,7 @@ INNER JOIN (
     battingTeamId,
     batterId,
     pitcherId,
-    batStand,
+    batSide,
     pitchHand
   FROM atbats
   WHERE
@@ -106,7 +106,7 @@ INNER JOIN (
   ,   p.batterId       = q.batterId
   ,   p.pitcherId      = q.pitcherId
   ,   p.pitchHand      = q.pitchHand
-  ,   p.batStand       = q.batStand
+  ,   p.batSide       = q.batSide
   Where 1 = 1
   And   ( p.pitchingTeamId Is Null Or p.battingTeamId Is Null );
 
