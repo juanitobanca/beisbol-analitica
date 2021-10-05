@@ -124,6 +124,9 @@ SELECT
   positionAbbrev,
   SUM(outs) outs
 FROM op
+WHERE gamePk NOT IN ( SELECT gamePk
+                      FROM game_player_fielding_outs
+                    )
 GROUP BY
   1, 2, 3, 4
 HAVING
