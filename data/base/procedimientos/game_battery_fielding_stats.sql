@@ -172,7 +172,11 @@ INNER JOIN sns c
   ON pci.gamePk = c.gamePk
   AND pci.teamId = c.teamId
   AND pci.catcherAtBatPlayIndex = c.atBatPlayIndex
-  AND c.positionAbbrev = 'C';
+  AND c.positionAbbrev = 'C'
+WHERE pci.gamePk NOT IN ( SELECT gamePk
+                          FROM game_battery_fielding_stats
+                        )
+  ;
 
 COMMIT;
 
