@@ -209,6 +209,8 @@ CALL update_table_attributes('agg_fielding_stats', @update_stmt);
 CALL update_table_attributes('pf_park_factors', @update_stmt);
 CALL update_table_attributes('pf_heat_map_park_factors', @update_stmt);
 CALL update_table_attributes('agg_team_performance_stats', @update_stmt);
+CALL update_table_attributes('rem_event_run_value', @update_stmt);
+
 
 -- Clean Staging Tables
 CALL clean_staging_tables();

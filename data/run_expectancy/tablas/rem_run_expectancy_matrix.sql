@@ -21,7 +21,9 @@ CREATE TABLE IF NOT EXISTS rem_run_expectancy_matrix (
   twoOutsRunsScoredBeforePlay INTEGER,
   twoOutsEvents INTEGER,
   twoOutsRunExpectancy DOUBLE,
-  sortingOrder INTEGER
+  sortingOrder INTEGER,
+  majorLeagueName VARCHAR(10),
+  venueName VARCHAR(100)
 );
 
 ALTER TABLE rem_run_expectancy_matrix ADD INDEX(groupingId);

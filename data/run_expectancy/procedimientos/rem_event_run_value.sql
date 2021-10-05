@@ -8,17 +8,20 @@ CREATE PROCEDURE rem_event_run_value()
 BEGIN
 
 INSERT INTO rem_event_run_value(
-    majorLeagueId,
-    seasonId,
-    event,
-    startRunExpectancy,
-    runsScoredInPlay,
-    endRunExpectancy,
-    events,
-    runValue
+  majorLeagueId,
+  seasonId,
+  venueId,
+  groupingId,
+  groupingDescription,
+  event,
+  startRunExpectancy,
+  runsScoredInPlay,
+  endRunExpectancy,
+  events,
+  runValue
   )
 WITH /* Matriz de Expectativa de Carrera */
-run_expectancy_matrix AS (
+run_expectancy_matrix_majorleague_season AS (
   SELECT
     majorLeagueId,
     seasonId,
@@ -28,12 +31,24 @@ run_expectancy_matrix AS (
   FROM rem_play_by_play
   GROUP BY
     1, 2, 3, 4
+), run_expectancy_matrix_majorleague_season_venue AS (
+  SELECT
+    majorLeagueId,
+    seasonId,
+    venueId,
+    outsBeforePlay,
+    runnersBeforePlay,
+    ( SUM(runsScoredEndInning) - SUM( runsScoredBeforePlay ) ) / COUNT(1) runExpectancy
+  FROM rem_play_by_play
+  GROUP BY
+    1, 2, 3, 4, 5
 ),
 /* Modificar eventos de Play by Play */
 rem_play_by_play_events AS (
   SELECT
     majorLeagueId,
     seasonId,
+    venueId,
     runnersBeforePlay,
     runsScoredBeforePlay,
     outsBeforePlay,
@@ -60,6 +75,7 @@ rem_play_by_play_events AS (
   SELECT
     majorLeagueId,
     seasonId,
+    venueId,
     runnersBeforePlay,
     runsScoredBeforePlay,
     outsBeforePlay,
@@ -105,39 +121,89 @@ rem_play_by_play_events AS (
       )
 ),
 /* Calcular run expectancies al inicio, durante y final de jugada */
-run_expectancies AS (
+run_expectancies_majorleague_season AS (
   SELECT
     rpbp.majorLeagueId,
     rpbp.seasonId,
+    rpbp.venueId,
     rpbp.event,
+    agg_grouping_id("majorLeagueId,seasonId") groupingId,
+    agg_grouping_description("majorLeagueId,seasonId") groupingDescription,
     SUM(rem.runExpectancy) startRunExpectancy,
     SUM(runsScoredInPlay) runsScoredInPlay,
     SUM(rem2.runExpectancy) endRunExpectancy,
     COUNT(1) events
   FROM rem_play_by_play_events rpbp
-  INNER JOIN run_expectancy_matrix rem
+  INNER JOIN run_expectancy_matrix_majorleague_season rem
     ON rpbp.majorLeagueId = rem.majorLeagueId
     AND rpbp.seasonId = rem.seasonId
     AND rpbp.outsBeforePlay = rem.outsBeforePlay
     AND rpbp.runnersBeforePlay = rem.runnersBeforePlay
-  INNER JOIN run_expectancy_matrix rem2
+  INNER JOIN run_expectancy_matrix_majorleague_season rem2
     ON rpbp.majorLeagueId = rem2.majorLeagueId
     AND rpbp.seasonId = rem2.seasonId
     AND rpbp.outsAfterPlay = rem2.outsBeforePlay
     AND rpbp.runnersAfterPlay = rem2.runnersBeforePlay
   GROUP BY
-    1, 2, 3
+    1, 2, 3, 4, 5, 6
+),
+run_expectancies_majorleague_season_venue AS (
+  SELECT
+    rpbp.majorLeagueId,
+    rpbp.seasonId,
+    rpbp.venueId,
+    rpbp.event,
+    agg_grouping_id("majorLeagueId,seasonId,venueId") groupingId,
+    agg_grouping_description("majorLeagueId,seasonId,venueId") groupingDescription,
+    SUM(rem.runExpectancy) startRunExpectancy,
+    SUM(runsScoredInPlay) runsScoredInPlay,
+    SUM(rem2.runExpectancy) endRunExpectancy,
+    COUNT(1) events
+  FROM rem_play_by_play_events rpbp
+  INNER JOIN run_expectancy_matrix_majorleague_season_venue rem
+    ON rpbp.majorLeagueId = rem.majorLeagueId
+    AND rpbp.seasonId = rem.seasonId
+    AND rpbp.venueId = rem.venueId
+    AND rpbp.outsBeforePlay = rem.outsBeforePlay
+    AND rpbp.runnersBeforePlay = rem.runnersBeforePlay
+  INNER JOIN run_expectancy_matrix_majorleague_season_venue rem2
+    ON rpbp.majorLeagueId = rem2.majorLeagueId
+    AND rpbp.seasonId = rem2.seasonId
+    AND rpbp.venueId = rem.venueId
+    AND rpbp.outsAfterPlay = rem2.outsBeforePlay
+    AND rpbp.runnersAfterPlay = rem2.runnersBeforePlay
+  GROUP BY
+    1, 2, 3, 4, 5, 6
 )
 SELECT
   majorLeagueId,
   seasonId,
+  venueId,
+  groupingId,
+  groupingDescription,
   event,
   startRunExpectancy,
   runsScoredInPlay,
   endRunExpectancy,
   events,
   ( endRunExpectancy - startRunExpectancy + runsScoredInPlay ) / events runValue
-FROM run_expectancies;
+FROM run_expectancies_majorleague_season
+
+UNION ALL
+
+SELECT
+  majorLeagueId,
+  seasonId,
+  venueId,
+  groupingId,
+  groupingDescription,
+  event,
+  startRunExpectancy,
+  runsScoredInPlay,
+  endRunExpectancy,
+  events,
+  ( endRunExpectancy - startRunExpectancy + runsScoredInPlay ) / events runValue
+FROM run_expectancies_majorleague_season_venue;
 
 COMMIT;
 
