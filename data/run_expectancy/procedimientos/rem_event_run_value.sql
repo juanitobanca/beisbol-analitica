@@ -125,7 +125,7 @@ run_expectancies_majorleague_season AS (
   SELECT
     rpbp.majorLeagueId,
     rpbp.seasonId,
-    rpbp.venueId,
+    NULL AS venueId,
     rpbp.event,
     agg_grouping_id("majorLeagueId,seasonId") groupingId,
     agg_grouping_description("majorLeagueId,seasonId") groupingDescription,
