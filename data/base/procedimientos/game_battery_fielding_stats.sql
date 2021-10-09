@@ -175,8 +175,7 @@ INNER JOIN sns c
   AND c.positionAbbrev = 'C'
 WHERE pci.gamePk NOT IN ( SELECT gamePk
                           FROM game_battery_fielding_stats
-                        )
-  ;
+                        );
 
 COMMIT;
 
