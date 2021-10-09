@@ -9,7 +9,7 @@ BEGIN
 
 
 -- Base
-/*
+
 CALL game_batting_orders();
 CALL games();
 CALL players();
@@ -64,7 +64,7 @@ CALL agg_team_performance_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamTy
 
 -- Derived Team Metrics
 CALL agg_team_performance_stats_derived_metrics();
-*/
+
 
 -- Aggregated Batting Stats
 -- Dash
@@ -94,7 +94,7 @@ CALL agg_batting_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,venue
 CALL agg_batting_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,venueId,teamType', @insert_stmt );
 
 -- Cumulative Batting Stats
-/*
+
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2', 'CUMULATIVE', @insert_stmt );
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,playerId', 'CUMULATIVE', @insert_stmt );
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,teamId', 'CUMULATIVE', @insert_stmt );
@@ -103,7 +103,7 @@ CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamTyp
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamType', 'CUMULATIVE', @insert_stmt );
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,venueId', 'CUMULATIVE', @insert_stmt );
 CALL agg_batting_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamType', 'CUMULATIVE', @insert_stmt );
-*/
+
 
 -- Aggregated Batting Split Stats
 CALL agg_batting_split_stats( 'majorLeagueId,seasonId,gameType2,batSide', @insert_stmt );
@@ -151,14 +151,14 @@ CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,venu
 CALL agg_pitching_balls_in_play_heatmaps( 'majorLeagueId,seasonId,gameType2,venueId,teamType', @insert_stmt );
 
 -- Cumulative Pitching Stats
-/*
+
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2', 'CUMULATIVE', @insert_stmt );
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,playerId', 'CUMULATIVE', @insert_stmt );
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,teamId', 'CUMULATIVE', @insert_stmt );
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,teamId,playerId', 'CUMULATIVE', @insert_stmt );
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType', 'CUMULATIVE', @insert_stmt );
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamType', 'CUMULATIVE', @insert_stmt );
-*/
+
 
 -- Aggregated Pitching Split Stats
 CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,batSide', @insert_stmt );
@@ -191,14 +191,14 @@ CALL agg_fielding_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamTy
 CALL agg_fielding_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamType', 'AGGREGATED', @insert_stmt );
 
 -- Cumulative Fielding Stats
-/*
+
 CALL agg_fielding_stats( 'majorLeagueId,seasonId,gameType2', 'CUMULATIVE', @insert_stmt );
 CALL agg_fielding_stats( 'majorLeagueId,seasonId,gameType2,positionAbbrev,playerId', 'AGGREGATED', @insert_stmt );
 CALL agg_fielding_stats( 'majorLeagueId,seasonId,gameType2,teamId', 'AGGREGATED', @insert_stmt );
 CALL agg_fielding_stats( 'majorLeagueId,seasonId,gameType2,teamId,positionAbbrev,playerId', 'AGGREGATED', @insert_stmt );
 CALL agg_fielding_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType', 'AGGREGATED', @insert_stmt );
 CALL agg_fielding_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamType', 'AGGREGATED', @insert_stmt );
-*/
+
 
 -- Derived Fielding Metrics
 CALL agg_fielding_derived_metrics();
