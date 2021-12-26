@@ -19,7 +19,7 @@ INSERT INTO transactions(
     typeDesc,
     description
   )
-SELECT
+SELECT DISTINCT
   id,
   personId,
   toTeamId,
