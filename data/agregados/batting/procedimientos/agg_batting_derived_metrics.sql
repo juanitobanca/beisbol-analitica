@@ -51,7 +51,9 @@ UPDATE
   , stolenBasePercentage = ROUND(IF(stolenBaseAttempts > 0, stolenBases / stolenBaseAttempts, NULL), 3 )
   , strikeOutsPerPlateAppearancesPercentage = ROUND(IF(plateAppearances > 0, strikeOuts / plateAppearances, NULL), 3 )
   , walksPerPlateAppearancesPercentage = ROUND(IF(plateAppearances > 0, walks / plateAppearances, NULL), 3 )
-  , walksPerStrikeOutsPercentage = ROUND(IF(strikeOuts > 0, walks / strikeOuts, NULL), 3 );
+  , walksPerStrikeOutsPercentage = ROUND(IF(strikeOuts > 0, walks / strikeOuts, NULL), 3 )
+  , strikeOutsOverBaseOnBallsPercentage = IF(walks > 0, strikeOuts / walks, NULL)
+  ;
 
 UPDATE
   agg_batting_stats

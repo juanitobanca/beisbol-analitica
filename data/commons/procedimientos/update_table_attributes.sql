@@ -15,7 +15,7 @@ BEGIN
                                  FROM games
                                  ) m
                               ON tbl.majorLeagueId = m.majorLeagueId
-                              SET tbl.majorLeague = m.majorLeague;'
+                              SET tbl.majorLeagueName = m.majorLeague;'
                            );
    SELECT @update_stmt;
    PREPARE update_stmt_sql FROM @update_stmt;
