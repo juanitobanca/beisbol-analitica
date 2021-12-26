@@ -2,7 +2,7 @@ USE baseball;
 
 DROP PROCEDURE transactions;
 
-DELIMITER / /
+DELIMITER //
 
 CREATE PROCEDURE transactions()
 BEGIN
@@ -41,6 +41,6 @@ WHERE
 
 COMMIT;
 
-END / /
+END //
 
-DELIMITER;
+DELIMITER ;
