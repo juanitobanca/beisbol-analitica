@@ -34,8 +34,6 @@ CALL game_player_split_stats();
 CALL game_player_balls_in_play_heatmaps();
 CALL major_leagues();
 
-
-
 -- Run Expectancy
 CALL rem_play_by_play();
 CALL rem_run_expectancy_matrix();

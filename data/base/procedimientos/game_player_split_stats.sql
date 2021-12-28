@@ -146,11 +146,11 @@ INNER JOIN
       SUM(IF( trajectory = 'bunt_popup', 1, 0 ) ) AS popupBunts,
       SUM(IF( trajectory = 'bunt_line_drive', 1, 0 ) ) AS lineDriveBunts
     FROM pitches
-    WHERE ( gamePk, atBatIndex ) NOT IN ( -- Only update deltas.
-                                              SELECT gamePk, atBatIndex
-                                              FROM game_player_split_stats
-                                              WHERE balls IS NULL
-                                            )
+    WHERE ( gamePk, atBatIndex ) IN ( -- Only update deltas.
+                                       SELECT gamePk, atBatIndex
+                                       FROM game_player_split_stats
+                                       WHERE balls IS NULL
+                                    )
     GROUP BY 1, 2
 ) p
 ON a.gamePk = p.gamePk
