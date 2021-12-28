@@ -273,11 +273,11 @@ INNER JOIN
       SUM(IF( trajectory = 'bunt_popup' AND HM8 = 'LF4', 1, 0 )) AS HM8_LF4_PUB,
       SUM(IF( trajectory = 'bunt_line_drive' AND HM8 = 'LF4', 1, 0 )) AS HM8_LF4_LDB
     FROM pitches
-    WHERE ( gamePk, atBatIndex ) NOT IN ( -- Only update deltas.
-                                              SELECT gamePk, atBatIndex
-                                              FROM game_player_balls_in_play_heatmaps
-                                              WHERE HM4_FHP IS  NULL
-                                            )
+    WHERE ( gamePk, atBatIndex )  IN ( -- Only update deltas.
+                                       SELECT gamePk, atBatIndex
+                                       FROM game_player_balls_in_play_heatmaps
+                                       WHERE HM4_FHP IS  NULL
+                                      )
     GROUP BY 1, 2
 ) p
 ON a.gamePk = p.gamePk
