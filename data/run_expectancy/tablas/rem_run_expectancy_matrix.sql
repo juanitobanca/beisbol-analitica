@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS rem_run_expectancy_matrix (
   twoOutsEvents INTEGER,
   twoOutsRunExpectancy DOUBLE,
   sortingOrder INTEGER,
-  majorLeagueName VARCHAR(10),
+  majorLeague VARCHAR(10),
   venueName VARCHAR(100)
 );
 

@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS rem_event_run_value (
   runValue DOUBLE,
   groupingId INTEGER,
   groupingDescription VARCHAR(100),
-  majorLeagueName VARCHAR(10),
+  majorLeague VARCHAR(10),
   venueName VARCHAR(100)
 );
 
