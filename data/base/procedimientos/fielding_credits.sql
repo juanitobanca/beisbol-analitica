@@ -14,7 +14,7 @@ INSERT INTO fielding_credits(
     positionAbbrev,
     credit
   )
-SELECT
+SELECT DISTINCT
   gamePk,
   atBatIndex,
   playerId,

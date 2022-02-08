@@ -47,7 +47,10 @@ INSERT INTO games(
     SELECT
       gamePk,
       gameType,
-      season AS seasonId,
+      CASE WHEN majorLeague = 'WBC' THEN
+           CAST(SUBSTR(CAST(season AS CHAR(30) ),1,4) AS DOUBLE )
+           ELSE season
+      END seasonId,
       str_to_date(SUBSTR(gameDate, 1, 10), '%Y-%m-%d') gameDate,
       isTie,
       gameNumber,

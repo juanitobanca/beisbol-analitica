@@ -30,7 +30,7 @@ INSERT INTO atbats(
     menOnBase,
     description
   )
-SELECT
+SELECT DISTINCT
   gamePk,
   inning,
   halfInning,

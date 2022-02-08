@@ -26,7 +26,7 @@ INSERT INTO actions(
     injuryType,
     description
   )
-SELECT
+SELECT DISTINCT
   gamePk,
   atBatIndex,
   `index` playIndex,

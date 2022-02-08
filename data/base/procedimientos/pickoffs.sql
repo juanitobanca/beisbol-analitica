@@ -18,7 +18,7 @@ INSERT INTO pickoffs(
     hasReview,
     baseCode
   )
-SELECT
+SELECT DISTINCT
   gamePk,
   atBatIndex,
   `index` playIndex,
