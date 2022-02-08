@@ -37,7 +37,7 @@ INSERT INTO pitches(
     coordX,
     coordY
   )
-SELECT
+SELECT DISTINCT
   gamePk,
   atBatIndex,
   `index` playIndex,

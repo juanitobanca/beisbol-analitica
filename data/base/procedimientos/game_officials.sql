@@ -12,7 +12,7 @@ INSERT INTO game_officials(
     officialId,
     position
   )
-    SELECT
+    SELECT DISTINCT
       gamePk,
       officialId,
       position

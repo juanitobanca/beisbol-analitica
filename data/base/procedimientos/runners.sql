@@ -26,7 +26,7 @@ INSERT INTO runners(
     earned,
     teamUnearned
   )
-    SELECT
+    SELECT DISTINCT
       gamePk,
       atBatIndex,
       playIndex,
