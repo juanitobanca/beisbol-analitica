@@ -57,7 +57,7 @@ INSERT INTO game_player_pitching_stats(
     plateAppearances,
     unintentionalWalks
   )
-SELECT
+SELECT DISTINCT
   gamePk,
   teamId,
   teamType,

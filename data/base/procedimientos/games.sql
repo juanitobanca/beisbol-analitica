@@ -44,7 +44,7 @@ INSERT INTO games(
     majorLeagueId,
     gameType2
   )
-    SELECT
+    SELECT DISTINCT
       gamePk,
       gameType,
       CASE WHEN majorLeague = 'WBC' THEN

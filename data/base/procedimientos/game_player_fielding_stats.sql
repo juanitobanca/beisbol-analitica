@@ -21,7 +21,7 @@ INSERT INTO game_player_fielding_stats(
     putOuts,
     stolenBases
   )
-SELECT
+SELECT DISTINCT
   gamePk,
   teamId,
   teamType,

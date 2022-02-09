@@ -39,7 +39,7 @@ INSERT INTO game_player_batting_stats(
     plateAppearances,
     unintentionalWalks
   )
-SELECT
+SELECT DISTINCT
   gamePk,
   teamId,
   teamType,
