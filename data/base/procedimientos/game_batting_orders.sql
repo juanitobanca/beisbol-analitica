@@ -26,7 +26,8 @@ WHERE
       gamePk
     FROM game_batting_orders
   )
-AND battingOrder IS NOT NULL;
+AND battingOrder IS NOT NULL
+AND gamePk IS NOT NULL;
 
 COMMIT;
 

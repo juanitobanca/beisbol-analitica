@@ -43,4 +43,5 @@ CREATE TABLE games (
   attendance INTEGER
 ) ENGINE = INNODB;
 
-ALTER TABLE games ADD PRIMARY KEY(gamePk);
+ALTER TABLE games ADD INDEX(gamePk);
+-- ALTER TABLE games ADD PRIMARY KEY(gamePk); There's games that appear in more than one league. Hence, removing PK.

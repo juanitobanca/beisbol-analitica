@@ -14,7 +14,7 @@ INSERT INTO game_player_positions(
     playerId,
     positionAbbrev
   )
-SELECT
+SELECT DISTINCT
   gamePk,
   teamId,
   teamType,
