@@ -7,6 +7,8 @@ DELIMITER //
 CREATE PROCEDURE master_procedure()
 BEGIN
 
+-- Specifically for pitches.
+SET GLOBAL innodb_buffer_pool_size=268435456;
 
 -- Base
 
@@ -17,7 +19,6 @@ CALL officials();
 CALL game_player_batting_stats();
 CALL game_player_fielding_stats();
 CALL game_player_pitching_stats();
-CALL teams();
 CALL game_player_positions();
 CALL atbats();
 CALL pitches();
@@ -26,6 +27,7 @@ CALL fielding_credits();
 CALL actions();
 CALL pickoffs();
 CALL game_officials();
+CALL transactions();
 
 CALL defensive_substitutions();
 CALL game_player_fielding_outs();
@@ -157,7 +159,6 @@ CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,teamId,playerId', 'CU
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType', 'CUMULATIVE', @insert_stmt );
 CALL agg_pitching_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamType', 'CUMULATIVE', @insert_stmt );
 
-
 -- Aggregated Pitching Split Stats
 CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,batSide', @insert_stmt );
 CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,pitchHand', @insert_stmt );
@@ -174,7 +175,6 @@ CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,teamId,batSide,
 CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType,batSide', @insert_stmt );
 CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType,pitchHand', @insert_stmt );
 CALL agg_pitching_split_stats( 'majorLeagueId,seasonId,gameType2,officialId,batSide', @insert_stmt );
-
 
 -- Derived Pitching Metrics
 CALL agg_pitching_derived_metrics();
@@ -197,7 +197,6 @@ CALL agg_fielding_stats( 'majorLeagueId,seasonId,gameType2,teamId,positionAbbrev
 CALL agg_fielding_stats( 'majorLeagueId,seasonId,gameType2,venueId,teamId,teamType', 'AGGREGATED', @insert_stmt );
 CALL agg_fielding_stats( 'majorLeagueId,seasonId,gameType2,teamId,teamType', 'AGGREGATED', @insert_stmt );
 
-
 -- Derived Fielding Metrics
 CALL agg_fielding_derived_metrics();
 
@@ -206,7 +205,6 @@ CALL pf_park_factors();
 
 -- Heat Map Park Factors
 CALL pf_heat_map_park_factors();
-
 
 -- Update attributes on Agg Tables
 CALL update_table_attributes('agg_batting_stats', @update_stmt);
