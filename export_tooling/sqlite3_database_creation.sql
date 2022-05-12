@@ -1,0 +1,42 @@
+/*
+Generated from export_all_tables.py.
+Run from shell: sqlite3 baseball.db < sqlite3_database_creation.sql
+*/
+
+.mode csv
+.import actions actions
+.import agg_batting_balls_in_play_heatmaps agg_batting_balls_in_play_heatmaps
+.import agg_batting_stats agg_batting_stats
+.import agg_fielding_stats agg_fielding_stats
+.import agg_pitching_balls_in_play_heatmaps agg_pitching_balls_in_play_heatmaps
+.import agg_pitching_stats agg_pitching_stats
+.import agg_team_performance_stats agg_team_performance_stats
+.import atbats atbats
+.import defensive_substitutions defensive_substitutions
+.import fielding_credits fielding_credits
+.import game_battery_fielding_stats game_battery_fielding_stats
+.import game_batting_orders game_batting_orders
+.import game_officials game_officials
+.import game_player_balls_in_play_heatmaps game_player_balls_in_play_heatmaps
+.import game_player_batting_stats game_player_batting_stats
+.import game_player_fielding_outs game_player_fielding_outs
+.import game_player_fielding_stats game_player_fielding_stats
+.import game_player_pitching_stats game_player_pitching_stats
+.import game_player_positions game_player_positions
+.import game_player_split_stats game_player_split_stats
+.import games games
+.import major_leagues major_leagues
+.import officials officials
+.import pf_heat_map_park_factors pf_heat_map_park_factors
+.import pf_park_factors pf_park_factors
+.import pickoffs pickoffs
+.import pitches pitches
+.import players players
+.import rem_event_run_value rem_event_run_value
+.import rem_play_by_play rem_play_by_play
+.import rem_run_expectancy_matrix rem_run_expectancy_matrix
+.import runners runners
+.import teams teams
+.import transactions transactions
+.import we_win_expectancy we_win_expectancy
+.import we_win_probability_added we_win_probability_added
