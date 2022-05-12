@@ -18,8 +18,7 @@ Si deseas instalar la Base de Datos para las Ligas Invernales sigue los pasos de
 
 Si deseas instalar la Base de Datos para las Ligas Invernales sigue los pasos descritos en los siguientes documentos:
 
-1. [Instalación de la Base de Datos MySQL.](https://github.com/andres-alvarado/beisbol-analitica/wiki/Instalaci%C3%B3n-de-la-Base-de-Datos)
-2. [Conectándose a la Base de Datos MySQL.](https://github.com/andres-alvarado/beisbol-analitica/wiki/Conect%C3%A1ndose-a-la-Base-de-Datos)
+1. [Instalación y Conexión a la Base de Datos MySQL.](https://github.com/andres-alvarado/beisbol-analitica/wiki/Instalaci%C3%B3n-de-la-Base-de-Datos)
 
 ## Estructura de la Base de Datos.
 
