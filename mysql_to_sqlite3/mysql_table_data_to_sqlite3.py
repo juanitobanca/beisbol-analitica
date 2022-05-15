@@ -78,21 +78,52 @@ for index, row in df.iterrows():
 print("Primary Key commands")
 
 index_query = """
-WITH t AS (
+WITH table_col_types AS (
   SELECT
-    table_name,
-    COUNT(IF(column_name = 'majorLeagueId', 1, NULL)) majorLeagueId,
-    COUNT(IF(column_name = 'gamePk', 1, NULL)) gamePk
+    table_name AS tbl_name,
+    column_name,
+    ordinal_position,
+    CASE
+      WHEN data_type IN ('bigint', 'int', 'tinyint') THEN 'INTEGER'
+      WHEN data_type = 'double' THEN 'REAL'
+      WHEN data_type IN ('date', 'text', 'varchar') THEN 'TEXT'
+      ELSE data_type
+    END data_type
+
   FROM information_schema.columns
   WHERE
     table_schema = 'baseball'
-    And Instr(table_name, 'agg') = 0
+    AND column_name <> 'Unnamed: 0'
+),
+table_structure AS (
+  SELECT
+    tbl_name,
+    GROUP_CONCAT(
+      CONCAT(column_name, ' ', data_type)
+      ORDER BY
+        ordinal_position SEPARATOR ',\n'
+    ) table_structure
+  FROM table_col_types
   GROUP BY
     1
 ),
-i AS (
+table_structure_stmt AS (
   SELECT
-    table_name,
+    tbl_name,
+    CONCAT(
+      'DROP TABLE IF EXISTS ',
+      tbl_name,
+      '; \n\nCREATE TABLE ',
+      tbl_name,
+      ' (\n',
+      table_structure,
+      '\n);'
+    ) sql_stmt
+  FROM table_structure s
+),
+table_index_columns AS (
+  SELECT
+    table_name AS tbl_name,
     index_name,
     GROUP_CONCAT(
       column_name
@@ -104,23 +135,25 @@ i AS (
     table_schema = 'baseball'
   GROUP BY
     1, 2
+),
+table_index_stmt AS (
+  SELECT
+    tbl_name,
+    CONCAT(
+      'CREATE INDEX ',
+      CONCAT(REPLACE(COLUMNS, ',', '_'), '_', tbl_name),
+      ' ON ',
+      tbl_name,
+      '(',
+      COLUMNS,
+      ');'
+    ) sql_stmt
+  FROM table_index_columns
 )
 SELECT
-  i.table_name,
-  CONCAT(
-    'CREATE INDEX ',
-    CONCAT(REPLACE(COLUMNS, ',', '_'), '_', i.table_name),
-    ' ON ',
-    i.table_name,
-    '(',
-    COLUMNS,
-    ');'
-  ) sql_stmt
-FROM t
-INNER JOIN i
-  ON t.table_name = i.table_name
-ORDER BY
-  1
+  s.tbl_name,
+  s.sql_stmt
+FROM table_structure_stmt s
 """
 
 df = pd.read_sql_query(index_query, con=mysql_conn)
