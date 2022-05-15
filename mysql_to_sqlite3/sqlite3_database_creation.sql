@@ -1,6 +1,7 @@
 /*
-Generated from export_all_tables.py.
-Run from shell: sqlite3 baseball.db < sqlite3_database_creation.sql
+Run from shell: 
+sqlite3 baseball.db
+sqlite3 baseball.db < sqlite3_database_creation.sql
 */
 
 .read actions.sql

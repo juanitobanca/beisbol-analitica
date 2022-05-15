@@ -3,7 +3,7 @@ import pandas as pd
 
 
 # Output Directory Specs
-output_dir = "../sqlite3/tablas/"
+output_dir = "/Users/andresalvarado/Desktop/dump/"
 
 # Connection Specs.
 mysql_conn_string = (

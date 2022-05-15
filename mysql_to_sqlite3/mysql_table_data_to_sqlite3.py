@@ -58,7 +58,7 @@ for index, row in df.iterrows():
     if 'Unnamed: 0' in df.keys():
         del df['Unnamed: 0']
 
-    df.to_csv(f"{output_dir}/{row['tbl_name']}", index=False, mode ='w')
+    df.to_csv(f"{output_dir}/{row['tbl_name']}", index=False, header=False, mode ='w')
 
     print(f"Finished processing {row['tbl_name']}.")
 
