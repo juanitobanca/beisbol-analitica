@@ -15,3 +15,5 @@ positionAbbrev TEXT,
 batSide TEXT,
 pitchHand TEXT
 );
+
+CREATE INDEX playerId_players ON players(playerId);

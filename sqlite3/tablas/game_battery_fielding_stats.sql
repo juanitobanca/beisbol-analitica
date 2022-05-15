@@ -28,3 +28,5 @@ stolenHome INTEGER,
 stolenBases INTEGER,
 wildPitches INTEGER
 );
+
+CREATE INDEX gamePk_game_battery_fielding_stats ON game_battery_fielding_stats(gamePk);

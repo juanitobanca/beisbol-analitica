@@ -7,3 +7,5 @@ playerId INTEGER,
 positionAbbrev TEXT,
 credit TEXT
 );
+
+CREATE INDEX gamePk_atBatIndex_fielding_credits ON fielding_credits(gamePk,atBatIndex);

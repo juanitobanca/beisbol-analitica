@@ -32,3 +32,5 @@ totalBases INTEGER,
 triples INTEGER,
 unintentionalWalks INTEGER
 );
+
+CREATE INDEX gamePk_teamId_playerId_game_player_batting_stats ON game_player_batting_stats(gamePk,teamId,playerId);

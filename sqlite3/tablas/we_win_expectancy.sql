@@ -15,3 +15,7 @@ wins INTEGER,
 losses INTEGER,
 winExpectancy REAL
 );
+
+CREATE INDEX groupingId_we_win_expectancy ON we_win_expectancy(groupingId);
+CREATE INDEX majorLeagueId_we_win_expectancy ON we_win_expectancy(majorLeagueId);
+CREATE INDEX seasonId_we_win_expectancy ON we_win_expectancy(seasonId);

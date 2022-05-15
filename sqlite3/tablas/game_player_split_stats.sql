@@ -54,3 +54,5 @@ strikesPitchOuts INTEGER,
 missedBunts INTEGER,
 swin
 );
+
+CREATE INDEX gamePk_atBatIndex_game_player_split_stats ON game_player_split_stats(gamePk,atBatIndex);

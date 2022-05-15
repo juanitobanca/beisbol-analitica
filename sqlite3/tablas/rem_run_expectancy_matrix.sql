@@ -23,3 +23,8 @@ sortingOrder INTEGER,
 majorLeague TEXT,
 venueName TEXT
 );
+
+CREATE INDEX groupingId_rem_run_expectancy_matrix ON rem_run_expectancy_matrix(groupingId);
+CREATE INDEX majorLeagueId_rem_run_expectancy_matrix ON rem_run_expectancy_matrix(majorLeagueId);
+CREATE INDEX seasonId_rem_run_expectancy_matrix ON rem_run_expectancy_matrix(seasonId);
+CREATE INDEX venueId_rem_run_expectancy_matrix ON rem_run_expectancy_matrix(venueId);

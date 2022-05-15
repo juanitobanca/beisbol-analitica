@@ -18,7 +18,7 @@ print("Querying table structure from MySQL")
 table_query = """
 WITH table_col_types AS (
   SELECT
-    table_name,
+    table_name AS tbl_name,
     column_name,
     ordinal_position,
     CASE
@@ -35,7 +35,7 @@ WITH table_col_types AS (
 ),
 table_structure AS (
   SELECT
-    table_name,
+    tbl_name,
     GROUP_CONCAT(
       CONCAT(column_name, ' ', data_type)
       ORDER BY
@@ -44,19 +44,61 @@ table_structure AS (
   FROM table_col_types
   GROUP BY
     1
+),
+table_structure_stmt AS (
+  SELECT
+    tbl_name,
+    CONCAT(
+      'DROP TABLE IF EXISTS ',
+      tbl_name,
+      '; \n\nCREATE TABLE ',
+      tbl_name,
+      ' (\n',
+      table_structure,
+      '\n);'
+    ) sql_stmt
+  FROM table_structure s
+),
+table_index_columns AS (
+  SELECT
+    table_name AS tbl_name,
+    index_name,
+    GROUP_CONCAT(
+      column_name
+      ORDER BY
+        seq_in_index SEPARATOR ','
+    ) COLUMNS
+  FROM information_schema.statistics
+  WHERE
+    table_schema = 'baseball'
+  GROUP BY
+    1, 2
+),
+table_index_stmt AS (
+  SELECT
+    tbl_name,
+    GROUP_CONCAT(
+    CONCAT(
+      'CREATE INDEX ',
+      CONCAT(REPLACE(COLUMNS, ',', '_'), '_', tbl_name),
+      ' ON ',
+      tbl_name,
+      '(',
+      COLUMNS,
+      ');'
+    ) SEPARATOR '\n' 
+    
+    ) sql_stmt
+  FROM table_index_columns
+  GROUP BY 1
 )
 SELECT
-  table_name tbl_name,
-  CONCAT(
-    'DROP TABLE IF EXISTS ',
-    table_name,
-    '; \n\nCREATE TABLE ',
-    table_name,
-    ' (\n',
-    table_structure,
-    '\n);'
-  ) sql_stmt
-FROM table_structure
+  s.tbl_name,
+  CONCAT(s.sql_stmt, '\n\n', COALESCE(i.sql_stmt,'')) sql_stmt
+FROM table_structure_stmt s
+LEFT JOIN table_index_stmt i
+  ON s.tbl_name = i.tbl_name
+ORDER BY 1;
 """
 
 df = pd.read_sql_query(table_query, con=mysql_conn)

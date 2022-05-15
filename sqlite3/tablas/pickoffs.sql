@@ -11,3 +11,5 @@ fromCatcher INTEGER,
 hasReview INTEGER,
 baseCode INTEGER
 );
+
+CREATE INDEX gamePk_atBatIndex_pickoffs ON pickoffs(gamePk,atBatIndex);

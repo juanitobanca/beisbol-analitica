@@ -55,3 +55,5 @@ HM4_LF1_FB INTEGER,
 HM4_LF1_GB INTEGER,
 HM4
 );
+
+CREATE INDEX gamePk_atBatIndex_game_player_balls_in_play_heatmaps ON game_player_balls_in_play_heatmaps(gamePk,atBatIndex);

@@ -43,3 +43,5 @@ coordY REAL,
 HM4 TEXT,
 HM8 TEXT
 );
+
+CREATE INDEX gamePk_atBatIndex_pitches ON pitches(gamePk,atBatIndex);

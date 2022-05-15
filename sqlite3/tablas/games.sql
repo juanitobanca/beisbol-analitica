@@ -40,3 +40,4 @@ weather TEXT,
 wind TEXT,
 attendance REAL
 );
+

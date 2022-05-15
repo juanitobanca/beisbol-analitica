@@ -7,3 +7,5 @@ playerId INTEGER,
 positionAbbrev TEXT,
 outs INTEGER
 );
+
+CREATE INDEX gamePk_playerId_positionAbbrev_game_player_fielding_outs ON game_player_fielding_outs(gamePk,playerId,positionAbbrev);

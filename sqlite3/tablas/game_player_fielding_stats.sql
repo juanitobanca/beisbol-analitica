@@ -14,3 +14,5 @@ pickoffs INTEGER,
 putOuts INTEGER,
 stolenBases INTEGER
 );
+
+CREATE INDEX gamePk_teamId_playerId_game_player_fielding_stats ON game_player_fielding_stats(gamePk,teamId,playerId);

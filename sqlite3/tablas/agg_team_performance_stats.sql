@@ -23,3 +23,10 @@ majorLeague TEXT,
 teamName TEXT,
 venueName TEXT
 );
+
+CREATE INDEX groupingDescription_agg_team_performance_stats ON agg_team_performance_stats(groupingDescription);
+CREATE INDEX groupingId_agg_team_performance_stats ON agg_team_performance_stats(groupingId);
+CREATE INDEX majorLeagueId_agg_team_performance_stats ON agg_team_performance_stats(majorLeagueId);
+CREATE INDEX seasonId_agg_team_performance_stats ON agg_team_performance_stats(seasonId);
+CREATE INDEX teamId_agg_team_performance_stats ON agg_team_performance_stats(teamId);
+CREATE INDEX venueId_agg_team_performance_stats ON agg_team_performance_stats(venueId);
