@@ -15,58 +15,112 @@ mysql_conn = ce(mysql_conn_string)
 
 print("Querying table names from MySQL")
 
+
 table_query = """
-SELECT table_name AS tbl_name
-FROM information_schema.tables
-WHERE table_schema = 'baseball'
-ORDER BY 1
+WITH d AS (
+  SELECT
+    table_name AS tbl_name,
+    COUNT(IF(column_name = 'majorLeagueId', 1, NULL)) majorLeagueId,
+    COUNT(IF(column_name = 'gamePk', 1, NULL)) gamePk,
+    COUNT(IF(column_name = 'seasonId', 1, NULL)) seasonId
+  FROM information_schema.columns
+  WHERE
+    table_schema = 'baseball'
+    And Instr(table_name, 'agg') = 0
+  GROUP BY
+    1
+)
+SELECT
+  tbl_name,
+  CASE
+    WHEN gamePk > 0
+      THEN 'WHERE gamePk IN ( SELECT gamePk from games WHERE majorLeague NOT IN ( "MLB", "DSL" ) AND seasonId > 2010 )'
+    WHEN majorLeagueId > 0 And seasonId = 0
+      THEN 'WHERE majorLeagueId IN ( SELECT majorLeagueId FROM major_leagues WHERE majorLeague NOT IN ( "MLB", "DSL") )'
+    WHEN majorLeagueId > 0 And seasonId > 0
+      THEN 'WHERE majorLeagueId IN ( SELECT majorLeagueId FROM major_leagues WHERE majorLeague NOT IN ( "MLB", "DSL") ) And seasonId > 2010'
+    ELSE 'WHERE 1=1'
+  END filter
+FROM d
+ORDER BY
+  1
 """
 
 df = pd.read_sql_query(table_query, con=mysql_conn)
-tables = df["tbl_name"].to_list()
-
-'''
-# Export tables to csv
+df = df.reset_index()
 
 print(f"Exporting all tables")
 
-for t in tables:
-    print(f"Processing {t}.")
-    df = pd.read_sql_query(f"""SELECT * FROM {t}""", con=mysql_conn)
+for index, row in df.iterrows():
+    print(f"Processing {row['tbl_name']}. Query: SELECT * FROM {row['tbl_name']} {row['filter']}")
+    df = pd.read_sql_query(f"""SELECT * FROM {row['tbl_name']} {row['filter']}""", con=mysql_conn)
 
     if 'Unnamed: 0' in df.keys():
         del df['Unnamed: 0']
 
-    df.to_csv(f"{output_dir}/{t}", index=False, mode ='w')
+    df.to_csv(f"{output_dir}/{row['tbl_name']}", index=False, mode ='w')
 
-    print(f"Finished processing {t}.")
-'''
+    print(f"Finished processing {row['tbl_name']}.")
+
+
 # CSV Export to sqlite3
 
 print("Table creation commands")
 
 print(".mode csv")
 
-for t in tables:
-    print(f".import {t} {t}")
+for index, row in df.iterrows():
+    print(f".import {row['tbl_name']} {row['tbl_name']}")
+
 
 # Alterting tables in sqlite3 Tables
 
 print("Primary Key commands")
 
 index_query = """
-WITH d as
-(
-SELECT table_name
-, index_name
-, GROUP_CONCAT(column_name ORDER BY seq_in_index SEPARATOR ',' ) columns
-FROM information_schema.statistics
-WHERE table_schema = 'baseball'
-GROUP BY 1, 2
+WITH t AS (
+  SELECT
+    table_name,
+    COUNT(IF(column_name = 'majorLeagueId', 1, NULL)) majorLeagueId,
+    COUNT(IF(column_name = 'gamePk', 1, NULL)) gamePk
+  FROM information_schema.columns
+  WHERE
+    table_schema = 'baseball'
+    And Instr(table_name, 'agg') = 0
+  GROUP BY
+    1
+),
+i AS (
+  SELECT
+    table_name,
+    index_name,
+    GROUP_CONCAT(
+      column_name
+      ORDER BY
+        seq_in_index SEPARATOR ','
+    ) COLUMNS
+  FROM information_schema.statistics
+  WHERE
+    table_schema = 'baseball'
+  GROUP BY
+    1, 2
 )
-SELECT table_name, CONCAT('CREATE INDEX ', Concat( replace(columns, ',', '_'), '_', table_name ), ' ON ', table_name, '(', columns, ');') sql_stmt
-FROM d
-Order By 1
+SELECT
+  i.table_name,
+  CONCAT(
+    'CREATE INDEX ',
+    CONCAT(REPLACE(COLUMNS, ',', '_'), '_', i.table_name),
+    ' ON ',
+    i.table_name,
+    '(',
+    COLUMNS,
+    ');'
+  ) sql_stmt
+FROM t
+INNER JOIN i
+  ON t.table_name = i.table_name
+ORDER BY
+  1
 """
 
 df = pd.read_sql_query(index_query, con=mysql_conn)
@@ -76,3 +130,4 @@ print(".open baseball.db")
 
 for i in indexes:
     print(i)
+
