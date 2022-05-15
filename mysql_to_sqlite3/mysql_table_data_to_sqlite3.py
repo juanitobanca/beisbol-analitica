@@ -26,7 +26,7 @@ WITH d AS (
   FROM information_schema.columns
   WHERE
     table_schema = 'baseball'
-    And Instr(table_name, 'agg') = 0
+    AND Instr(table_name, 'agg') = 0
   GROUP BY
     1
 )
@@ -35,9 +35,9 @@ SELECT
   CASE
     WHEN gamePk > 0
       THEN 'WHERE gamePk IN ( SELECT gamePk from games WHERE majorLeague NOT IN ( "MLB", "DSL" ) AND seasonId > 2010 )'
-    WHEN majorLeagueId > 0 And seasonId = 0
+    WHEN majorLeagueId > 0 AND seasonId = 0
       THEN 'WHERE majorLeagueId IN ( SELECT majorLeagueId FROM major_leagues WHERE majorLeague NOT IN ( "MLB", "DSL") )'
-    WHEN majorLeagueId > 0 And seasonId > 0
+    WHEN majorLeagueId > 0 AND seasonId > 0
       THEN 'WHERE majorLeagueId IN ( SELECT majorLeagueId FROM major_leagues WHERE majorLeague NOT IN ( "MLB", "DSL") ) And seasonId > 2010'
     ELSE 'WHERE 1=1'
   END filter
@@ -58,7 +58,7 @@ for index, row in df.iterrows():
     if 'Unnamed: 0' in df.keys():
         del df['Unnamed: 0']
 
-    df.to_csv(f"{output_dir}/{row['tbl_name']}", index=False, mode ='w')
+    df.to_csv(f"{output_dir}/{row['tbl_name']}", index=False, header=False, mode ='w')
 
     print(f"Finished processing {row['tbl_name']}.")
 
