@@ -1,0 +1,32 @@
+DROP TABLE IF EXISTS agg_fielding_stats; 
+
+CREATE TABLE agg_fielding_stats (
+groupingId INTEGER,
+groupingDescription TEXT,
+aggregationType TEXT,
+majorLeagueId INTEGER,
+seasonId REAL,
+gameDate TEXT,
+gameType2 TEXT,
+teamType TEXT,
+venueId REAL,
+teamId REAL,
+positionAbbrev TEXT,
+playerId REAL,
+assists INTEGER,
+catcherInterferences INTEGER,
+errors INTEGER,
+games INTEGER,
+putOuts INTEGER,
+totalChances INTEGER,
+outsPlayed INTEGER,
+inningsPlayed REAL,
+gamesPlayed REAL,
+fieldingPercentage REAL,
+rangeFactorPerInning REAL,
+rangeFactorPerGame REAL,
+majorLeague TEXT,
+playerName TEXT,
+teamName TEXT,
+venueName TEXT
+);
