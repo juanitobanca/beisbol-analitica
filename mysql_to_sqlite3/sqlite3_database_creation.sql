@@ -3,14 +3,36 @@ Generated from export_all_tables.py.
 Run from shell: sqlite3 baseball.db < sqlite3_database_creation.sql
 */
 
+.read actions.sql
+.read atbats.sql
+.read defensive_substitutions.sql
+.read fielding_credits.sql
+.read game_battery_fielding_stats.sql
+.read game_batting_orders.sql
+.read game_officials.sql
+.read game_player_balls_in_play_heatmaps.sql
+.read game_player_batting_stats.sql
+.read game_player_fielding_outs.sql
+.read game_player_fielding_stats.sql
+.read game_player_pitching_stats.sql
+.read game_player_positions.sql
+.read game_player_split_stats.sql
+.read games.sql
+.read major_leagues.sql
+.read officials.sql
+.read pf_heat_map_park_factors.sql
+.read pf_park_factors.sql
+.read pickoffs.sql
+.read pitches.sql
+.read players.sql
+.read rem_event_run_value.sql
+.read rem_play_by_play.sql
+.read rem_run_expectancy_matrix.sql
+.read runners.sql
+.read transactions.sql
+
 .mode csv
 .import actions actions
-.import agg_batting_balls_in_play_heatmaps agg_batting_balls_in_play_heatmaps
-.import agg_batting_stats agg_batting_stats
-.import agg_fielding_stats agg_fielding_stats
-.import agg_pitching_balls_in_play_heatmaps agg_pitching_balls_in_play_heatmaps
-.import agg_pitching_stats agg_pitching_stats
-.import agg_team_performance_stats agg_team_performance_stats
 .import atbats atbats
 .import defensive_substitutions defensive_substitutions
 .import fielding_credits fielding_credits

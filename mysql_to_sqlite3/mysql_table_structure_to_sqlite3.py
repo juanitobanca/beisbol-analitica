@@ -32,6 +32,7 @@ WITH table_col_types AS (
   WHERE
     table_schema = 'baseball'
     AND column_name <> 'Unnamed: 0'
+    AND INSTR(table_name, 'agg') = 0
 ),
 table_structure AS (
   SELECT
