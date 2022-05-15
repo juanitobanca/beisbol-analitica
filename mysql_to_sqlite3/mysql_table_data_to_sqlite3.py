@@ -140,29 +140,27 @@ table_index_stmt AS (
   SELECT
     tbl_name,
     GROUP_CONCAT(
-      CONCAT(
-        'CREATE INDEX ',
-        CONCAT(REPLACE(COLUMNS, ',', '_'), '_', tbl_name),
-        ' ON ',
-        tbl_name,
-        '(',
-        COLUMNS,
-        ');'
-      ) SEPARATOR '\n'
-
+    CONCAT(
+      'CREATE INDEX ',
+      CONCAT(REPLACE(COLUMNS, ',', '_'), '_', tbl_name),
+      ' ON ',
+      tbl_name,
+      '(',
+      COLUMNS,
+      ');'
+    ) SEPARATOR '\n' 
+    
     ) sql_stmt
   FROM table_index_columns
-  GROUP BY
-    1
+  GROUP BY 1
 )
 SELECT
   s.tbl_name,
-  CONCAT(s.sql_stmt, '\n\n', COALESCE(i.sql_stmt, '')) sql_stmt
+  CONCAT(s.sql_stmt, '\n\n', COALESCE(i.sql_stmt,'')) sql_stmt
 FROM table_structure_stmt s
 LEFT JOIN table_index_stmt i
   ON s.tbl_name = i.tbl_name
-ORDER BY
-  1;
+ORDER BY 1;
 """
 
 df = pd.read_sql_query(index_query, con=mysql_conn)
