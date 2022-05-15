@@ -5,3 +5,5 @@ gamePk INTEGER,
 officialId INTEGER,
 position TEXT
 );
+
+CREATE INDEX gamePk_game_officials ON game_officials(gamePk);

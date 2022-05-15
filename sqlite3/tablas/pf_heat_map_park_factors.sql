@@ -50,3 +50,9 @@ HM4_RF2_H_SA INTEGER,
 HM8_LF1_HR_SA INTEGER,
 HM8_LF
 );
+
+CREATE INDEX groupingDescription_pf_heat_map_park_factors ON pf_heat_map_park_factors(groupingDescription);
+CREATE INDEX groupingId_pf_heat_map_park_factors ON pf_heat_map_park_factors(groupingId);
+CREATE INDEX majorLeagueId_pf_heat_map_park_factors ON pf_heat_map_park_factors(majorLeagueId);
+CREATE INDEX seasonId_pf_heat_map_park_factors ON pf_heat_map_park_factors(seasonId);
+CREATE INDEX venueId_pf_heat_map_park_factors ON pf_heat_map_park_factors(venueId);

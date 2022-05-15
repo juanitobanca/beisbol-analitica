@@ -9,3 +9,5 @@ birthCity TEXT,
 birthStateProvince TEXT,
 birthCountry TEXT
 );
+
+CREATE INDEX officialId_officials ON officials(officialId);

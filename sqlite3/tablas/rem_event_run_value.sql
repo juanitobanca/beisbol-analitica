@@ -15,3 +15,7 @@ groupingDescription TEXT,
 majorLeague TEXT,
 venueName TEXT
 );
+
+CREATE INDEX groupingId_rem_event_run_value ON rem_event_run_value(groupingId);
+CREATE INDEX majorLeagueId_rem_event_run_value ON rem_event_run_value(majorLeagueId);
+CREATE INDEX venueId_rem_event_run_value ON rem_event_run_value(venueId);

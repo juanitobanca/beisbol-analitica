@@ -59,3 +59,4 @@ totalBases INTEGER,
 triples INTEGER,
 unintentionalWalks RE
 );
+

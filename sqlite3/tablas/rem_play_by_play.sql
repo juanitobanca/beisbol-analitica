@@ -39,3 +39,5 @@ battingTeamScoreEndGame INTEGER,
 pitchingTeamScoreEndGame INTEGER,
 isPlateAppearance INTEGER
 );
+
+CREATE INDEX gamePk_atBatIndex_playIndex_rem_play_by_play ON rem_play_by_play(gamePk,atBatIndex,playIndex);

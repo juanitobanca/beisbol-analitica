@@ -12,3 +12,4 @@ typeCode TEXT,
 typeDesc TEXT,
 description TEXT
 );
+

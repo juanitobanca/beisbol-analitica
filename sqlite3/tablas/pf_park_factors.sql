@@ -40,3 +40,9 @@ unintentionalWalksAllowedAway INTEGER,
 flyBallsScoredHome INTEGER,
 flyBallsAllowedHome INT
 );
+
+CREATE INDEX groupingDescription_pf_park_factors ON pf_park_factors(groupingDescription);
+CREATE INDEX groupingId_pf_park_factors ON pf_park_factors(groupingId);
+CREATE INDEX majorLeagueId_pf_park_factors ON pf_park_factors(majorLeagueId);
+CREATE INDEX seasonId_pf_park_factors ON pf_park_factors(seasonId);
+CREATE INDEX venueId_pf_park_factors ON pf_park_factors(venueId);

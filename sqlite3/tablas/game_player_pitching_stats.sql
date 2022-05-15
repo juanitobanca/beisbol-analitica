@@ -50,3 +50,5 @@ unintentionalWalks INTEGER,
 wildPitches INTEGER,
 wins INTEGER
 );
+
+CREATE INDEX gamePk_teamId_playerId_game_player_pitching_stats ON game_player_pitching_stats(gamePk,teamId,playerId);

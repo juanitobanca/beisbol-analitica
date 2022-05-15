@@ -17,3 +17,6 @@ substitutingPlayerId INTEGER,
 substitutingInning INTEGER,
 substitutingOuts INTEGER
 );
+
+CREATE INDEX gamePk_substitutionAtBatIndex_substitutionPlayIndex_defensive_substitutions ON defensive_substitutions(gamePk,substitutionAtBatIndex,substitutionPlayIndex);
+CREATE INDEX gamePk_atBatIndex_playIndex_defensive_substitutions ON defensive_substitutions(gamePk,atBatIndex,playIndex);

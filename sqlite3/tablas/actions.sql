@@ -23,3 +23,4 @@ positionAbbrev TEXT,
 injuryType TEXT,
 description TEXT
 );
+

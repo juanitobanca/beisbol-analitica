@@ -28,3 +28,5 @@ pitches INTEGER,
 HM4 TEXT,
 HM8 TEXT
 );
+
+CREATE INDEX gamePk_atBatIndex_atbats ON atbats(gamePk,atBatIndex);

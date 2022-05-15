@@ -23,3 +23,5 @@ outNumber INTEGER,
 earned INTEGER,
 teamUnearned INTEGER
 );
+
+CREATE INDEX gamePk_atBatIndex_runners ON runners(gamePk,atBatIndex);
