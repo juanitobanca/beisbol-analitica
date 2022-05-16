@@ -16,7 +16,6 @@ sqlite3 baseball.db < ~/Documents/GitHub/beisbol-analitica/mysql_to_sqlite3/ligh
 .read game_player_fielding_stats.sql
 .read game_player_pitching_stats.sql
 .read game_player_positions.sql
-.read game_player_split_stats.sql
 .read games.sql
 .read major_leagues.sql
 .read officials.sql
@@ -45,7 +44,6 @@ sqlite3 baseball.db < ~/Documents/GitHub/beisbol-analitica/mysql_to_sqlite3/ligh
 .import game_player_fielding_stats game_player_fielding_stats
 .import game_player_pitching_stats game_player_pitching_stats
 .import game_player_positions game_player_positions
-.import game_player_split_stats game_player_split_stats
 .import games games
 .import major_leagues major_leagues
 .import officials officials
