@@ -9,10 +9,10 @@ seasonId REAL,
 gameDate TEXT,
 gameType2 TEXT,
 teamType TEXT,
-venueId REAL,
-teamId REAL,
+venueId INTEGER,
+teamId INTEGER,
 positionAbbrev TEXT,
-playerId REAL,
+playerId INTEGER,
 assists INTEGER,
 catcherInterferences INTEGER,
 errors INTEGER,
@@ -31,3 +31,9 @@ teamName TEXT,
 venueName TEXT
 );
 
+CREATE INDEX groupingId_agg_fielding_stats ON agg_fielding_stats(groupingId);
+CREATE INDEX majorLeagueId_agg_fielding_stats ON agg_fielding_stats(majorLeagueId);
+CREATE INDEX playerId_agg_fielding_stats ON agg_fielding_stats(playerId);
+CREATE INDEX seasonId_agg_fielding_stats ON agg_fielding_stats(seasonId);
+CREATE INDEX teamId_agg_fielding_stats ON agg_fielding_stats(teamId);
+CREATE INDEX venueId_agg_fielding_stats ON agg_fielding_stats(venueId);
