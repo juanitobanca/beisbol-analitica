@@ -32,7 +32,15 @@ WITH d AS (
 )
 SELECT
   tbl_name,
-  'WHERE 1=1' filter
+  CASE
+    WHEN gamePk > 0
+      THEN 'WHERE gamePk IN ( SELECT gamePk from games WHERE majorLeague NOT IN ( "MLB", "DSL" ) )'
+    WHEN majorLeagueId > 0 AND seasonId = 0
+      THEN 'WHERE majorLeagueId IN ( SELECT majorLeagueId FROM major_leagues WHERE majorLeague NOT IN ( "MLB", "DSL") )'
+    WHEN majorLeagueId > 0 AND seasonId > 0
+      THEN 'WHERE majorLeagueId IN ( SELECT majorLeagueId FROM major_leagues WHERE majorLeague NOT IN ( "MLB", "DSL") )'
+    ELSE 'WHERE 1=1'
+  END filter
 FROM d
 ORDER BY
   1
