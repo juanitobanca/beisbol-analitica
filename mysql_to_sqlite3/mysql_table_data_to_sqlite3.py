@@ -61,13 +61,3 @@ for index, row in df.iterrows():
     df.to_csv(f"{output_dir}/{row['tbl_name']}", index=False, header=False, mode ='w')
 
     print(f"Finished processing {row['tbl_name']}.")
-
-
-# CSV Export to sqlite3
-
-print("Table creation commands")
-
-print(".mode csv")
-
-for index, row in df.iterrows():
-    print(f".import {row['tbl_name']} {row['tbl_name']}")

@@ -1,7 +1,7 @@
 /*
 Run from shell: 
 sqlite3 baseball.db
-sqlite3 baseball.db < sqlite3_database_creation.sql
+sqlite3 baseball.db < ~/Documents/GitHub/beisbol-analitica/mysql_to_sqlite3/sqlite3_database_creation.sql
 */
 
 .read actions.sql
