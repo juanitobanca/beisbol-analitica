@@ -1,0 +1,62 @@
+/*
+Run from shell:
+sqlite3 baseball.db
+sqlite3 baseball.db < ~/Documents/GitHub/beisbol-analitica/mysql_to_sqlite3/sqlite3_database_creation.sql
+*/
+
+.read actions.sql
+.read atbats.sql
+.read defensive_substitutions.sql
+.read fielding_credits.sql
+.read game_battery_fielding_stats.sql
+.read game_batting_orders.sql
+.read game_officials.sql
+.read game_player_batting_stats.sql
+.read game_player_fielding_outs.sql
+.read game_player_fielding_stats.sql
+.read game_player_pitching_stats.sql
+.read game_player_positions.sql
+.read game_player_split_stats.sql
+.read games.sql
+.read major_leagues.sql
+.read officials.sql
+.read pf_park_factors.sql
+.read pickoffs.sql
+.read pitches.sql
+.read players.sql
+.read rem_event_run_value.sql
+.read rem_play_by_play.sql
+.read rem_run_expectancy_matrix.sql
+.read runners.sql
+.read transactions.sql
+.read we_win_expectancy.sql
+.read we_win_probability_added.sql
+
+.mode csv
+.import actions actions
+.import atbats atbats
+.import defensive_substitutions defensive_substitutions
+.import fielding_credits fielding_credits
+.import game_battery_fielding_stats game_battery_fielding_stats
+.import game_batting_orders game_batting_orders
+.import game_officials game_officials
+.import game_player_batting_stats game_player_batting_stats
+.import game_player_fielding_outs game_player_fielding_outs
+.import game_player_fielding_stats game_player_fielding_stats
+.import game_player_pitching_stats game_player_pitching_stats
+.import game_player_positions game_player_positions
+.import game_player_split_stats game_player_split_stats
+.import games games
+.import major_leagues major_leagues
+.import officials officials
+.import pf_park_factors pf_park_factors
+.import pickoffs pickoffs
+.import pitches pitches
+.import players players
+.import rem_event_run_value rem_event_run_value
+.import rem_play_by_play rem_play_by_play
+.import rem_run_expectancy_matrix rem_run_expectancy_matrix
+.import runners runners
+.import transactions transactions
+.import we_win_expectancy we_win_expectancy
+.import we_win_probability_added we_win_probability_added

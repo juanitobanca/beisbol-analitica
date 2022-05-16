@@ -3,7 +3,7 @@ import pandas as pd
 
 
 # Output Directory Specs
-output_dir = "/Users/andresalvarado/Desktop/dump/"
+output_dir = "/Users/andresalvarado/Desktop/dump2/"
 
 # Connection Specs.
 mysql_conn_string = (
@@ -32,15 +32,7 @@ WITH d AS (
 )
 SELECT
   tbl_name,
-  CASE
-    WHEN gamePk > 0
-      THEN 'WHERE gamePk IN ( SELECT gamePk from games WHERE majorLeague NOT IN ( "MLB", "DSL" ) AND seasonId > 2010 )'
-    WHEN majorLeagueId > 0 AND seasonId = 0
-      THEN 'WHERE majorLeagueId IN ( SELECT majorLeagueId FROM major_leagues WHERE majorLeague NOT IN ( "MLB", "DSL") )'
-    WHEN majorLeagueId > 0 AND seasonId > 0
-      THEN 'WHERE majorLeagueId IN ( SELECT majorLeagueId FROM major_leagues WHERE majorLeague NOT IN ( "MLB", "DSL") ) And seasonId > 2010'
-    ELSE 'WHERE 1=1'
-  END filter
+  'WHERE 1=1' filter
 FROM d
 ORDER BY
   1
