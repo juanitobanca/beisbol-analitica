@@ -1,10 +1,16 @@
 /*
-Run from shell: 
+Run from shell:
 sqlite3 baseball.db
 sqlite3 baseball.db < ~/Documents/GitHub/beisbol-analitica/mysql_to_sqlite3/sqlite3_database_creation.sql
 */
 
 .read actions.sql
+.read agg_batting_balls_in_play_heatmaps.sql
+.read agg_batting_stats.sql
+.read agg_fielding_stats.sql
+.read agg_pitching_balls_in_play_heatmaps.sql
+.read agg_pitching_stats.sql
+.read agg_team_performance_stats.sql
 .read atbats.sql
 .read defensive_substitutions.sql
 .read fielding_credits.sql
@@ -30,10 +36,19 @@ sqlite3 baseball.db < ~/Documents/GitHub/beisbol-analitica/mysql_to_sqlite3/sqli
 .read rem_play_by_play.sql
 .read rem_run_expectancy_matrix.sql
 .read runners.sql
+.read teams.sql
 .read transactions.sql
+.read we_win_expectancy.sql
+.read we_win_probability_added.sql
 
 .mode csv
 .import actions actions
+.import agg_batting_balls_in_play_heatmaps agg_batting_balls_in_play_heatmaps
+.import agg_batting_stats agg_batting_stats
+.import agg_fielding_stats agg_fielding_stats
+.import agg_pitching_balls_in_play_heatmaps agg_pitching_balls_in_play_heatmaps
+.import agg_pitching_stats agg_pitching_stats
+.import agg_team_performance_stats agg_team_performance_stats
 .import atbats atbats
 .import defensive_substitutions defensive_substitutions
 .import fielding_credits fielding_credits
@@ -59,6 +74,7 @@ sqlite3 baseball.db < ~/Documents/GitHub/beisbol-analitica/mysql_to_sqlite3/sqli
 .import rem_play_by_play rem_play_by_play
 .import rem_run_expectancy_matrix rem_run_expectancy_matrix
 .import runners runners
+.import teams teams
 .import transactions transactions
 .import we_win_expectancy we_win_expectancy
 .import we_win_probability_added we_win_probability_added
