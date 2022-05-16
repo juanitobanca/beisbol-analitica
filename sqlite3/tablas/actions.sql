@@ -24,3 +24,4 @@ injuryType TEXT,
 description TEXT
 );
 
+CREATE INDEX gamePk_atBatIndex_actions ON actions(gamePk,atBatIndex);

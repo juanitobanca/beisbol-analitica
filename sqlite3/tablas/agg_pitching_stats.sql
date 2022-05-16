@@ -182,15 +182,11 @@ opposingTeamName TEXT
 );
 
 CREATE INDEX groupingDescription_agg_pitching_stats ON agg_pitching_stats(groupingDescription);
-CREATE INDEX groupingDescription_agg_pitching_stats ON agg_pitching_stats(groupingDescription);
 CREATE INDEX groupingId_agg_pitching_stats ON agg_pitching_stats(groupingId);
-CREATE INDEX groupingId_agg_pitching_stats ON agg_pitching_stats(groupingId);
-CREATE INDEX majorLeagueId_agg_pitching_stats ON agg_pitching_stats(majorLeagueId);
 CREATE INDEX majorLeagueId_agg_pitching_stats ON agg_pitching_stats(majorLeagueId);
 CREATE INDEX officialId_agg_pitching_stats ON agg_pitching_stats(officialId);
 CREATE INDEX opposingTeamId_agg_pitching_stats ON agg_pitching_stats(opposingTeamId);
 CREATE INDEX playerId_agg_pitching_stats ON agg_pitching_stats(playerId);
-CREATE INDEX playerId_agg_pitching_stats ON agg_pitching_stats(playerId);
 CREATE INDEX seasonId_agg_pitching_stats ON agg_pitching_stats(seasonId);
-CREATE INDEX seasonId_agg_pitching_stats ON agg_pitching_stats(seasonId);
-CREATE INDEX teamId_agg_pitching_stats ON agg_pi
+CREATE INDEX teamId_agg_pitching_stats ON agg_pitching_stats(teamId);
+CREATE INDEX venueId_agg_pitching_stats ON agg_pitching_stats(venueId);
