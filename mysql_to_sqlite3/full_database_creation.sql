@@ -1,7 +1,7 @@
 /*
 Run from shell:
 sqlite3 baseball.db
-sqlite3 baseball.db < ~/Documents/GitHub/beisbol-analitica/mysql_to_sqlite3/sqlite3_database_creation.sql
+sqlite3 baseball.db < ~/Documents/GitHub/beisbol-analitica/mysql_to_sqlite3/full_database_creation.sql
 */
 
 .read actions.sql
@@ -36,7 +36,6 @@ sqlite3 baseball.db < ~/Documents/GitHub/beisbol-analitica/mysql_to_sqlite3/sqli
 .read rem_play_by_play.sql
 .read rem_run_expectancy_matrix.sql
 .read runners.sql
-.read teams.sql
 .read transactions.sql
 .read we_win_expectancy.sql
 .read we_win_probability_added.sql
@@ -74,7 +73,6 @@ sqlite3 baseball.db < ~/Documents/GitHub/beisbol-analitica/mysql_to_sqlite3/sqli
 .import rem_play_by_play rem_play_by_play
 .import rem_run_expectancy_matrix rem_run_expectancy_matrix
 .import runners runners
-.import teams teams
 .import transactions transactions
 .import we_win_expectancy we_win_expectancy
 .import we_win_probability_added we_win_probability_added
