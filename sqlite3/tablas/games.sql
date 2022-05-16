@@ -41,3 +41,4 @@ wind TEXT,
 attendance REAL
 );
 
+CREATE INDEX gamePk_games ON games(gamePk);
