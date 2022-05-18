@@ -26,21 +26,12 @@ WITH d AS (
   FROM information_schema.columns
   WHERE
     table_schema = 'baseball'
-    AND Instr(table_name, 'agg') = 0
   GROUP BY
     1
 )
 SELECT
   tbl_name,
-  CASE
-    WHEN gamePk > 0
-      THEN 'WHERE gamePk IN ( SELECT gamePk from games WHERE majorLeague NOT IN ( "MLB", "DSL" ) )'
-    WHEN majorLeagueId > 0 AND seasonId = 0
-      THEN 'WHERE majorLeagueId IN ( SELECT majorLeagueId FROM major_leagues WHERE majorLeague NOT IN ( "MLB", "DSL") )'
-    WHEN majorLeagueId > 0 AND seasonId > 0
-      THEN 'WHERE majorLeagueId IN ( SELECT majorLeagueId FROM major_leagues WHERE majorLeague NOT IN ( "MLB", "DSL") )'
-    ELSE 'WHERE 1=1'
-  END filter
+  'WHERE 1=1' filter
 FROM d
 ORDER BY
   1
