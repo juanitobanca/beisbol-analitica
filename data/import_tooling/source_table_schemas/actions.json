@@ -1,0 +1,86 @@
+{
+    "gamePk": {
+        "type": "INTEGER",
+        "path": "data['gamePk']"
+    },
+    "inning": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['about']['inning']"
+    },
+    "halfInning": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['about']['halfInning']"
+    },
+    "pitchingTeamId": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "battingTeamId": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "atBatIndex": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['about']['atBatIndex']"
+    },
+    "playIndex": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "playerId": {
+        "type": "REAL",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['matchup']['batter']['id']"
+    },
+    "endOuts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['count']['outs']"
+    },
+    "endBalls": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['count']['balls']"
+    },
+    "endStrikes": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['count']['strikes']"
+    },
+    "hasReview": {
+        "type": "INTEGER",
+        "path": "int(data['liveData']['plays']['allPlays'][action_id]['about']['hasReview'])"
+    },
+    "isScoringPlay": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['about']['isScoringPlay']"
+    },
+    "awayScore": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['result']['awayScore']"
+    },
+    "homeScore": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['result']['homeScore']"
+    },
+    "event": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['result']['event']"
+    },
+    "eventType": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['result']['eventType']"
+    },
+    "battingOrder": {
+        "type": "REAL",
+        "path": ""
+    },
+    "positionAbbrev": {
+        "type": "TEXT",
+        "path": ""
+    },
+    "injuryType": {
+        "type": "TEXT",
+        "path": ""
+    },
+    "description": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['result']['description']"
+    }
+}

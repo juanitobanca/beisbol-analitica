@@ -1,0 +1,106 @@
+{
+    "gamePk": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "inning": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "halfInning": {
+        "type": "TEXT",
+        "path": ""
+    },
+    "atBatIndex": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "battingTeamId": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "pitchingTeamId": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "endOuts": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "endBalls": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "endStrikes": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "batterId": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "pitcherId": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "hasOut": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "hasReview": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "isScoringPlay": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "rbi": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "awayScore": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "homeScore": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "event": {
+        "type": "TEXT",
+        "path": ""
+    },
+    "eventType": {
+        "type": "TEXT",
+        "path": ""
+    },
+    "batSide": {
+        "type": "TEXT",
+        "path": ""
+    },
+    "pitchHand": {
+        "type": "TEXT",
+        "path": ""
+    },
+    "menOnBase": {
+        "type": "TEXT",
+        "path": ""
+    },
+    "description": {
+        "type": "TEXT",
+        "path": ""
+    },
+    "pitches": {
+        "type": "INTEGER",
+        "path": ""
+    },
+    "HM4": {
+        "type": "TEXT",
+        "path": ""
+    },
+    "HM8": {
+        "type": "TEXT",
+        "path": ""
+    }
+}
