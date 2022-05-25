@@ -75,10 +75,6 @@
         "type": "TEXT",
         "path": "data['gameData']['players']['ID'+str(data['liveData']['plays']['allPlays'][action_id]['matchup']['batter']['id'])]['primaryPosition']['name']"
     },
-    "injuryType": {
-        "type": "TEXT",
-        "path": ""
-    },
     "description": {
         "type": "TEXT",
         "path": "data['liveData']['plays']['allPlays'][action_id]['result']['description']"

@@ -1,8 +1,9 @@
+from calendar import c
 import os
 import requests
 from pprint import pformat, pprint
 import json
-
+import sqlite3
 
 
 def fetch_gamePks_for_date_range(start_date="04/01/2022", end_date="05/01/2022", leagues=["MLB",], teams=[None,]):
@@ -62,26 +63,80 @@ def parse_game_data(gamePk_file, schema_file):
     :param schema_file: The path to file containing table schema
     :type schema_file: Str
     """
-    data = {}
-    schema = {}
+    parsed_data = {}
     with open(gamePk_file, "r") as game_data:
         data = json.load(game_data)
     with open(schema_file, "r") as schema_info:
         schema = json.load(schema_info)
     num_actions = len(data['liveData']['plays']['allPlays'])
+    # print(f"Number of plays: {num_actions}")
     for action_id in range(num_actions):
-        data[action_id] = {}
+        parsed_data[action_id] = {}
         for column in schema.keys():
             game_data_path = schema[column]["path"]
             if game_data_path:
-                data[action_id][column] = eval(game_data_path)
-        pprint(data[action_id])
-    return data
+                try:
+                    parsed_data[action_id][column] = eval(game_data_path)
+                except IndexError:
+                    parsed_data[action_id][column] = "IndexError"
+                    print(f"IndexError with parsed_data[{action_id}][{column}] in {gamePk_file}")
+                except KeyError:
+                    parsed_data[action_id][column] = "KeyError"
+                    print(f"KeyError with parsed_data[{action_id}][{column}] in {gamePk_file}")
+    return parsed_data, schema
 
+def run_query(sql, conn):
+    """
+    Run a query, and return its results.
+
+    :param sql: The query to the execute.
+    :type sql: str
+    :param conn: The connection to the database where query will be executed.
+    :type conn: sqlite3.Connection
+    """
+    print(f"Running SQL:\n{sql}")
+    with conn:
+        cursor = conn.execute(sql)
+        return cursor.fetchall()
+
+def create_table(conn, table_name, table_schema):
+    """
+    Create a table, if it doesn't already exist.
+
+    :param conn: A connection to a database, for executing queries.
+    :type conn: sqlite3.Connection
+    """
+    sql = f"CREATE TABLE IF NOT EXISTS {table_name} ("
+    for column_name, column_details in table_schema.items():
+        column_type = column_details["type"]
+        sql += f"\r\n\t{column_name} {column_type},"
+    # remove last comma and add closing parenthesis
+    sql = sql[:-1] + "\r\n);"
+    print(f"Creating table {table_name}")
+    results = run_query(sql, conn)
+    return results
+
+def copy_into_table(conn, data, table_name, table_schema):
+    """
+    Add new rows to this table.
+
+    :param conn: A connection to a database, for executing queries.
+    :type conn: sqlite3.Connection
+    :param data: Rows being added to this table.
+    :type data: List[Tup]
+    """
+    column_count = len(table_schema.keys())
+    entry = "?," * (column_count - 1) + "?"
+    sql = f"INSERT INTO {table_name} VALUES ({entry})"
+    # print(f"Adding new rows to table {table_name}")
+    # print(sql)
+    with conn: 
+        cursor = conn.executemany(sql, data)
+        return cursor.fetchall()
 # ---------------------------------------------------------------------------------------
 # 1. Get all gamePks for a given daterange
 # ---------------------------------------------------------------------------------------
-gamePks = fetch_gamePks_for_date_range(start_date="04/01/2022", end_date="04/08/2022")
+gamePks = fetch_gamePks_for_date_range(start_date="04/01/2022", end_date="04/02/2022")
 # print(gamePks)
 # ---------------------------------------------------------------------------------------
 # # 2. Download gameday data for each gamePk
@@ -91,15 +146,37 @@ for gamePk in gamePks:
     gamePk_filepath = os.path.join(os.getcwd(), gamePk_file)
     download_game_data(gamePk=gamePk, local_filepath=gamePk_filepath)
 # ---------------------------------------------------------------------------------------
-# 3. Parse gameday data into DataFrames (to match ERD diagram's schemas)
+# 3-5. Parse, Format, and Load data to Sqlite DB
 # ---------------------------------------------------------------------------------------
+conn = sqlite3.connect("my_local.db")
 for gamePk in gamePks:
     gamePk_file = f"data/import_tooling/source_data/game_{gamePk}.json"
     schema_path = "data/import_tooling/source_table_schemas"
     for schema in os.listdir(schema_path):
+        table_name = schema[:-5]
         schema_file = os.path.join(schema_path, schema)
-        data = parse_game_data(gamePk_file=gamePk_file, schema_file=schema_file)
-    break
+        # -------------------------------------------------------------------------------
+        # 3. Parse gameday data into DataFrames (to match ERD diagram's schemas)
+        # -------------------------------------------------------------------------------
+        data, table_schema = parse_game_data(gamePk_file=gamePk_file, schema_file=schema_file)
+        # print(data)
+        # -------------------------------------------------------------------------------
+        # 4. Create each table using ERD schemas
+        # -------------------------------------------------------------------------------
+        if gamePk == gamePks[0]:
+            create_table(conn=conn, table_name=table_name, table_schema=table_schema)
+        # -------------------------------------------------------------------------------
+        # 5. Load each of the Dataframes into a SQLite Database
+        # -------------------------------------------------------------------------------
+        formatted_data = [tuple(row.values()) for row in data.values()]
+        copy_into_table(conn=conn, data=formatted_data, table_name=table_name, table_schema=table_schema)
+
+
 # ---------------------------------------------------------------------------------------
-# 3. Load each of the Dataframes into a SQLite Database
+# 6. Preview data in SQLite Table
 # ---------------------------------------------------------------------------------------
+
+sql = f"SELECT * FROM actions LIMIT 10;"
+results = run_query(sql, conn)
+for result in results:
+    print(result)

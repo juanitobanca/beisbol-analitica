@@ -1,2 +1,3 @@
 # Ignore local files
 data/import_tooling/source_data/
+my_local.db
