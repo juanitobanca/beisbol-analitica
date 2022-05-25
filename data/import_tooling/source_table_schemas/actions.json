@@ -13,11 +13,11 @@
     },
     "pitchingTeamId": {
         "type": "INTEGER",
-        "path": ""
+        "path": "data['gameData']['teams']['home']['id'] if data['liveData']['plays']['allPlays'][action_id]['about']['halfInning'] == 'top' else data['gameData']['teams']['away']['id']"
     },
     "battingTeamId": {
         "type": "INTEGER",
-        "path": ""
+        "path": "data['gameData']['teams']['away']['id'] if data['liveData']['plays']['allPlays'][action_id]['about']['halfInning'] == 'top' else data['gameData']['teams']['home']['id']"
     },
     "atBatIndex": {
         "type": "INTEGER",
@@ -25,7 +25,7 @@
     },
     "playIndex": {
         "type": "INTEGER",
-        "path": ""
+        "path": "data['liveData']['plays']['allPlays'][action_id]['runners'][0]['details']['playIndex']"
     },
     "playerId": {
         "type": "REAL",
@@ -69,11 +69,11 @@
     },
     "battingOrder": {
         "type": "REAL",
-        "path": ""
+        "path": "data['liveData']['boxscore']['teams']['away' if data['liveData']['plays']['allPlays'][action_id]['about']['halfInning'] == 'top' else 'home']['batters'].index(data['liveData']['plays']['allPlays'][action_id]['matchup']['batter']['id'])"
     },
     "positionAbbrev": {
         "type": "TEXT",
-        "path": ""
+        "path": "data['gameData']['players']['ID'+str(data['liveData']['plays']['allPlays'][action_id]['matchup']['batter']['id'])]['primaryPosition']['name']"
     },
     "injuryType": {
         "type": "TEXT",
