@@ -141,7 +141,7 @@
     },
     "weather": {
         "type": "TEXT",
-        "path": "data['gameData']['weather']['temp'] + ' ' + data['gameData']['weather']['condition']"
+        "path": "data['gameData']['weather']['temp'] + ' degrees, ' + data['gameData']['weather']['condition'] + '.'"
     },
     "wind": {
         "type": "TEXT",
