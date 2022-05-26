@@ -132,11 +132,76 @@ def copy_into_table(conn, data, table_name, table_schema):
     with conn: 
         cursor = conn.executemany(sql, data)
         return cursor.fetchall()
+
+game_type_mapping = [
+    {
+        "id" : "S",
+        "description" : "Spring Training"
+    },
+    {
+        "id" : "R",
+        "description" : "Regular Season"
+    },
+    {
+        "id" : "F",
+        "description" : "Wild Card Game"
+    },
+    {
+        "id" : "D",
+        "description" : "Division Series"
+    },
+    {
+        "id" : "L",
+        "description" : "League Championship Series"
+    },
+    {
+        "id" : "W",
+        "description" : "World Series"
+    },
+    {
+        "id" : "C",
+        "description" : "Championship"
+    },
+    {
+        "id" : "N",
+        "description" : "Nineteenth Century Series"
+    },
+    {
+        "id" : "P",
+        "description" : "Playoffs"
+    },
+    {
+        "id" : "A",
+        "description" : "All-Star Game"
+    },
+    {
+        "id" : "I",
+        "description" : "Intrasquad"
+    },
+    {
+        "id" : "E",
+        "description" : "Exhibition"
+    } 
+]
+
+def get_game_description(id, description_mapping=game_type_mapping):
+    """
+    Return the longer game description, given shorter description.
+
+
+    :param id: The shortened representation of game description
+    :type id: Str
+    :param description_mapping: The lengthy representation of game description
+    :type description_mapping: List[Dict[str,str]]
+    """
+    return [type["description"] for type in description_mapping if type['id'] == id][0]
+
+
 # ---------------------------------------------------------------------------------------
 # 1. Get all gamePks for a given daterange
 # ---------------------------------------------------------------------------------------
-gamePks = fetch_gamePks_for_date_range(start_date="04/01/2022", end_date="04/02/2022")
-# print(gamePks)
+gamePks = fetch_gamePks_for_date_range(start_date="05/01/2022", end_date="05/02/2022")
+print(gamePks)
 # ---------------------------------------------------------------------------------------
 # # 2. Download gameday data for each gamePk
 # ---------------------------------------------------------------------------------------
@@ -148,9 +213,9 @@ for gamePk in gamePks:
 # 3-5. Parse, Format, and Load data to Sqlite DB
 # ---------------------------------------------------------------------------------------
 conn = sqlite3.connect("my_local.db")
+schema_path = "data/import_tooling/source_table_schemas"
 for gamePk in gamePks:
     gamePk_file = f"data/import_tooling/source_data/game_{gamePk}.json"
-    schema_path = "data/import_tooling/source_table_schemas"
     for schema in os.listdir(schema_path):
         table_name = schema[:-5]
         schema_file = os.path.join(schema_path, schema)
@@ -169,13 +234,13 @@ for gamePk in gamePks:
         # -------------------------------------------------------------------------------
         formatted_data = [tuple(row.values()) for row in data.values()]
         copy_into_table(conn=conn, data=formatted_data, table_name=table_name, table_schema=table_schema)
-
-
 # ---------------------------------------------------------------------------------------
 # 6. Preview data in SQLite Table
 # ---------------------------------------------------------------------------------------
-
-sql = f"SELECT * FROM actions LIMIT 10;"
-results = run_query(sql, conn)
-for result in results:
-    print(result)
+for schema in os.listdir(schema_path):
+    table_name = schema[:-5]
+    sql = f"SELECT * FROM {table_name} LIMIT 10;"
+    results = run_query(sql, conn)
+    for result in results:
+        print(result)
+    print(("~~~~~~~"*20 + "\n") *3)

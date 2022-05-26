@@ -1,0 +1,98 @@
+{
+    "gamePk": {
+        "type": "INTEGER",
+        "path": "data['gamePk']"
+    },
+    "inning": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['about']['inning']"
+    },
+    "halfInning": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['about']['halfInning']"
+    },
+    "atBatIndex": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['about']['atBatIndex']"
+    },
+    "battingTeamId": {
+        "type": "INTEGER",
+        "path": "data['gameData']['teams']['away']['id'] if data['liveData']['plays']['allPlays'][action_id]['about']['halfInning'] == 'top' else data['gameData']['teams']['home']['id']"
+    },
+    "pitchingTeamId": {
+        "type": "INTEGER",
+        "path": "data['gameData']['teams']['home']['id'] if data['liveData']['plays']['allPlays'][action_id]['about']['halfInning'] == 'top' else data['gameData']['teams']['away']['id']"
+    },
+    "endOuts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['count']['outs']"
+    },
+    "endBalls": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['count']['balls']"
+    },
+    "endStrikes": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['count']['strikes']"
+    },
+    "batterId": {
+        "type": "INTEGER",
+        "path": "int(data['liveData']['plays']['allPlays'][action_id]['matchup']['batter']['id'])"
+    },
+    "pitcherId": {
+        "type": "INTEGER",
+        "path": "int(data['liveData']['plays']['allPlays'][action_id]['matchup']['pitcher']['id'])"
+    },
+    "hasOut": {
+        "type": "INTEGER",
+        "path": "int(data['liveData']['plays']['allPlays'][action_id]['about']['hasOut'])"
+    },
+    "hasReview": {
+        "type": "INTEGER",
+        "path": "int(data['liveData']['plays']['allPlays'][action_id]['about']['hasReview'])"
+    },
+    "isScoringPlay": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['about']['isScoringPlay']"
+    },
+    "rbi": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['result']['rbi']"
+    },
+    "awayScore": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['result']['awayScore']"
+    },
+    "homeScore": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['result']['homeScore']"
+    },
+    "event": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['result']['event']"
+    },
+    "eventType": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['result']['eventType']"
+    },
+    "batSide": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['matchup']['batSide']['description']"
+    },
+    "pitchHand": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['matchup']['pitchHand']['description']"
+    },
+    "menOnBase": {
+        "type": "TEXT",
+        "path": "len(data['liveData']['plays']['allPlays'][action_id]['runners'])-1"
+    },
+    "description": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][action_id]['result']['description']"
+    },
+    "pitches": {
+        "type": "INTEGER",
+        "path": "len(data['liveData']['plays']['allPlays'][action_id]['pitchIndex'])"
+    }
+}

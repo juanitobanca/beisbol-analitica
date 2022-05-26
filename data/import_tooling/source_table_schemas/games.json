@@ -1,0 +1,154 @@
+{
+    "gamePk": {
+        "type": "INTEGER",
+        "path": "data['gamePk']"
+    },
+    "gameType": {
+        "type": "TEXT",
+        "path": "data['gameData']['game']['type']"
+    },
+    "gameType2": {
+        "type": "TEXT",
+        "path": "data['gameData']['game']['gamedayType']"
+    },
+    "seasonId": {
+        "type": "REAL",
+        "path": "data['gameData']['game']['season']"
+    },
+    "gameDate": {
+        "type": "TEXT",
+        "path": "data['gameData']['datetime']['officialDate']"
+    },
+    "isTie": {
+        "type": "REAL",
+        "path": "data['gameData']['game']['tiebreaker']"
+    },
+    "gameNumber": {
+        "type": "INTEGER",
+        "path": "data['gameData']['game']['gameNumber']"
+    },
+    "majorLeague": {
+        "type": "TEXT",
+        "path": "data['gameData']['teams']['away']['sport']['name']"
+    },
+    "majorLeagueId": {
+        "type": "INTEGER",
+        "path": "data['gameData']['teams']['away']['sport']['id']"
+    },
+    "doubleHeader": {
+        "type": "TEXT",
+        "path": "data['gameData']['game']['doubleHeader']"
+    },
+    "dayNight": {
+        "type": "TEXT",
+        "path": "data['gameData']['datetime']['dayNight']"
+    },
+    "scheduledInnings": {
+        "type": "INTEGER",
+        "path": "data['liveData']['linescore']['scheduledInnings']"
+    },
+    "gamesInSeries": {
+        "type": "REAL",
+        "path": "data['gameData']['game']['gameNumber']"
+    },
+    "seriesDescription": {
+        "type": "TEXT",
+        "path": "get_game_description(id=data['gameData']['game']['type'])"
+    },
+    "ifNecessaryDescription": {
+        "type": "TEXT",
+        "path": "'Normal Game'"
+    },
+    "gameId": {
+        "type": "TEXT",
+        "path": "data['gameData']['game']['id']"
+    },
+    "abstractGameState": {
+        "type": "TEXT",
+        "path": "data['gameData']['status']['abstractGameState']"
+    },
+    "codedGameState": {
+        "type": "TEXT",
+        "path": "data['gameData']['status']['codedGameState']"
+    },
+    "detailedState": {
+        "type": "TEXT",
+        "path": "data['gameData']['status']['detailedState']"
+    },
+    "awayWins": {
+        "type": "INTEGER",
+        "path": "data['gameData']['teams']['away']['record']['wins']"
+    },
+    "awayLosses": {
+        "type": "INTEGER",
+        "path": "data['gameData']['teams']['away']['record']['losses']"
+    },
+    "awayPct": {
+        "type": "REAL",
+        "path": "data['gameData']['teams']['away']['record']['winningPercentage']"
+    },
+    "awayScore": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['away']['teamStats']['batting']['runs']"
+    },
+    "awayTeamId": {
+        "type": "INTEGER",
+        "path": "data['gameData']['teams']['away']['id']"
+    },
+    "awayIsWinner": {
+        "type": "REAL",
+        "path": "1 if data['liveData']['boxscore']['teams']['away']['teamStats']['batting']['runs'] > data['liveData']['boxscore']['teams']['home']['teamStats']['batting']['runs'] else 0"
+    },
+    "homeWins": {
+        "type": "INTEGER",
+        "path": "data['gameData']['teams']['home']['record']['wins']"
+    },
+    "homeLosses": {
+        "type": "INTEGER",
+        "path": "data['gameData']['teams']['home']['record']['losses']"
+    },
+    "homePct": {
+        "type": "REAL",
+        "path": "data['gameData']['teams']['home']['record']['winningPercentage']"
+    },
+    "homeScore": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['teamStats']['batting']['runs']"
+    },
+    "homeTeamId": {
+        "type": "INTEGER",
+        "path": "data['gameData']['teams']['home']['id']"
+    },
+    "homeIsWinner": {
+        "type": "REAL",
+        "path": "1 if data['liveData']['boxscore']['teams']['home']['teamStats']['batting']['runs'] > data['liveData']['boxscore']['teams']['away']['teamStats']['batting']['runs'] else 0"
+    },
+    "venueId": {
+        "type": "INTEGER",
+        "path": "data['gameData']['venue']['id']"
+    },
+    "homeTeamName": {
+        "type": "TEXT",
+        "path": "data['gameData']['teams']['home']['name']"
+    },
+    "awayTeamName": {
+        "type": "TEXT",
+        "path": "data['gameData']['teams']['away']['name']"
+    },
+    "venueName": {
+        "type": "TEXT",
+        "path": "data['gameData']['venue']['name']"
+    },
+    "weather": {
+        "type": "TEXT",
+        "path": "data['gameData']['weather']['temp'] + ' ' + data['gameData']['weather']['condition']"
+    },
+    "wind": {
+        "type": "TEXT",
+        "path": "data['gameData']['weather']['wind']"
+    },
+    "attendance": {
+        "type": "REAL",
+        "path": "data['gameData']['gameInfo']['attendance']"
+    }
+}
