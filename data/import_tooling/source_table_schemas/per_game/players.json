@@ -1,0 +1,54 @@
+{
+    "playerId": {
+        "type": "INTEGER",
+        "path": "data['gameData']['players'][player_id]['id']"
+    },
+    "firstName": {
+        "type": "TEXT",
+        "path": "data['gameData']['players'][player_id]['firstName']"
+    },
+    "lastName": {
+        "type": "TEXT",
+        "path": "data['gameData']['players'][player_id]['lastName']"
+    },
+    "fullName": {
+        "type": "TEXT",
+        "path": "data['gameData']['players'][player_id]['fullName']"
+    },
+    "birthDate": {
+        "type": "TEXT",
+        "path": "data['gameData']['players'][player_id]['birthDate']"
+    },
+    "birthCity": {
+        "type": "TEXT",
+        "path": "data['gameData']['players'][player_id].get('birthCity', 'Not Available.')"
+    },
+    "birthStateProvince": {
+        "type": "TEXT",
+        "path": "data['gameData']['players'][player_id].get('birthStateProvince', 'Not Available.')"
+    },
+    "birthCountry": {
+        "type": "TEXT",
+        "path": "data['gameData']['players'][player_id]['birthCountry']"
+    },
+    "strikeZoneTop": {
+        "type": "REAL",
+        "path": "data['gameData']['players'][player_id]['strikeZoneTop']"
+    },
+    "strikeZoneBottom": {
+        "type": "REAL",
+        "path": "data['gameData']['players'][player_id]['strikeZoneBottom']"
+    },
+    "positionAbbrev": {
+        "type": "TEXT",
+        "path": "data['gameData']['players'][player_id]['primaryPosition']['abbreviation']"
+    },
+    "batSide": {
+        "type": "TEXT",
+        "path": "data['gameData']['players'][player_id]['batSide']['description']"
+    },
+    "pitchHand": {
+        "type": "TEXT",
+        "path": "data['gameData']['players'][player_id]['pitchHand']['description']"
+    }
+}

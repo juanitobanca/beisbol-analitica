@@ -1,9 +1,8 @@
 import os
 import requests
-from pprint import pformat, pprint
 import json
 import sqlite3
-
+import click
 
 def fetch_gamePks_for_date_range(start_date="04/01/2022", end_date="05/01/2022", leagues=["MLB",], teams=[None,]):
     """
@@ -53,7 +52,14 @@ def download_game_data(gamePk, local_filepath):
     with open(local_filepath, 'w') as file_writer:
         json.dump(game_data_dict, file_writer)
 
-def parse_game_data(gamePk_file, schema_file):
+user_prompt = """
+    > It seems like you already have some of the files.
+
+    > Do you wish to proceed with download?
+    (y/n) -> (download/skip)
+"""
+
+def parse_game_data(gamePk_file, schema_file, schema_type):
     """
     Parses game day data using table schema file.
 
@@ -67,21 +73,54 @@ def parse_game_data(gamePk_file, schema_file):
         data = json.load(game_data)
     with open(schema_file, "r") as schema_info:
         schema = json.load(schema_info)
-    num_actions = len(data['liveData']['plays']['allPlays'])
-    # print(f"Number of plays: {num_actions}")
-    for action_id in range(num_actions):
-        parsed_data[action_id] = {}
-        for column in schema.keys():
-            game_data_path = schema[column]["path"]
-            if game_data_path:
-                try:
-                    parsed_data[action_id][column] = eval(game_data_path)
-                except IndexError:
-                    parsed_data[action_id][column] = "IndexError"
-                    print(f"IndexError with parsed_data[{action_id}][{column}] in {gamePk_file}")
-                except KeyError:
-                    parsed_data[action_id][column] = "KeyError"
-                    print(f"KeyError with parsed_data[{action_id}][{column}] in {gamePk_file}")
+    if schema_type == "per_plate_appearance":
+        num_actions = len(data['liveData']['plays']['allPlays'])
+        # print(f"Number of plays: {num_actions}")
+        for action_id in range(num_actions):
+            parsed_data[action_id] = {}
+            for column in schema.keys():
+                game_data_path = schema[column]["path"]
+                if game_data_path:
+                    try:
+                        parsed_data[action_id][column] = eval(game_data_path)
+                    except IndexError:
+                        parsed_data[action_id][column] = "IndexError"
+                        print(f"IndexError with parsed_data[{action_id}][{column}] in {gamePk_file}")
+                    except KeyError:
+                        parsed_data[action_id][column] = "KeyError"
+                        print(f"KeyError with parsed_data[{action_id}][{column}] in {gamePk_file}")
+    elif schema_type == "per_game":
+        if "player" in schema_file:
+            player_ids = data['gameData']['players'].keys()
+            for player_id in player_ids:
+                parsed_data[player_id] = {}
+                for column in schema.keys():
+                    game_data_path = schema[column]["path"]
+                    if game_data_path:
+                        try:
+                            parsed_data[player_id][column] = eval(game_data_path)
+                        except IndexError:
+                            parsed_data[player_id][column] = "IndexError"
+                            print(f"IndexError with parsed_data[{player_id}][{column}] in {gamePk_file}")
+                        except KeyError:
+                            parsed_data[player_id][column] = "KeyError"
+                            print(f"KeyError with parsed_data[{player_id}][{column}] in {gamePk_file}")
+        else:
+            idx = 0
+            parsed_data[idx] = {}
+            for column in schema.keys():
+                game_data_path = schema[column]["path"]
+                if game_data_path:
+                    try:
+                        parsed_data[idx][column] = eval(game_data_path)
+                    except IndexError:
+                        parsed_data[idx][column] = "IndexError"
+                        print(f"IndexError with parsed_data[{column}] in {gamePk_file}")
+                    except KeyError:
+                        parsed_data[idx][column] = "KeyError"
+                        print(f"KeyError with parsed_data[{column}] in {gamePk_file}")
+    elif schema_type == "per_season":
+        print("still need to implement per season...")
     return parsed_data, schema
 
 def run_query(sql, conn):
@@ -200,47 +239,56 @@ def get_game_description(id, description_mapping=game_type_mapping):
 # ---------------------------------------------------------------------------------------
 # 1. Get all gamePks for a given daterange
 # ---------------------------------------------------------------------------------------
-gamePks = fetch_gamePks_for_date_range(start_date="05/01/2022", end_date="05/02/2022")
+gamePks = fetch_gamePks_for_date_range(start_date="05/01/2022", end_date="05/25/2022")
 print(gamePks)
 # ---------------------------------------------------------------------------------------
 # # 2. Download gameday data for each gamePk
 # ---------------------------------------------------------------------------------------
 for gamePk in gamePks:
     gamePk_file = f"data/import_tooling/source_data/game_{gamePk}.json"
+    if gamePk == gamePks[0]:
+        if os.path.exists(gamePk_file):
+            if not click.confirm(user_prompt, default=True):
+                print(f"Skipping download of {len(gamePks)} files.")
+                break
     gamePk_filepath = os.path.join(os.getcwd(), gamePk_file)
     download_game_data(gamePk=gamePk, local_filepath=gamePk_filepath)
 # ---------------------------------------------------------------------------------------
 # 3-5. Parse, Format, and Load data to Sqlite DB
 # ---------------------------------------------------------------------------------------
 conn = sqlite3.connect("my_local.db")
-schema_path = "data/import_tooling/source_table_schemas"
+schema_types_path = "data/import_tooling/source_table_schemas"
 for gamePk in gamePks:
     gamePk_file = f"data/import_tooling/source_data/game_{gamePk}.json"
-    for schema in os.listdir(schema_path):
-        table_name = schema[:-5]
-        schema_file = os.path.join(schema_path, schema)
-        # -------------------------------------------------------------------------------
-        # 3. Parse gameday data into DataFrames (to match ERD diagram's schemas)
-        # -------------------------------------------------------------------------------
-        data, table_schema = parse_game_data(gamePk_file=gamePk_file, schema_file=schema_file)
-        # print(data)
-        # -------------------------------------------------------------------------------
-        # 4. Create each table using ERD schemas
-        # -------------------------------------------------------------------------------
-        if gamePk == gamePks[0]:
-            create_table(conn=conn, table_name=table_name, table_schema=table_schema)
-        # -------------------------------------------------------------------------------
-        # 5. Load each of the Dataframes into a SQLite Database
-        # -------------------------------------------------------------------------------
-        formatted_data = [tuple(row.values()) for row in data.values()]
-        copy_into_table(conn=conn, data=formatted_data, table_name=table_name, table_schema=table_schema)
+    for schema_type in os.listdir(schema_types_path):
+        schema_path = os.path.join(schema_types_path, schema_type)
+        for schema in os.listdir(schema_path):
+            table_name = schema[:-5]
+            schema_file = os.path.join(schema_path, schema)
+            # -------------------------------------------------------------------------------
+            # 3. Parse gameday data into DataFrames (to match ERD diagram's schemas)
+            # -------------------------------------------------------------------------------
+            data, table_schema = parse_game_data(gamePk_file=gamePk_file, schema_file=schema_file, schema_type=schema_type)
+            # print(data)
+            # -------------------------------------------------------------------------------
+            # 4. Create each table using ERD schemas
+            # -------------------------------------------------------------------------------
+            if gamePk == gamePks[0]:
+                create_table(conn=conn, table_name=table_name, table_schema=table_schema)
+            # -------------------------------------------------------------------------------
+            # 5. Load each of the Dataframes into a SQLite Database
+            # -------------------------------------------------------------------------------
+            formatted_data = [tuple(row.values()) for row in data.values()]
+            copy_into_table(conn=conn, data=formatted_data, table_name=table_name, table_schema=table_schema)
 # ---------------------------------------------------------------------------------------
 # 6. Preview data in SQLite Table
 # ---------------------------------------------------------------------------------------
-for schema in os.listdir(schema_path):
-    table_name = schema[:-5]
-    sql = f"SELECT * FROM {table_name} LIMIT 10;"
-    results = run_query(sql, conn)
-    for result in results:
-        print(result)
-    print(("~~~~~~~"*20 + "\n") *3)
+for schema_type in os.listdir(schema_types_path):
+    schema_path = os.path.join(schema_types_path, schema_type)
+    for schema in os.listdir(schema_path):
+        table_name = schema[:-5]
+        sql = f"SELECT * FROM {table_name} LIMIT 10;"
+        results = run_query(sql, conn)
+        for result in results:
+            print(result)
+        print(("~~~~~~~"*20 + "\n") *3)
