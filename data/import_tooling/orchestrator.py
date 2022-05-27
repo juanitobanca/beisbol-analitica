@@ -59,11 +59,39 @@ user_prompt = """
     (y/n) -> (download/skip)
 """
 
-def parse_game_data(gamePk_file, schema_file, schema_type):
+def parse_game_data(ids, parsed_data, data, schema):
+    """
+    Extracts relevant details from game data, based on schema.
+
+    :param ids: A list of indices to loop over while fetching data for schema
+    :type ids: List[]
+    :param parsed_data: Dict representation of game day data
+    :type parsed_data: Dict[Str, Str]
+    :param data: Dict representation of raw game day data
+    :type data: Dict[Str, Str]
+    :param schema: Dict representation of a table schema
+    :type schema: Dict[Str, Str]
+    """
+    for id in ids:
+        parsed_data[id] = {}
+        for column in schema.keys():
+            game_data_path = schema[column]["path"]
+            if game_data_path:
+                try:
+                    parsed_data[id][column] = eval(game_data_path)
+                except IndexError:
+                    parsed_data[id][column] = "IndexError"
+                    print(f"IndexError with parsed_data[{id}][{column}] in {gamePk_file}")
+                except KeyError:
+                    parsed_data[id][column] = "KeyError"
+                    print(f"KeyError with parsed_data[{id}][{column}] in {gamePk_file}")
+    return parsed_data
+
+def retrieve_game_data(gamePk_file, schema_file, schema_type):
     """
     Parses game day data using table schema file.
 
-    :param gamePk_file: The path to file containng game day data
+    :param gamePk_file: The path to file containing game day data
     :type gamePk_file: Str
     :param schema_file: The path to file containing table schema
     :type schema_file: Str
@@ -74,53 +102,18 @@ def parse_game_data(gamePk_file, schema_file, schema_type):
     with open(schema_file, "r") as schema_info:
         schema = json.load(schema_info)
     if schema_type == "per_plate_appearance":
-        num_actions = len(data['liveData']['plays']['allPlays'])
-        # print(f"Number of plays: {num_actions}")
-        for action_id in range(num_actions):
-            parsed_data[action_id] = {}
-            for column in schema.keys():
-                game_data_path = schema[column]["path"]
-                if game_data_path:
-                    try:
-                        parsed_data[action_id][column] = eval(game_data_path)
-                    except IndexError:
-                        parsed_data[action_id][column] = "IndexError"
-                        print(f"IndexError with parsed_data[{action_id}][{column}] in {gamePk_file}")
-                    except KeyError:
-                        parsed_data[action_id][column] = "KeyError"
-                        print(f"KeyError with parsed_data[{action_id}][{column}] in {gamePk_file}")
+        ids = range(len(data['liveData']['plays']['allPlays']))
     elif schema_type == "per_game":
         if "player" in schema_file:
-            player_ids = data['gameData']['players'].keys()
-            for player_id in player_ids:
-                parsed_data[player_id] = {}
-                for column in schema.keys():
-                    game_data_path = schema[column]["path"]
-                    if game_data_path:
-                        try:
-                            parsed_data[player_id][column] = eval(game_data_path)
-                        except IndexError:
-                            parsed_data[player_id][column] = "IndexError"
-                            print(f"IndexError with parsed_data[{player_id}][{column}] in {gamePk_file}")
-                        except KeyError:
-                            parsed_data[player_id][column] = "KeyError"
-                            print(f"KeyError with parsed_data[{player_id}][{column}] in {gamePk_file}")
+            ids = data['gameData']['players'].keys()
+        elif "official" in schema_file:
+            ids = range(len(data['liveData']['boxscore']['officials']))
         else:
-            idx = 0
-            parsed_data[idx] = {}
-            for column in schema.keys():
-                game_data_path = schema[column]["path"]
-                if game_data_path:
-                    try:
-                        parsed_data[idx][column] = eval(game_data_path)
-                    except IndexError:
-                        parsed_data[idx][column] = "IndexError"
-                        print(f"IndexError with parsed_data[{column}] in {gamePk_file}")
-                    except KeyError:
-                        parsed_data[idx][column] = "KeyError"
-                        print(f"KeyError with parsed_data[{column}] in {gamePk_file}")
+            ids = [0,]
     elif schema_type == "per_season":
         print("still need to implement per season...")
+        return
+    parsed_data = parse_game_data(ids=ids, parsed_data=parsed_data, data=data, schema=schema)
     return parsed_data, schema
 
 def run_query(sql, conn):
@@ -268,7 +261,7 @@ for gamePk in gamePks:
             # -------------------------------------------------------------------------------
             # 3. Parse gameday data into DataFrames (to match ERD diagram's schemas)
             # -------------------------------------------------------------------------------
-            data, table_schema = parse_game_data(gamePk_file=gamePk_file, schema_file=schema_file, schema_type=schema_type)
+            data, table_schema = retrieve_game_data(gamePk_file=gamePk_file, schema_file=schema_file, schema_type=schema_type)
             # print(data)
             # -------------------------------------------------------------------------------
             # 4. Create each table using ERD schemas
