@@ -87,10 +87,10 @@ def parse_game_data(ids, parsed_data, data, schema):
                     print(f"KeyError with parsed_data[{id}][{column}] in {gamePk_file}")
     return parsed_data
 
-def retrieve_game_data(gamePk_file, schema_file, schema_type):
+def transform_file_into_dict(gamePk_file, schema_file, schema_type):
     """
-    Loads files into Dataframes.
-    Calucluates ids based on table schema
+    Loads files into Dataframes and calculates ids based on table schema,
+    then calls parse_game_data to retrieve game data specific to schema.
 
     :param gamePk_file: The path to file containing game day data
     :type gamePk_file: Str
@@ -268,7 +268,7 @@ for gamePk in gamePks:
             # -------------------------------------------------------------------------------
             # 3. Parse gameday data into DataFrames (to match ERD diagram's schemas)
             # -------------------------------------------------------------------------------
-            data, table_schema = retrieve_game_data(gamePk_file=gamePk_file, schema_file=schema_file, schema_type=schema_type)
+            data, table_schema = transform_file_into_dict(gamePk_file=gamePk_file, schema_file=schema_file, schema_type=schema_type)
             # print(data)
             # -------------------------------------------------------------------------------
             # 4. Create each table using ERD schemas
