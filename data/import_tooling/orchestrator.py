@@ -89,12 +89,15 @@ def parse_game_data(ids, parsed_data, data, schema):
 
 def retrieve_game_data(gamePk_file, schema_file, schema_type):
     """
-    Parses game day data using table schema file.
+    Loads files into Dataframes.
+    Calucluates ids based on table schema
 
     :param gamePk_file: The path to file containing game day data
     :type gamePk_file: Str
     :param schema_file: The path to file containing table schema
     :type schema_file: Str
+    :param schema_type: Type of data table (ie. granularity/interval)
+    :type schema_type: Str
     """
     parsed_data = {}
     with open(gamePk_file, "r") as game_data:
@@ -105,14 +108,18 @@ def retrieve_game_data(gamePk_file, schema_file, schema_type):
         ids = range(len(data['liveData']['plays']['allPlays']))
     elif schema_type == "per_game":
         if "player" in schema_file:
-            ids = data['gameData']['players'].keys()
+            if "away" in schema_file:
+                ids = data['liveData']['boxscore']['teams']['away']['players'].keys()
+            elif "home" in schema_file:
+                ids = data['liveData']['boxscore']['teams']['home']['players'].keys()
+            else:
+                ids = data['gameData']['players'].keys()
         elif "official" in schema_file:
             ids = range(len(data['liveData']['boxscore']['officials']))
         else:
-            ids = [0,]
+            ids = [0]
     elif schema_type == "per_season":
-        print("still need to implement per season...")
-        return
+        ids = []
     parsed_data = parse_game_data(ids=ids, parsed_data=parsed_data, data=data, schema=schema)
     return parsed_data, schema
 

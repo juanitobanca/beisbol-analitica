@@ -1,0 +1,22 @@
+{
+    "gamePk": {
+        "type": "INTEGER",
+        "path": "data['gamePk']"
+    },
+    "teamId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['away']['team']['id']"
+    },
+    "teamType": {
+        "type": "TEXT",
+        "path": "data['liveData']['boxscore']['teams']['away']['team']['name']"
+    },
+    "playerId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['away']['players'][id]['person']['id']"
+    },
+    "positionAbbrev": {
+        "type": "TEXT",
+        "path": "data['liveData']['boxscore']['teams']['away']['players'][id]['position']['abbreviation']"
+    }
+}

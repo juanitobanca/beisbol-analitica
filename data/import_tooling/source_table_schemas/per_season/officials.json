@@ -1,15 +1,15 @@
 {
     "officialId": {
         "type": "INTEGER",
-        "path": "data['liveData']['boxscore']['officials'][id]['official']['id']"
+        "path": "'Unknown'"
     },
     "firstName": {
         "type": "TEXT",
-        "path": "data['liveData']['boxscore']['officials'][id]['official']['fullName'].split(' ')[0]"
+        "path": "'Unknown'"
     },
     "lastName": {
         "type": "TEXT",
-        "path": "data['liveData']['boxscore']['officials'][id]['official']['fullName'].split(' ')[1]"
+        "path": "'Unknown'"
     },
     "birthDate": {
         "type": "TEXT",

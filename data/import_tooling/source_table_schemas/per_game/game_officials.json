@@ -1,0 +1,14 @@
+{
+    "gamePk": {
+        "type": "INTEGER",
+        "path": "data['gamePk']"
+    },
+    "officialId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['officials'][id]['official']['id']"
+    },
+    "position": {
+        "type": "TEXT",
+        "path": "data['liveData']['boxscore']['officials'][id]['officialType']"
+    }
+}
