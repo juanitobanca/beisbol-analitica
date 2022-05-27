@@ -1,54 +1,54 @@
 {
     "playerId": {
         "type": "INTEGER",
-        "path": "data['gameData']['players'][player_id]['id']"
+        "path": "data['gameData']['players'][id]['id']"
     },
     "firstName": {
         "type": "TEXT",
-        "path": "data['gameData']['players'][player_id]['firstName']"
+        "path": "data['gameData']['players'][id]['firstName']"
     },
     "lastName": {
         "type": "TEXT",
-        "path": "data['gameData']['players'][player_id]['lastName']"
+        "path": "data['gameData']['players'][id]['lastName']"
     },
     "fullName": {
         "type": "TEXT",
-        "path": "data['gameData']['players'][player_id]['fullName']"
+        "path": "data['gameData']['players'][id]['fullName']"
     },
     "birthDate": {
         "type": "TEXT",
-        "path": "data['gameData']['players'][player_id]['birthDate']"
+        "path": "data['gameData']['players'][id]['birthDate']"
     },
     "birthCity": {
         "type": "TEXT",
-        "path": "data['gameData']['players'][player_id].get('birthCity', 'Not Available.')"
+        "path": "data['gameData']['players'][id].get('birthCity', 'Not Available.')"
     },
     "birthStateProvince": {
         "type": "TEXT",
-        "path": "data['gameData']['players'][player_id].get('birthStateProvince', 'Not Available.')"
+        "path": "data['gameData']['players'][id].get('birthStateProvince', 'Not Available.')"
     },
     "birthCountry": {
         "type": "TEXT",
-        "path": "data['gameData']['players'][player_id]['birthCountry']"
+        "path": "data['gameData']['players'][id]['birthCountry']"
     },
     "strikeZoneTop": {
         "type": "REAL",
-        "path": "data['gameData']['players'][player_id]['strikeZoneTop']"
+        "path": "data['gameData']['players'][id]['strikeZoneTop']"
     },
     "strikeZoneBottom": {
         "type": "REAL",
-        "path": "data['gameData']['players'][player_id]['strikeZoneBottom']"
+        "path": "data['gameData']['players'][id]['strikeZoneBottom']"
     },
     "positionAbbrev": {
         "type": "TEXT",
-        "path": "data['gameData']['players'][player_id]['primaryPosition']['abbreviation']"
+        "path": "data['gameData']['players'][id]['primaryPosition']['abbreviation']"
     },
     "batSide": {
         "type": "TEXT",
-        "path": "data['gameData']['players'][player_id]['batSide']['description']"
+        "path": "data['gameData']['players'][id]['batSide']['description']"
     },
     "pitchHand": {
         "type": "TEXT",
-        "path": "data['gameData']['players'][player_id]['pitchHand']['description']"
+        "path": "data['gameData']['players'][id]['pitchHand']['description']"
     }
 }

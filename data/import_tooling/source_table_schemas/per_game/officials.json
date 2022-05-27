@@ -1,0 +1,30 @@
+{
+    "officialId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['officials'][id]['official']['id']"
+    },
+    "firstName": {
+        "type": "TEXT",
+        "path": "data['liveData']['boxscore']['officials'][id]['official']['fullName'].split(' ')[0]"
+    },
+    "lastName": {
+        "type": "TEXT",
+        "path": "data['liveData']['boxscore']['officials'][id]['official']['fullName'].split(' ')[1]"
+    },
+    "birthDate": {
+        "type": "TEXT",
+        "path": "'Unknown'"
+    },
+    "birthCity": {
+        "type": "TEXT",
+        "path": "'Unknown'"
+    },
+    "birthStateProvince": {
+        "type": "TEXT",
+        "path": "'Unknown'"
+    },
+    "birthCountry": {
+        "type": "TEXT",
+        "path": "'Unknown'"
+    }
+}
