@@ -9,7 +9,7 @@
     },
     "teamType": {
         "type": "TEXT",
-        "path": "data['liveData']['boxscore']['teams']['away']['team']['name']"
+        "path": "'away'"
     },
     "playerId": {
         "type": "INTEGER",

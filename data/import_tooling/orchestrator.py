@@ -110,8 +110,14 @@ def transform_file_into_dict(gamePk_file, schema_file, schema_type):
         if "player" in schema_file:
             if "away" in schema_file:
                 ids = data['liveData']['boxscore']['teams']['away']['players'].keys()
+                for player_position in ["batting", "pitching"]:
+                    if player_position in schema_file:
+                        ids = [id for id in ids if data['liveData']['boxscore']['teams']['away']['players'][id].get('seasonStats', None).get(player_position, None)]
             elif "home" in schema_file:
                 ids = data['liveData']['boxscore']['teams']['home']['players'].keys()
+                for player_position in ["batting", "pitching"]:
+                    if player_position in schema_file:
+                        ids = [id for id in ids if data['liveData']['boxscore']['teams']['home']['players'][id].get('seasonStats', None).get(player_position, None)]
             else:
                 ids = data['gameData']['players'].keys()
         elif "official" in schema_file:
@@ -239,7 +245,7 @@ def get_game_description(id, description_mapping=game_type_mapping):
 # ---------------------------------------------------------------------------------------
 # 1. Get all gamePks for a given daterange
 # ---------------------------------------------------------------------------------------
-gamePks = fetch_gamePks_for_date_range(start_date="05/01/2022", end_date="05/25/2022")
+gamePks = fetch_gamePks_for_date_range(start_date="05/25/2022", end_date="05/25/2022")
 print(gamePks)
 # ---------------------------------------------------------------------------------------
 # # 2. Download gameday data for each gamePk

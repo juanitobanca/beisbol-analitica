@@ -1,0 +1,194 @@
+{
+    "gamePk": {
+        "type": "INTEGER",
+        "path": "data['gamePk']"
+    },
+    "teamId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['team']['id']"
+    },
+    "teamType": {
+        "type": "TEXT",
+        "path": "'home'"
+    },
+    "playerId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['person']['id']"
+    },
+    "airOuts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['airOuts']"
+    },
+    "atBats": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['atBats']"
+    },
+    "balls": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching'].get('balls', 'Not Available.')"
+    },
+    "walks": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching'].get('walks', 'Not Available.')"
+    },
+    "battersFaced": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['battersFaced']"
+    },
+    "blownSaves": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['blownSaves']"
+    },
+    "catchersInterference": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['catchersInterference']"
+    },
+    "caughtStealing": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['caughtStealing']"
+    },
+    "completeGames": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['completeGames']"
+    },
+    "doubles": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['doubles']"
+    },
+    "earnedRuns": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['earnedRuns']"
+    },
+    "gamesFinished": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['gamesFinished']"
+    },
+    "gamesPitched": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['gamesPitched']"
+    },
+    "gamesPlayed": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['gamesPlayed']"
+    },
+    "gamesStarted": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['gamesStarted']"
+    },
+    "groundOuts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['groundOuts']"
+    },
+    "hitBatsmen": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['hitBatsmen']"
+    },
+    "hits": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['hits']"
+    },
+    "holds": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['holds']"
+    },
+    "homeRuns": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['homeRuns']"
+    },
+    "inheritedRunners": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['inheritedRunners']"
+    },
+    "inheritedRunnersScored": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['inheritedRunnersScored']"
+    },
+    "intentionalWalks": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['intentionalWalks']"
+    },
+    "losses": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['losses']"
+    },
+    "numberOfPitches": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['numberOfPitches']"
+    },
+    "outs": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['outs']"
+    },
+    "pickoffs": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['pickoffs']"
+    },
+    "pitchesThrown": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching'].get('pitchesThrown', 'Not Available.')"
+    },
+    "plateAppearances": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching'].get('plateAppearances', 'Not Available.')"
+    },
+    "rbi": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['rbi']"
+    },
+    "runs": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['runs']"
+    },
+    "sacBunts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['sacBunts']"
+    },
+    "sacFlies": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['sacFlies']"
+    },
+    "saveOpportunities": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['saveOpportunities']"
+    },
+    "saves": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['saves']"
+    },
+    "singles": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching'].get('singles', 'Not Available.')"
+    },
+    "shutouts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['shutouts']"
+    },
+    "stolenBases": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['stolenBases']"
+    },
+    "strikeOuts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['strikeOuts']"
+    },
+    "strikes": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['strikes']"
+    },
+    "triples": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['triples']"
+    },
+    "unintentionalWalks": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching'].get('unintentionalWalks', 'Not Available.')"
+    },
+    "wildPitches": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['wildPitches']"
+    },
+    "wins": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['pitching']['wins']"
+    }
+}

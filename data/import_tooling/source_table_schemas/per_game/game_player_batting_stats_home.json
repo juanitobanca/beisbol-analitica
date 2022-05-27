@@ -1,0 +1,122 @@
+{
+    "gamePk": {
+        "type": "INTEGER",
+        "path": "data['gamePk']"
+    },
+    "teamId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['team']['id']"
+    },
+    "teamType": {
+        "type": "TEXT",
+        "path": "'home'"
+    },
+    "playerId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['person']['id']"
+    },
+    "atBats": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['atBats']"
+    },
+    "walks": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting'].get('walks', 'Not Available.')"
+    },
+    "catchersInterference": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['catchersInterference']"
+    },
+    "caughtStealing": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['caughtStealing']"
+    },
+    "doubles": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['doubles']"
+    },
+    "flyOuts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['flyOuts']"
+    },
+    "groundIntoDoublePlay": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['groundIntoDoublePlay']"
+    },
+    "groundIntoTriplePlay": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['groundIntoTriplePlay']"
+    },
+    "groundOuts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['groundOuts']"
+    },
+    "hitByPitch": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['hitByPitch']"
+    },
+    "hits": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['hits']"
+    },
+    "homeRuns": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['homeRuns']"
+    },
+    "intentionalWalks": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['intentionalWalks']"
+    },
+    "leftOnBase": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['leftOnBase']"
+    },
+    "pickoffs": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['pickoffs']"
+    },
+    "plateAppearances": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['plateAppearances']"
+    },
+    "rbi": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['rbi']"
+    },
+    "runs": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['runs']"
+    },
+    "sacBunts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['sacBunts']"
+    },
+    "sacFlies": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['sacFlies']"
+    },
+    "singles": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting'].get('singles', 'Not Available.')"
+    },
+    "stolenBases": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['stolenBases']"
+    },
+    "strikeOuts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['strikeOuts']"
+    },
+    "totalBases": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['totalBases']"
+    },
+    "triples": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting']['triples']"
+    },
+    "unintentionalWalks": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['batting'].get('unintentionalWalks', 'Not Available.')"
+    }
+}
