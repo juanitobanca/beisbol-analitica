@@ -66,10 +66,10 @@ def fetch_input_args():
     )
     parser.add_argument(
         "--lg",
-        help="MLB league names, Format: \"'American League,National League'\")",
+        help="League names, Format: \"'American League,National League'\")",
     )
     parser.add_argument(
-        "--teams", help="MLB team names, Format: \"'BOS Red Sox,MIL Brewers'\")"
+        "--teams", help="Team names, Format: \"'Boston Red Sox,Milwaukee Brewers'\")"
     )
     input_args = parser.parse_args()
     return format_args(input_args=input_args)
