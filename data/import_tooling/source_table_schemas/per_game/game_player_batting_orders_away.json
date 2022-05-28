@@ -1,0 +1,18 @@
+{
+    "gamePk": {
+        "type": "INTEGER",
+        "path": "data['gamePk']"
+    },
+    "teamId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['away']['team']['id']"
+    },
+    "playerId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['away']['players'][id]['person']['id']"
+    },
+    "battingOrder": {
+        "type": "INTEGER",
+        "path": "int(data['liveData']['boxscore']['teams']['away']['players'][id].get('battingOrder', 40))"
+    }
+}
