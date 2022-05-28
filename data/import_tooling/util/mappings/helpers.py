@@ -15,19 +15,37 @@ def get_game_description(id, game_description_mapping="data/import_tooling/util/
         return descriptions[id]
 
 
-def get_team_id(name, team_name_mapping="data/import_tooling/util/mappings/team_id_team_name.json"):
+def get_team_id(input_name, team_name_mapping="data/import_tooling/util/mappings/team_id_team_name.json"):
     """
     Return mlb-stats API team id, given a team name.
 
-    :param name: The actual team name
-    :type name: Str
+    :param input_name: The user input for actual team name
+    :type input_name: Str
     :param team_name_mapping: Maps id to the actual team name
     :type team_name_mapping: List[Dict[int,str]]
     """
     with open(team_name_mapping, "r") as file:
         team_ids = json.load(file)
         for team_id, team_name in team_ids.items():
-            if name in team_name:
+            if input_name in team_name:
                 return team_id
         pprint(team_ids.values())
-        raise Exception('Invalid Team Name Exception')
+        raise Exception('Invalid Input, Team Names Listed above')
+
+        
+def get_league_id(input_name, league_name_mapping="data/import_tooling/util/mappings/league_id_league_name.json"):
+    """
+    Return mlb-stats API league id, given a league name.
+
+    :param input_name: The user input for actual league name
+    :type input_name: Str
+    :param league_name_mapping: Maps id to the actual league name
+    :type league_name_mapping: List[Dict[int,str]]
+    """
+    with open(league_name_mapping, "r") as file:
+        league_ids = json.load(file)
+        for league_id, league_name in league_ids.items():
+            if input_name in league_name:
+                return league_id
+        pprint(league_ids.values())
+        raise Exception('Invalid Input, League Names Listed above')
