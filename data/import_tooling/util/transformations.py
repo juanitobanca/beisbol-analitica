@@ -1,6 +1,7 @@
 import json
+from util.mappings.helpers import get_game_description
 
-def parse_game_data(ids, parsed_data, data, schema):
+def parse_game_data(ids, parsed_data, data, schema, gamePk_file):
     """
     Extracts relevant details from game data, based on schema.
 
@@ -12,6 +13,8 @@ def parse_game_data(ids, parsed_data, data, schema):
     :type data: Dict[Str, Str]
     :param schema: Dict representation of a table schema
     :type schema: Dict[Str, Str]
+    :param gamePk_file: The path to file containing game day data
+    :type gamePk_file: Str
     """
     for id in ids:
         parsed_data[id] = {}
@@ -67,68 +70,5 @@ def transform_file_into_dict(gamePk_file, schema_file, schema_type):
             ids = [0]
     elif schema_type == "per_season":
         ids = []
-    parsed_data = parse_game_data(ids=ids, parsed_data=parsed_data, data=data, schema=schema)
+    parsed_data = parse_game_data(ids=ids, parsed_data=parsed_data, data=data, schema=schema, gamePk_file=gamePk_file)
     return parsed_data, schema
-
-game_type_mapping = [
-    {
-        "id" : "S",
-        "description" : "Spring Training"
-    },
-    {
-        "id" : "R",
-        "description" : "Regular Season"
-    },
-    {
-        "id" : "F",
-        "description" : "Wild Card Game"
-    },
-    {
-        "id" : "D",
-        "description" : "Division Series"
-    },
-    {
-        "id" : "L",
-        "description" : "League Championship Series"
-    },
-    {
-        "id" : "W",
-        "description" : "World Series"
-    },
-    {
-        "id" : "C",
-        "description" : "Championship"
-    },
-    {
-        "id" : "N",
-        "description" : "Nineteenth Century Series"
-    },
-    {
-        "id" : "P",
-        "description" : "Playoffs"
-    },
-    {
-        "id" : "A",
-        "description" : "All-Star Game"
-    },
-    {
-        "id" : "I",
-        "description" : "Intrasquad"
-    },
-    {
-        "id" : "E",
-        "description" : "Exhibition"
-    } 
-]
-
-def get_game_description(id, description_mapping=game_type_mapping):
-    """
-    Return the longer game description, given shorter description.
-
-    :param id: The shortened representation of game description
-    :type id: Str
-    :param description_mapping: The lengthy representation of game description
-    :type description_mapping: List[Dict[str,str]]
-    """
-    return [type["description"] for type in description_mapping if type['id'] == id][0]
-

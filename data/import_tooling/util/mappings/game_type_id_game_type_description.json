@@ -1,0 +1,14 @@
+{
+    "S": "Spring Training",
+    "R": "Regular Season",
+    "F": "Wild Card Game",
+    "D": "Division Series",
+    "L": "League Championship Series",
+    "W": "World Series",
+    "C": "Championship",
+    "N": "Nineteenth Century Series",
+    "P": "Playoffs",
+    "A": "All-Star Game",
+    "I": "Intrasquad",
+    "E": "Exhibition" 
+}
