@@ -43,12 +43,16 @@ df = df.reset_index()
 print(f"Exporting all tables")
 
 for index, row in df.iterrows():
-    print(f"Processing {row['tbl_name']}. Query: SELECT * FROM {row['tbl_name']} {row['filter']}")
-    df = pd.read_sql_query(f"""SELECT * FROM {row['tbl_name']} {row['filter']}""", con=mysql_conn)
+    print(
+        f"Processing {row['tbl_name']}. Query: SELECT * FROM {row['tbl_name']} {row['filter']}"
+    )
+    df = pd.read_sql_query(
+        f"""SELECT * FROM {row['tbl_name']} {row['filter']}""", con=mysql_conn
+    )
 
-    if 'Unnamed: 0' in df.keys():
-        del df['Unnamed: 0']
+    if "Unnamed: 0" in df.keys():
+        del df["Unnamed: 0"]
 
-    df.to_csv(f"{output_dir}/{row['tbl_name']}", index=False, header=False, mode ='w')
+    df.to_csv(f"{output_dir}/{row['tbl_name']}", index=False, header=False, mode="w")
 
     print(f"Finished processing {row['tbl_name']}.")
