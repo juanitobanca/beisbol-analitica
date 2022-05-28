@@ -1,7 +1,11 @@
 import json
 from pprint import pprint
 
-def get_game_description(id, game_description_mapping="data/import_tooling/util/mappings/game_type_id_game_type_description.json"):
+
+def get_game_description(
+    id,
+    game_description_mapping="data/import_tooling/util/mappings/game_type_id_game_type_description.json",
+):
     """
     Return the longer game description, given shorter description.
 
@@ -15,7 +19,10 @@ def get_game_description(id, game_description_mapping="data/import_tooling/util/
         return descriptions[id]
 
 
-def get_team_id(input_name, team_name_mapping="data/import_tooling/util/mappings/team_id_team_name.json"):
+def get_team_id(
+    input_name,
+    team_name_mapping="data/import_tooling/util/mappings/team_id_team_name.json",
+):
     """
     Return mlb-stats API team id, given a team name.
 
@@ -30,10 +37,13 @@ def get_team_id(input_name, team_name_mapping="data/import_tooling/util/mappings
             if input_name in team_name:
                 return team_id
         pprint(team_ids.values())
-        raise Exception('Invalid Input, Team Names Listed above')
+        raise Exception("Invalid Input, Team Names Listed above")
 
-        
-def get_league_id(input_name, league_name_mapping="data/import_tooling/util/mappings/league_id_league_name.json"):
+
+def get_league_id(
+    input_name,
+    league_name_mapping="data/import_tooling/util/mappings/league_id_league_name.json",
+):
     """
     Return mlb-stats API league id, given a league name.
 
@@ -48,4 +58,4 @@ def get_league_id(input_name, league_name_mapping="data/import_tooling/util/mapp
             if input_name in league_name:
                 return league_id
         pprint(league_ids.values())
-        raise Exception('Invalid Input, League Names Listed above')
+        raise Exception("Invalid Input, League Names Listed above")

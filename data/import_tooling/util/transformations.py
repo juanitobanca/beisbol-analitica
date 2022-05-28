@@ -1,6 +1,7 @@
 import json
 from util.mappings.helpers import get_game_description
 
+
 def parse_game_data(ids, parsed_data, data, schema, gamePk_file):
     """
     Extracts relevant details from game data, based on schema.
@@ -25,11 +26,14 @@ def parse_game_data(ids, parsed_data, data, schema, gamePk_file):
                     parsed_data[id][column] = eval(game_data_path)
                 except IndexError:
                     parsed_data[id][column] = "IndexError"
-                    print(f"IndexError with parsed_data[{id}][{column}] in {gamePk_file}")
+                    print(
+                        f"IndexError with parsed_data[{id}][{column}] in {gamePk_file}"
+                    )
                 except KeyError:
                     parsed_data[id][column] = "KeyError"
                     print(f"KeyError with parsed_data[{id}][{column}] in {gamePk_file}")
     return parsed_data
+
 
 def transform_file_into_dict(gamePk_file, schema_file, schema_type):
     """
@@ -49,26 +53,48 @@ def transform_file_into_dict(gamePk_file, schema_file, schema_type):
     with open(schema_file, "r") as schema_info:
         schema = json.load(schema_info)
     if schema_type == "per_plate_appearance":
-        ids = range(len(data['liveData']['plays']['allPlays']))
+        ids = range(len(data["liveData"]["plays"]["allPlays"]))
     elif schema_type == "per_game":
         if "player" in schema_file:
             if "away" in schema_file:
-                ids = data['liveData']['boxscore']['teams']['away']['players'].keys()
+                ids = data["liveData"]["boxscore"]["teams"]["away"]["players"].keys()
                 for player_position in ["batting", "pitching"]:
                     if player_position in schema_file:
-                        ids = [id for id in ids if data['liveData']['boxscore']['teams']['away']['players'][id].get('seasonStats', None).get(player_position, None)]
+                        ids = [
+                            id
+                            for id in ids
+                            if data["liveData"]["boxscore"]["teams"]["away"]["players"][
+                                id
+                            ]
+                            .get("seasonStats", None)
+                            .get(player_position, None)
+                        ]
             elif "home" in schema_file:
-                ids = data['liveData']['boxscore']['teams']['home']['players'].keys()
+                ids = data["liveData"]["boxscore"]["teams"]["home"]["players"].keys()
                 for player_position in ["batting", "pitching"]:
                     if player_position in schema_file:
-                        ids = [id for id in ids if data['liveData']['boxscore']['teams']['home']['players'][id].get('seasonStats', None).get(player_position, None)]
+                        ids = [
+                            id
+                            for id in ids
+                            if data["liveData"]["boxscore"]["teams"]["home"]["players"][
+                                id
+                            ]
+                            .get("seasonStats", None)
+                            .get(player_position, None)
+                        ]
             else:
-                ids = data['gameData']['players'].keys()
+                ids = data["gameData"]["players"].keys()
         elif "official" in schema_file:
-            ids = range(len(data['liveData']['boxscore']['officials']))
+            ids = range(len(data["liveData"]["boxscore"]["officials"]))
         else:
             ids = [0]
     elif schema_type == "per_season":
         ids = []
-    parsed_data = parse_game_data(ids=ids, parsed_data=parsed_data, data=data, schema=schema, gamePk_file=gamePk_file)
+    parsed_data = parse_game_data(
+        ids=ids,
+        parsed_data=parsed_data,
+        data=data,
+        schema=schema,
+        gamePk_file=gamePk_file,
+    )
     return parsed_data, schema

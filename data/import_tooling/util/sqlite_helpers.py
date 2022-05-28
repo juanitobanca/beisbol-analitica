@@ -12,6 +12,7 @@ def run_query(sql, conn):
         cursor = conn.execute(sql)
         return cursor.fetchall()
 
+
 def create_table(conn, table_name, table_schema):
     """
     Create a table, if it doesn't already exist.
@@ -29,6 +30,7 @@ def create_table(conn, table_name, table_schema):
     results = run_query(sql, conn)
     return results
 
+
 def copy_into_table(conn, data, table_name, table_schema):
     """
     Add new rows to this table.
@@ -43,6 +45,6 @@ def copy_into_table(conn, data, table_name, table_schema):
     sql = f"INSERT INTO {table_name} VALUES ({entry})"
     # print(f"Adding new rows to table {table_name}")
     # print(sql)
-    with conn: 
+    with conn:
         cursor = conn.executemany(sql, data)
         return cursor.fetchall()

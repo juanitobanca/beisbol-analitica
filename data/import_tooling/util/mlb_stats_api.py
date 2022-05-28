@@ -2,7 +2,16 @@ import requests
 import json
 from util.mappings.helpers import get_league_id, get_team_id
 
-def fetch_gamePks_for_date_range(start_date="04/01/2022", end_date="05/01/2022", leagues=["American League","National League",], teams=[]):
+
+def fetch_gamePks_for_date_range(
+    start_date="04/01/2022",
+    end_date="05/01/2022",
+    leagues=[
+        "American League",
+        "National League",
+    ],
+    teams=[],
+):
     """
     Fetches a list of game IDs (gamePKs) for all games played within daterange, filterable by leagues and team names.
 
@@ -17,7 +26,9 @@ def fetch_gamePks_for_date_range(start_date="04/01/2022", end_date="05/01/2022",
     """
     additional_query = ""
     if leagues:
-        additional_query += "".join([f"&leagueId={get_league_id(league)}" for league in leagues])
+        additional_query += "".join(
+            [f"&leagueId={get_league_id(league)}" for league in leagues]
+        )
     if teams:
         additional_query += "".join([f"&teamId={get_team_id(team)}" for team in teams])
     url = f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate={start_date}&endDate={end_date}{additional_query}&fields=dates,date,games,gamePk"
@@ -38,6 +49,7 @@ def fetch_gamePks_for_date_range(start_date="04/01/2022", end_date="05/01/2022",
     gamePks.sort()
     return gamePks
 
+
 def download_game_data(gamePk, local_filepath):
     """
     Downloads data for a gamePk to the local filepath.
@@ -52,12 +64,5 @@ def download_game_data(gamePk, local_filepath):
     print(f"GET: {url}")
     response = requests.get(url)
     game_data_dict = json.loads(response.text)
-    with open(local_filepath, 'w') as file_writer:
+    with open(local_filepath, "w") as file_writer:
         json.dump(game_data_dict, file_writer)
-
-user_prompt = """
-    > It seems like you already have some of the files.
-
-    > Do you wish to proceed with download?
-    (y/n) -> (download/skip)
-"""
