@@ -1,0 +1,50 @@
+{
+    "gamePk": {
+        "type": "INTEGER",
+        "path": "data['gamePk']"
+    },
+    "teamId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['team']['id']"
+    },
+    "teamType": {
+        "type": "TEXT",
+        "path": "'home'"
+    },
+    "playerId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['person']['id']"
+    },
+    "assists": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['fielding']['assists']"
+    },
+    "caughtStealing": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['fielding']['caughtStealing']"
+    },
+    "chances": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['fielding']['chances']"
+    },
+    "errors": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['fielding']['errors']"
+    },
+    "passedBall": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['fielding']['passedBall']"
+    },
+    "pickoffs": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['fielding']['pickoffs']"
+    },
+    "putOuts": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['fielding']['putOuts']"
+    },
+    "stolenBases": {
+        "type": "INTEGER",
+        "path": "data['liveData']['boxscore']['teams']['home']['players'][id]['seasonStats']['fielding']['stolenBases']"
+    }
+}
