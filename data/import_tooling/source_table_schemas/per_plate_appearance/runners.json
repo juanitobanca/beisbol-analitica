@@ -1,0 +1,86 @@
+{
+    "gamePk": {
+        "type": "INTEGER",
+        "path": "data['gamePk']"
+    },
+    "inning": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][id]['about']['inning']"
+    },
+    "halfInning": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][id]['about']['halfInning']"
+    },
+    "pitchingTeamId": {
+        "type": "INTEGER",
+        "path": "data['gameData']['teams']['home']['id'] if data['liveData']['plays']['allPlays'][id]['about']['halfInning'] == 'top' else data['gameData']['teams']['away']['id']"
+    },
+    "battingTeamId": {
+        "type": "INTEGER",
+        "path": "data['gameData']['teams']['away']['id'] if data['liveData']['plays']['allPlays'][id]['about']['halfInning'] == 'top' else data['gameData']['teams']['home']['id']"
+    },
+    "atBatIndex": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][id]['about']['atBatIndex']"
+    },
+    "playIndex": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][id]['runners'][0]['details']['playIndex']"
+    },
+    "event": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][id]['result']['event']"
+    },
+    "eventType": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][id]['result']['eventType']"
+    },
+    "isScoringPlay": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][id]['about']['isScoringPlay']"
+    },
+    "movementReason": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][id]['runners'][0]['details']['movementReason']"
+    },
+    "rbi": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][id]['result']['rbi']"
+    },
+    "responsiblePitcher": {
+        "type": "TEXT",
+        "path": "str(data['liveData']['plays']['allPlays'][id]['runners'][0]['details'].get('responsiblePitcher'))"
+    },
+    "runnerId": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][id]['runners'][0]['details']['runner']['id']"
+    },
+    "startBase": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][id]['runners'][0]['movement']['start']"
+    },
+    "endBase": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][id]['runners'][0]['movement']['end']"
+    },
+    "isOut": {
+        "type": "INTEGER",
+        "path": "1 if data['liveData']['plays']['allPlays'][id]['runners'][0]['movement']['isOut'] else 0"
+    },
+    "outBase": {
+        "type": "TEXT",
+        "path": "data['liveData']['plays']['allPlays'][id]['runners'][0]['movement']['outBase']"
+    },
+    "outNumber": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][id]['runners'][0]['movement']['outNumber']"
+    },
+    "earned": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][id]['runners'][0]['details']['earned']"
+    },
+    "teamUnearned": {
+        "type": "INTEGER",
+        "path": "data['liveData']['plays']['allPlays'][id]['runners'][0]['details']['teamUnearned']"
+    }
+}
