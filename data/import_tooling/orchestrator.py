@@ -8,7 +8,7 @@ from util.transformations import transform_file_into_dict
 # ---------------------------------------------------------------------------------------
 # 1. Get all gamePks for a given daterange
 # ---------------------------------------------------------------------------------------
-gamePks = fetch_gamePks_for_date_range(start_date="05/01/2022", end_date="05/25/2022")
+gamePks = fetch_gamePks_for_date_range(start_date="05/01/2022", end_date="05/25/2022", teams=["BOS Red Sox"])
 print(gamePks)
 # ---------------------------------------------------------------------------------------
 # # 2. Download gameday data for each gamePk

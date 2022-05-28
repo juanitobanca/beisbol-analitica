@@ -2,7 +2,7 @@ import requests
 import json
 from util.mappings.helpers import get_league_id, get_team_id
 
-def fetch_gamePks_for_date_range(start_date="04/01/2022", end_date="05/01/2022", leagues=["American League","National League",], teams=["BOS Red Sox",]):
+def fetch_gamePks_for_date_range(start_date="04/01/2022", end_date="05/01/2022", leagues=["American League","National League",], teams=[]):
     """
     Fetches a list of game IDs (gamePKs) for all games played within daterange, filterable by leagues and team names.
 
