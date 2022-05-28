@@ -1,0 +1,165 @@
+
+"gamePk": {
+    "type": "INTEGER",
+    "path": "data['gamePk']"
+},
+"atBatIndex": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['about']['atBatIndex']"
+},
+"playIndex": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['pitchData']['playId']"
+},
+"inning": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['about']['inning']"
+},
+"halfInning": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['about']['halfInning']"
+},
+"battingTeamId": {
+    "type": "INTEGER",
+    "path": "data['gameData']['teams']['away']['id'] if data['liveData']['plays']['allPlays'][id]['about']['halfInning'] == 'top' else data['gameData']['teams']['home']['id']"
+},
+"pitchingTeamId": {
+    "type": "INTEGER",
+    "path": "data['gameData']['teams']['home']['id'] if data['liveData']['plays']['allPlays'][id]['about']['halfInning'] == 'top' else data['gameData']['teams']['away']['id']"
+},
+"batterId": {
+    "type": "INTEGER",
+    "path": "int(data['liveData']['plays']['allPlays'][id]['matchup']['batter']['id'])"
+},
+"pitcherId": {
+    "type": "INTEGER",
+    "path": "int(data['liveData']['plays']['allPlays'][id]['matchup']['pitcher']['id'])"
+},
+"pitchNumber": {
+    "type": "INTEGER",
+    "path": "pitch_id"
+},
+"startBalls": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id-1]['count']['balls'] if pitch_id > 0 else 0"
+},
+"startStrikes": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id-1]['count']['strikes'] if pitch_id > 0 else 0"
+},
+"endBalls": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['count']['balls']"
+},
+"endStrikes": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['count']['strikes']"
+},
+"callCode": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['call']['code']"
+},
+"callDescription": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['call']['description']"
+},
+"callDescription2": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['description']"
+},
+"code": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['code']"
+},
+"isInPlay": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['isInPlay']"
+},
+"isStrike": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['isStrike']"
+},
+"isBall": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['isBall']"
+},
+"typeCode": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['type']['code']"
+},
+"typeDescription": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['type']['description']"
+},
+"hasReview": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['hasReview']"
+},
+"runnerGoing": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['runnerGoing']"
+},
+"strikeZoneTop": {
+    "type": "REAL",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['pitchData']['strikeZoneTop']"
+},
+"strikeZoneBottom": {
+    "type": "REAL",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['pitchData']['strikeZoneBottom']"
+},
+"x": {
+    "type": "REAL",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['pitchData']['coordinates']['x']"
+},
+"y": {
+    "type": "REAL",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['pitchData']['coordinates']['y']"
+},
+"x0": {
+    "type": "REAL",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['pitchData']['coordinates']['x0']"
+},
+"y0": {
+    "type": "REAL",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['pitchData']['coordinates']['y0']"
+},
+"trajectory": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['pitchData']['trajectory']"
+},
+"hardness": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['hardness']"
+},
+"location": {
+    "type": "INTEGER",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['location']"
+},
+"batSide": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['matchup']['batSide']['description']"
+},
+"pitchHand": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['matchup']['pitchHand']['description']"
+},
+"menOnBase": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['menOnBase']"
+},
+"coordX": {
+    "type": "REAL",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['coordX']"
+},
+"coordY": {
+    "type": "REAL",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['coordY']"
+},
+"HM4": {
+    "type": "TEXT",
+    "path": "data['liveData']['plays']['allPlays'][id]['playEvents'][pitch_id]['HM4']"
+},
+"HM8": {
+    "type": "TEXT",
+    "path": ""
+}
