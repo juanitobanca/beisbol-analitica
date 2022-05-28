@@ -9,7 +9,7 @@ from util.transformations import transform_file_into_dict
 # ---------------------------------------------------------------------------------------
 # 1. Get all gamePks for a given daterange
 # ---------------------------------------------------------------------------------------
-start_date, end_date, leagues, teams = fetch_input_args()
+start_date, end_date, batch, leagues, teams = fetch_input_args()
 gamePks = fetch_gamePks_for_date_range(
     start_date=start_date, end_date=end_date, leagues=leagues, teams=teams
 )

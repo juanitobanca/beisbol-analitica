@@ -32,19 +32,22 @@ def format_args(input_args):
         "National League",
     ]
     teams = []
-    if input_args.start_date is not None:
-        start_date = input_args.start_date
+    if input_args.startDate is not None:
+        start_date = input_args.startDate
         print(f"Parsed Start Date: {start_date}")
-    if input_args.end_date is not None:
-        end_date = input_args.end_date
+    if input_args.endDate is not None:
+        end_date = input_args.endDate
         print(f"Parsed End Date: {end_date}")
+    if input_args.batch is not None:
+        batch = input_args.batch
+        print(f"Parsed Batch: {batch}")
+    if input_args.lg is not None:
+        leagues = input_args.lg.split(",")
+        print(f"Parsed Leagues: {leagues}")
     if input_args.teams is not None:
         teams = input_args.teams.split(",")
         print(f"Parsed Teams: {teams}")
-    if input_args.leagues is not None:
-        leagues = input_args.leagues.split(",")
-        print(f"Parsed Leagues: {leagues}")
-    return start_date, end_date, leagues, teams
+    return start_date, end_date, batch, leagues, teams
 
 
 def fetch_input_args():
@@ -53,17 +56,20 @@ def fetch_input_args():
     """
     parser = argparse.ArgumentParser("simple_example")
     parser.add_argument(
-        "--start_date", help="The oldest date to consider, Format: \"'MM/DD/YYYY'\")"
+        "--startDate", help="The oldest date to consider, Format: \"'MM/DD/YYYY'\")"
     )
     parser.add_argument(
-        "--end_date", help="The most recent date to consider, Format: \"'MM/DD/YYYY'\")"
+        "--endDate", help="The most recent date to consider, Format: \"'MM/DD/YYYY'\")"
+    )
+    parser.add_argument(
+        "--batch", help="[WIP], Format: \"5000\")"
+    )
+    parser.add_argument(
+        "--lg",
+        help="MLB league names, Format: \"'American League,National League'\")",
     )
     parser.add_argument(
         "--teams", help="MLB team names, Format: \"'BOS Red Sox,MIL Brewers'\")"
-    )
-    parser.add_argument(
-        "--leagues",
-        help="MLB league names, Format: \"'American League,National League'\")",
     )
     input_args = parser.parse_args()
     return format_args(input_args=input_args)
