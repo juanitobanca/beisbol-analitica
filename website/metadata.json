@@ -1,0 +1,8 @@
+{
+    "extra_css_urls": [
+        "/assets/styles.css"
+    ],
+    "extra_js_urls": [
+        "/assets/code.js"
+    ]
+}
