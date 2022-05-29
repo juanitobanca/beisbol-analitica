@@ -1,0 +1,34 @@
+[ {
+  "code" : "Calm",
+  "description" : "Calm"
+}, {
+  "code" : "None",
+  "description" : "None"
+}, {
+  "code" : "Varies",
+  "description" : "Varies"
+}, {
+  "code" : "In From RF",
+  "description" : "In From RF"
+}, {
+  "code" : "In From LF",
+  "description" : "In From LF"
+}, {
+  "code" : "In From CF",
+  "description" : "In From CF"
+}, {
+  "code" : "R To L",
+  "description" : "R To L"
+}, {
+  "code" : "L To R",
+  "description" : "L To R"
+}, {
+  "code" : "Out To CF",
+  "description" : "Out To CF"
+}, {
+  "code" : "Out To RF",
+  "description" : "Out To RF"
+}, {
+  "code" : "Out To LF",
+  "description" : "Out To LF"
+} ]

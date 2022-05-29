@@ -1,0 +1,221 @@
+[
+    {
+        "code": "sceneStateUpdate"
+    },
+    {
+        "code": "newBatter"
+    },
+    {
+        "code": "newLeftHandedBatter"
+    },
+    {
+        "code": "newLeftHandedBatterWithPitches"
+    },
+    {
+        "code": "newRightHandedBatter"
+    },
+    {
+        "code": "newRightHandedBatterWithPitches"
+    },
+    {
+        "code": "newRightHandedHit"
+    },
+    {
+        "code": "newLeftHandedHit"
+    },
+    {
+        "code": "batterSwitchedToLeftHanded"
+    },
+    {
+        "code": "batterSwitchedToRightHanded"
+    },
+    {
+        "code": "countChange"
+    },
+    {
+        "code": "count42"
+    },
+    {
+        "code": "count41"
+    },
+    {
+        "code": "count40"
+    },
+    {
+        "code": "count33"
+    },
+    {
+        "code": "count32"
+    },
+    {
+        "code": "count31"
+    },
+    {
+        "code": "count30"
+    },
+    {
+        "code": "count23"
+    },
+    {
+        "code": "count22"
+    },
+    {
+        "code": "count21"
+    },
+    {
+        "code": "count20"
+    },
+    {
+        "code": "count13"
+    },
+    {
+        "code": "count12"
+    },
+    {
+        "code": "count11"
+    },
+    {
+        "code": "count10"
+    },
+    {
+        "code": "count03"
+    },
+    {
+        "code": "count02"
+    },
+    {
+        "code": "count01"
+    },
+    {
+        "code": "count00"
+    },
+    {
+        "code": "basesEmpty"
+    },
+    {
+        "code": "runnerOnFirst"
+    },
+    {
+        "code": "runnerOnSecond"
+    },
+    {
+        "code": "runnerOnThird"
+    },
+    {
+        "code": "runnersOnFirstAndSecond"
+    },
+    {
+        "code": "runnersOnFirstAndThird"
+    },
+    {
+        "code": "runnersOnSecondAndThird"
+    },
+    {
+        "code": "basesLoaded"
+    },
+    {
+        "code": "runnersInScoringPosition"
+    },
+    {
+        "code": "gameStateChangeToInProgress"
+    },
+    {
+        "code": "gameStateChangeToWarmup"
+    },
+    {
+        "code": "gameStateChangeToPreview"
+    },
+    {
+        "code": "gameStateChangeToPreGame"
+    },
+    {
+        "code": "gameStateChangeToLineups"
+    },
+    {
+        "code": "gameStateChangeToDelayed"
+    },
+    {
+        "code": "gameStateChangeToDelayedStart"
+    },
+    {
+        "code": "gameStateChangeToFinal"
+    },
+    {
+        "code": "gameStateChangeToGameOver"
+    },
+    {
+        "code": "gameStateChangeToCompletedEarly"
+    },
+    {
+        "code": "gameStateChangeToSuspended"
+    },
+    {
+        "code": "gameStateChangeToCancelled"
+    },
+    {
+        "code": "gameStateChangeToPostponed"
+    },
+    {
+        "code": "gameStateChangeToForfeit"
+    },
+    {
+        "code": "gameStateChangeToInstantReplay"
+    },
+    {
+        "code": "gameStateChangeToExtraInnings"
+    },
+    {
+        "code": "abstractGameStateChangeToPregame"
+    },
+    {
+        "code": "abstractGameStateChangeToLive"
+    },
+    {
+        "code": "abstractGameStateChangeToDelayed"
+    },
+    {
+        "code": "abstractGameStateChangeToFinal"
+    },
+    {
+        "code": "abstractGameStateChangeToOther"
+    },
+    {
+        "code": "UIGameStateChangeToPregame"
+    },
+    {
+        "code": "UIGameStateChangeToLive"
+    },
+    {
+        "code": "UIGameStateChangeToFinal"
+    },
+    {
+        "code": "defensiveSubstitution"
+    },
+    {
+        "code": "offensiveSubstitution"
+    },
+    {
+        "code": "pitcherChange"
+    },
+    {
+        "code": "pitcherChangeComplete"
+    },
+    {
+        "code": "coachToMound"
+    },
+    {
+        "code": "midInning"
+    },
+    {
+        "code": "newHalfInning"
+    },
+    {
+        "code": "newVideoHighlights"
+    },
+    {
+        "code": "beginCommercialBreak"
+    },
+    {
+        "code": "endCommercialBreak"
+    }
+]

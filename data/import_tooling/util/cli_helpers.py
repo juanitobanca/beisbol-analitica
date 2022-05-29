@@ -27,6 +27,7 @@ def format_args(input_args):
     """
     start_date = "05/24/2022"
     end_date = "05/25/2022"
+    batch=500
     leagues = [
         "American League",
         "National League",
@@ -39,7 +40,7 @@ def format_args(input_args):
         end_date = input_args.endDate
         print(f"Parsed End Date: {end_date}")
     if input_args.batch is not None:
-        batch = input_args.batch
+        batch = int(input_args.batch)
         print(f"Parsed Batch: {batch}")
     if input_args.lg is not None:
         leagues = input_args.lg.split(",")

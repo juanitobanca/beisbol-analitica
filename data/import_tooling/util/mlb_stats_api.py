@@ -7,8 +7,7 @@ def fetch_gamePks_for_date_range(
     start_date="04/01/2022",
     end_date="05/01/2022",
     leagues=[
-        "American League",
-        "National League",
+        "MLB",
     ],
     teams=[],
 ):
@@ -26,9 +25,7 @@ def fetch_gamePks_for_date_range(
     """
     additional_query = ""
     if leagues:
-        additional_query += "".join(
-            [f"&leagueId={get_league_id(league)}" for league in leagues]
-        )
+        additional_query += "".join([f"&leagueId={get_league_id(league)}" for league in leagues])
     if teams:
         additional_query += "".join([f"&teamId={get_team_id(team)}" for team in teams])
     url = f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate={start_date}&endDate={end_date}{additional_query}&fields=dates,date,games,gamePk"

@@ -3,7 +3,7 @@ setopt shwordsplit
 from_season=2006
 to_season=2021
 last_season_remaining=2022
-leagues="WBC SDC LMP LIDOM LVBP LMB AL NL DSL LBPRC CCBL CB1 CB2"
+leagues="WBC SDC LMP LIDOM LVBP LMB MLB DSL LBPRC CCL CB1 CB2"
 
 for l in ${leagues}
 do

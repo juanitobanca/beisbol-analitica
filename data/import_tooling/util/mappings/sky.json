@@ -1,0 +1,42 @@
+[
+    {
+        "code": "Rain",
+        "description": "Rain"
+    },
+    {
+        "code": "Roof Closed",
+        "description": "Roof Closed"
+    },
+    {
+        "code": "Overcast",
+        "description": "Overcast"
+    },
+    {
+        "code": "Snow",
+        "description": "Snow"
+    },
+    {
+        "code": "Cloudy",
+        "description": "Cloudy"
+    },
+    {
+        "code": "Dome",
+        "description": "Dome"
+    },
+    {
+        "code": "Clear",
+        "description": "Clear"
+    },
+    {
+        "code": "Sunny",
+        "description": "Sunny"
+    },
+    {
+        "code": "Partly Cloudy",
+        "description": "Partly Cloudy"
+    },
+    {
+        "code": "Drizzle",
+        "description": "Drizzle"
+    }
+]

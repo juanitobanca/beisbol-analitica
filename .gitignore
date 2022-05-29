@@ -2,3 +2,4 @@
 data/import_tooling/source_data/
 my_local.db
 *__pycache__
+*.DS_STORE

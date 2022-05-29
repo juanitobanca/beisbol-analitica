@@ -1,0 +1,98 @@
+[
+    {
+        "code": "EP",
+        "description": "Eephus Pitch"
+    },
+    {
+        "code": "PO",
+        "description": "Pitchout"
+    },
+    {
+        "code": "AB",
+        "description": "Automatic Ball"
+    },
+    {
+        "code": "AS",
+        "description": "Automatic Strike"
+    },
+    {
+        "code": "CH",
+        "description": "Changeup"
+    },
+    {
+        "code": "CU",
+        "description": "Curveball"
+    },
+    {
+        "code": "FA",
+        "description": "Fastball"
+    },
+    {
+        "code": "FT",
+        "description": "Two-seam FB"
+    },
+    {
+        "code": "FF",
+        "description": "Four-seam FB"
+    },
+    {
+        "code": "FC",
+        "description": "Cutter"
+    },
+    {
+        "code": "FS",
+        "description": "Splitter"
+    },
+    {
+        "code": "FO",
+        "description": "Forkball"
+    },
+    {
+        "code": "GY",
+        "description": "Gyroball"
+    },
+    {
+        "code": "IN",
+        "description": "Intentional Ball"
+    },
+    {
+        "code": "KC",
+        "description": "Knuckle Curve"
+    },
+    {
+        "code": "KN",
+        "description": "Knuckleball"
+    },
+    {
+        "code": "NP",
+        "description": "No Pitch"
+    },
+    {
+        "code": "SC",
+        "description": "Screwball"
+    },
+    {
+        "code": "SI",
+        "description": "Sinker"
+    },
+    {
+        "code": "SL",
+        "description": "Slider"
+    },
+    {
+        "code": "UN",
+        "description": "Unknown"
+    },
+    {
+        "code": "ST",
+        "description": "Slutter"
+    },
+    {
+        "code": "SV",
+        "description": "Slurve"
+    },
+    {
+        "code": "CS",
+        "description": "Slow Curve"
+    }
+]

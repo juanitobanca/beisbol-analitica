@@ -37,8 +37,9 @@ def parse_game_data(ids, parsed_data, data, schema, gamePk_file):
 
 def transform_file_into_dict(gamePk_file, schema_file, schema_type):
     """
-    Loads files into Dataframes and calculates ids based on table schema,
-    then calls parse_game_data to retrieve game data specific to schema.
+    Load file into python dict,
+    Find new rows to load into particular table schema (row ids),
+    call parse_game_data() to retrieve the column data.
 
     :param gamePk_file: The path to file containing game day data
     :type gamePk_file: Str
@@ -48,6 +49,7 @@ def transform_file_into_dict(gamePk_file, schema_file, schema_type):
     :type schema_type: Str
     """
     parsed_data = {}
+    ids = []
     with open(gamePk_file, "r") as game_data:
         data = json.load(game_data)
     with open(schema_file, "r") as schema_info:
@@ -74,6 +76,9 @@ def transform_file_into_dict(gamePk_file, schema_file, schema_type):
             ids = [0]
     elif schema_type == "per_season":
         ids = []
+    elif schema_type == "per_pitch":
+        ids = []
+    
     parsed_data = parse_game_data(
         ids=ids,
         parsed_data=parsed_data,
