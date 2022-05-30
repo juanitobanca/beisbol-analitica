@@ -154,7 +154,7 @@ end_date  = end_time.strftime("%m/%d/%Y")
 
 # Argument Parser
 parser = argparse.ArgumentParser(description="Parses details about what game data to load.")
-parser.add_argument("--conn",      action="store"  , dest = "conn", help="The database connection to use, Format: \"'sqlite://\")", default = "sqlite://")
+parser.add_argument("--con",      action="store"  , dest = "con", help="The database connection to use, Format: \"'sqlite://\")", default = "sqlite://")
 parser.add_argument("--startDate", action = "store", dest = "startDate", help="The oldest date to consider, Format: \"'MM/DD/YYYY'\")", default = start_date)
 parser.add_argument("--endDate",   action = "store", dest = "endDate", help="The most recent date to consider, Format: \"'MM/DD/YYYY'\")", default = end_date)
 parser.add_argument("--batch",     action = "store", dest = "batch", help="[WIP], Format: \"5000\")", default = 500, type = int)
@@ -165,7 +165,7 @@ parser.add_argument("--teams",     action = "store", dest = "teams", help="Team 
 args = parser.parse_args()
 
 # Initialize Variables
-conn = initConnection(args.conn)
+con = initConnection(args.con)
 start_date = args.startDate
 end_date = args.endDate
 batch = args.batch
@@ -177,7 +177,7 @@ team_names = lookupByValue(team_id_map, args.teams)
 games = getSchedule(start_date, end_date, sport_names, league_names, team_names)
 
 # Download game data into python object, and load it into DB
-scrapeAndInsertData(games, batch, conn)
+scrapeAndInsertData(games, batch, con)
 
 '''
 box.setData( [ '587933' ] )
