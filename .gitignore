@@ -1,0 +1,5 @@
+# Ignore local virtualenv files
+.venv/
+# Ignore python runtime files
+*__pycache__
+*.DS_STORE
