@@ -154,7 +154,7 @@ end_date  = end_time.strftime("%m/%d/%Y")
 
 # Argument Parser
 parser = argparse.ArgumentParser(description="Parses details about what game data to load.")
-parser.add_argument("--con",      action="store"  , dest = "con", help="The database connection to use, Format: \"'sqlite://\")", default = "sqlite://")
+parser.add_argument("--con",       action="store"  , dest = "con", help="The database connection to use, Format: \"'sqlite://\")", default = "sqlite://")
 parser.add_argument("--startDate", action = "store", dest = "startDate", help="The oldest date to consider, Format: \"'MM/DD/YYYY'\")", default = start_date)
 parser.add_argument("--endDate",   action = "store", dest = "endDate", help="The most recent date to consider, Format: \"'MM/DD/YYYY'\")", default = end_date)
 parser.add_argument("--batch",     action = "store", dest = "batch", help="[WIP], Format: \"5000\")", default = 500, type = int)
