@@ -79,32 +79,6 @@ def jsonIsValid( json ):
 # LEAGUE - this is what gets inserted into the db
 # Example: https://statsapi.mlb.com/api/v1/gamePace?leagueIds=125&startDate=2019-07-28&endDate=2019-10-30
 
-sports_id_dic = { 'MLB' : 1
-                , 'LMB':  11 # 23
-                , 'LIDOM': 17
-                , 'LMP': 17
-                , 'LBPRC': 17
-                , 'LVBP': 17
-                , 'SDC' : 17
-                , 'DSL' : 16
-                , 'WBC' : 51
-                }
-
-major_id_dic = { 'MLB': 1
-               , 'LMB': 125
-               , 'LIDOM': 131
-               , 'LMP': 132
-               , 'LBPRC': 133
-               , 'LVBP': 135
-               , 'SDC' : 162
-               , 'DSL' : 130
-               , 'WBC' : 160
-               }
-
-
-major_league = None
-major_league_id = None
-
 
 # STAGING TABLE CONSTANTS
 

@@ -1,7 +1,7 @@
 # Dictionary mapping league id expected from MLB Stats API -> Human Readable league name
 
 league_id_map = {
-    "1": "MLB Major League Baseball",
+    "103,104": "MLB Major League Baseball",
     "100": "AA American Association",
     "101": "UA Union Association",
     "102": "NA National Association",

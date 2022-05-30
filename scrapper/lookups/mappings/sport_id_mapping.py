@@ -1,7 +1,7 @@
 # Dictionary mapping sport id expected from MLB Stats API -> Human Readable baseball divisions
 
 sport_id_map = {
-    "1":"Major League Baseball",
+    "1":"MLB Major League Baseball",
     "11":"Triple-A",
     "12":"Double-A",
     "13":"High-A",

@@ -1,7 +1,15 @@
+from tracemalloc import start
 import const  as c
 import pandas as pd
 import argparse
 from sqlalchemy import create_engine as ce, types
+from pprint import pprint
+
+from lookups.helpers import lookupByValue
+from lookups.mappings.sport_id_mapping import sport_id_map
+from lookups.mappings.league_id_mapping import league_id_map
+from lookups.mappings.team_id_mapping import team_id_map
+    
 from playByPlay import playByPlay
 from people     import people
 from boxscore   import boxscore
@@ -9,25 +17,19 @@ from transactions import transactions
 from contextMetrics import contextMetrics
 from datetime   import datetime as dt, timedelta as td
 
-def getSchedule( p_file, p_date, p_startDate, p_endDate, p_sportId, p_leagueId ):
+def getSchedule(p_startDate, p_endDate, p_sportId, p_leagueId=None, p_teamId=None):
 
     print("Getting Schedules")
 
     games = set()
+    additional_query = f"sportId={p_sportId}&startDate={p_startDate}&endDate={p_endDate}"
+    if p_leagueId:
+        additional_query += f"&leagueId={p_leagueId}"
+    if p_teamId:
+        additional_query += f"&teamId={p_teamId}"
 
-    # MLB doesn't have a leagueId
-    if p_leagueId == 1:
-        p_leagueId = ""
-    else:
-        p_leagueId = f"&leagueId={p_leagueId}"
-
-    # Parse the schedule files
-    if p_startDate and p_endDate:
-        parsing_arg = f'sportId={p_sportId}{p_leagueId}&startDate={p_startDate}&endDate={p_endDate}'
-    elif p_date:
-        parsing_arg = f'sportId={p_sportId}{p_leagueId}'
-
-    schedule = c.parseJson( parsing_arg, 'schedule' )
+    schedule = c.parseJson( additional_query, 'schedule' )
+    pprint(schedule)
 
     for d in schedule['dates']:
         for g in d['games']:
@@ -145,39 +147,37 @@ def scrapeAndInsertData( p_games, p_batch, p_con ):
 
 
 # Default variables
-date  = dt.today() - td(1)
-date  = date.strftime("%Y_%m_%d")
+start_time  = dt.today() - td(1)
+start_date = start_time.strftime("%m/%d/%Y")
+end_time = dt.today() 
+end_date  = end_time.strftime("%m/%d/%Y")
 
 # Argument Parser
-parser = argparse.ArgumentParser(description="Whatever")
-
-# Add Arguments
-# 10.0.0.243
-
-parser.add_argument("--con",       action="store"  , dest = "con"                                        , default = None)
-parser.add_argument("--date",      action = "store", dest = "date",      help = "Date Format: YYYY_MM_DD", default = date)
-parser.add_argument("--startDate", action = "store", dest = "startDate", help = "Date Format: YYYY_MM_DD", default = None)
-parser.add_argument("--endDate",   action = "store", dest = "endDate",   help = "Date Format: YYYY_MM_DD", default = None)
-parser.add_argument("--file",      action = "store", dest = "file"                                       , default = None)
-parser.add_argument("--batch",     action = "store", dest = "batch"                                      , default = 500, type = int )
-parser.add_argument("--lg",        action = "store", dest = "lg",        help = "Pick aaa or win"        , default = None )
-
+parser = argparse.ArgumentParser(description="Parses details about what game data to load.")
+parser.add_argument("--conn",      action="store"  , dest = "conn", help="The database connection to use, Format: \"'sqlite://\")", default = "sqlite://")
+parser.add_argument("--startDate", action = "store", dest = "startDate", help="The oldest date to consider, Format: \"'MM/DD/YYYY'\")", default = start_date)
+parser.add_argument("--endDate",   action = "store", dest = "endDate", help="The most recent date to consider, Format: \"'MM/DD/YYYY'\")", default = end_date)
+parser.add_argument("--batch",     action = "store", dest = "batch", help="[WIP], Format: \"5000\")", default = 500, type = int)
+parser.add_argument("--lg",        action = "store", dest = "lg", help="League names, Format: \"'MLB,SDC'\")", default = "MLB")
+parser.add_argument("--teams",     action = "store", dest = "teams", help="Team names, Format: \"'Boston Red Sox,Milwaukee Brewers'\")", default=None)
 
 # Parse Arguments
 args = parser.parse_args()
 
-# Here we assign the value thats gonna be inerted for major_league_id in the db.
-# Kindly look at contextMetrics.py
-c.major_league = args.lg
-c.major_league_id = c.major_id_dic[ args.lg ]
-sportId = c.sports_id_dic[args.lg]
+# Initialize Variables
+conn = initConnection(args.conn)
+start_date = args.startDate
+end_date = args.endDate
+batch = args.batch
+sport_names = lookupByValue(sport_id_map, args.lg)
+league_names = lookupByValue(league_id_map, args.lg)
+team_names = lookupByValue(team_id_map, args.teams)
 
-# Create connection
-con  = initConnection( args.con )
+# Retrieve Game IDs
+games = getSchedule(start_date, end_date, sport_names, league_names, team_names)
 
-# Read and filter file
-d = getSchedule( args.file, args.date, args.startDate, args.endDate, sportId, c.major_league_id )
-scrapeAndInsertData( d, args.batch, con )
+# Download game data into python object, and load it into DB
+scrapeAndInsertData(games, batch, conn)
 
 '''
 box.setData( [ '587933' ] )
