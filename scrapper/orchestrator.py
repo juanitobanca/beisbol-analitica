@@ -1,21 +1,22 @@
-from tracemalloc import start
-import const  as c
-import pandas as pd
 import argparse
-from sqlalchemy import create_engine as ce, types
-from pprint import pprint
+from datetime import (
+    datetime as dt,
+    timedelta as td
+)
+import pandas as pd
+from sqlalchemy import create_engine as ce
 
-from lookups.helpers import lookupByValue
-from lookups.mappings.sport_id_mapping import sport_id_map
-from lookups.mappings.league_id_mapping import league_id_map
-from lookups.mappings.team_id_mapping import team_id_map
-    
+import const as c
 from playByPlay import playByPlay
 from people     import people
 from boxscore   import boxscore
 from transactions import transactions
 from contextMetrics import contextMetrics
-from datetime   import datetime as dt, timedelta as td
+from lookups.helpers import lookupByValue
+from lookups.mappings.sport_id_mapping import sport_id_map
+from lookups.mappings.league_id_mapping import league_id_map
+from lookups.mappings.team_id_mapping import team_id_map
+
 
 def getSchedule(p_startDate, p_endDate, p_sportId, p_leagueId=None, p_teamId=None):
 
@@ -29,7 +30,6 @@ def getSchedule(p_startDate, p_endDate, p_sportId, p_leagueId=None, p_teamId=Non
         additional_query += f"&teamId={p_teamId}"
 
     schedule = c.parseJson( additional_query, 'schedule' )
-    pprint(schedule)
 
     for d in schedule['dates']:
         for g in d['games']:
