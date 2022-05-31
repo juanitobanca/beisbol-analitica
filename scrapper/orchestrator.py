@@ -18,17 +18,15 @@ from lookups.mappings.league_id_mapping import league_id_map
 from lookups.mappings.team_id_mapping import team_id_map
 
 
-def getSchedule(p_startDate, p_endDate, p_sportId, p_leagueId=None, p_teamId=None):
+def getSchedule(p_startDate, p_endDate, p_sportIds, p_leagueIds=None, p_teamIds=None):
 
     print("Getting Schedules")
 
     games = set()
-    additional_query = f"sportId={p_sportId}&startDate={p_startDate}&endDate={p_endDate}"
-    if p_leagueId:
-        additional_query += f"&leagueId={p_leagueId}"
-    if p_teamId:
-        additional_query += f"&teamId={p_teamId}"
-
+    additional_query = f"startDate={p_startDate}&endDate={p_endDate}"
+    additional_query += "".join([f"&sportId={sport}" for sport in p_sportIds])
+    additional_query += "".join([f"&leagueId={league}" for league in p_leagueIds])
+    additional_query += "".join([f"&teamId={team}" for team in p_teamIds])
     schedule = c.parseJson( additional_query, 'schedule' )
 
     for d in schedule['dates']:
@@ -75,7 +73,7 @@ def toPandas( d ):
 
     return p
 
-def scrapeAndInsertData( p_games, p_batch, p_con ):
+def scrapeAndInsertData( p_games, p_batch, p_con, p_leagues ):
 
     print('Starting scrape and insert for '+str(len(p_games))+' games.')
     ppl_set = set()
@@ -94,7 +92,7 @@ def scrapeAndInsertData( p_games, p_batch, p_con ):
        # Set
        box.setData( p_games[ chunk_ : chunk_ + p_batch ] )
        play.setData( p_games[ chunk_ : chunk_ + p_batch ] )
-       cnt.setData( p_games[ chunk_ : chunk_ + p_batch ] )
+       cnt.setData( p_games[ chunk_ : chunk_ + p_batch ], p_leagues )
 
        ppl_set = ppl_set.union( set( box.player_game_info['playerId'] ) )
        official_set  = official_set.union( set( box.official_types['officialId'] ) )
@@ -147,19 +145,19 @@ def scrapeAndInsertData( p_games, p_batch, p_con ):
 
 
 # Default variables
-start_time  = dt.today() - td(1)
-start_date = start_time.strftime("%m/%d/%Y")
-end_time = dt.today() 
-end_date  = end_time.strftime("%m/%d/%Y")
+yesterday  = dt.today() - td(1)
+today = dt.today() 
+start_date = yesterday.strftime("%m/%d/%Y")
+end_date  = today.strftime("%m/%d/%Y")
 
 # Argument Parser
 parser = argparse.ArgumentParser(description="Parses details about what game data to load.")
-parser.add_argument("--con",       action="store"  , dest = "con", help="The database connection to use, Format: \"'sqlite://\")", default = "sqlite://")
+parser.add_argument("--con",       action = "store", dest = "con",       help="The database connection to use, Format: \"'sqlite://\")", default = "sqlite://")
 parser.add_argument("--startDate", action = "store", dest = "startDate", help="The oldest date to consider, Format: \"'MM/DD/YYYY'\")", default = start_date)
-parser.add_argument("--endDate",   action = "store", dest = "endDate", help="The most recent date to consider, Format: \"'MM/DD/YYYY'\")", default = end_date)
-parser.add_argument("--batch",     action = "store", dest = "batch", help="[WIP], Format: \"5000\")", default = 500, type = int)
-parser.add_argument("--lg",        action = "store", dest = "lg", help="League names, Format: \"'MLB,SDC'\")", default = "MLB")
-parser.add_argument("--teams",     action = "store", dest = "teams", help="Team names, Format: \"'Boston Red Sox,Milwaukee Brewers'\")", default=None)
+parser.add_argument("--endDate",   action = "store", dest = "endDate",   help="The most recent date to consider, Format: \"'MM/DD/YYYY'\")", default = end_date)
+parser.add_argument("--batch",     action = "store", dest = "batch",     help="Number of games to load per batch, Recommendation: \"5000\")", default = 500, type = int)
+parser.add_argument("--lg",        action = "store", dest = "lg",        help="League names, Format: \"'MLB,SDC'\")", default = "MLB")
+parser.add_argument("--teams",     action = "store", dest = "teams",     help="Team names, Format: \"'Boston Red Sox,Milwaukee Brewers'\")", default=None)
 
 # Parse Arguments
 args = parser.parse_args()
@@ -169,15 +167,15 @@ con = initConnection(args.con)
 start_date = args.startDate
 end_date = args.endDate
 batch = args.batch
-sport_names = lookupByValue(sport_id_map, args.lg)
-league_names = lookupByValue(league_id_map, args.lg)
-team_names = lookupByValue(team_id_map, args.teams)
+sport_names = [lookupByValue(sport_id_map,league) for league in args.lg.split(",")]
+league_names = [lookupByValue(league_id_map,league) for league in args.lg.split(",")]
+team_names = [lookupByValue(team_id_map, team) for team in args.teams.split(",")] if args.teams else []
 
 # Retrieve Game IDs
 games = getSchedule(start_date, end_date, sport_names, league_names, team_names)
 
 # Download game data into python object, and load it into DB
-scrapeAndInsertData(games, batch, con)
+scrapeAndInsertData(games, batch, con, league_names)
 
 '''
 box.setData( [ '587933' ] )

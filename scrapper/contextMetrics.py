@@ -1,5 +1,7 @@
+from operator import le
 import const as c
 
+from lookups.mappings.league_id_mapping import league_id_map
 
 class contextMetrics:
 
@@ -45,7 +47,7 @@ class contextMetrics:
             d[s_].append( v_ )
 
 
-    def setData( self, game_pk ):
+    def setData( self, game_pk, leagues):
 
         self.contextMetrics = c.createDataset( c.contextGame
                                              + c.contextGameStatus
@@ -67,8 +69,8 @@ class contextMetrics:
             self.setContextMetrics( c.contextGameHome_flag,   c.contextGameHome,   self.contextMetrics )
             self.setContextMetrics( c.contextGameVenue_flag,  c.contextGameVenue,  self.contextMetrics )
 
-        self.contextMetrics['majorLeague'] = [c.major_league ] * len( self.contextMetrics['gamePk'] )
-        self.contextMetrics['majorLeagueId'] = [c.major_league_id ] * len( self.contextMetrics['gamePk'] )
+        self.contextMetrics['majorLeague'] = [league_id_map[leagues[0]]] * len( self.contextMetrics['gamePk'] )
+        self.contextMetrics['majorLeagueId'] = [leagues[0]] * len( self.contextMetrics['gamePk'] )
 
 
         return self.contextMetrics
