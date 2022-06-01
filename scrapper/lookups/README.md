@@ -35,6 +35,8 @@ This directory contains lookup tables for MLB Stats API terminology.
  https://statsapi.mlb.com/api/v1/draft/prospects/2018  
  https://statsapi.mlb.com/api/v1/eventTypes  
  https://statsapi.mlb.com/api/v1/gameTypes  
+ https://statsapi.mlb.com/api/v1/jobTypes  
+ http://statsapi.mlb.com/api/v1/jobs?jobType=UMPR  
  https://statsapi.mlb.com/api/v1/metrics  
  https://statsapi.mlb.com/api/v1/people/660670  
  https://statsapi.mlb.com/api/v1/positions  
