@@ -3,3 +3,9 @@
 # Ignore python runtime files
 *__pycache__
 *.DS_STORE
+
+# Ignore any local files
+my_local.db
+scrapper/lookups/api
+scrapper/lookups/lists
+scrapper/lookups/mappings

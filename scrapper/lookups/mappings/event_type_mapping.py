@@ -1,4 +1,3 @@
-
 # Dictionary mapping each MLB event code to details about the event
 
 event_type_map =  {

@@ -1,5 +1,3 @@
-
-
 # Dictionary mapping pitch type abbreviation from MLB Stats API -> Human Readable pitch type
 
 pitch_type_map = {
