@@ -33,16 +33,21 @@ Si te gustaría colaborar con el proyecto te recomendamos que instales GitHub De
 1. [Instalación de Git.](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 2. Descarga del Repositorio de Código:
 ```
+# en la línea de comandos
+## descargar el directorio usando git
 git clone https://github.com/andres-alvarado/beisbol-analitica
 ```
-3. [Instalación de Objetos de Base de Datos.](https://github.com/andres-alvarado/beisbol-analitica/wiki/Instalaci%C3%B3n-de-Objetos-de-Base-de-Datos)
+3.
+ - [Instalación de Objetos de Base de Datos.](https://github.com/andres-alvarado/beisbol-analitica/wiki/Instalaci%C3%B3n-de-Objetos-de-Base-de-Datos)
+ - Inicio rápido con Sqlite:
 ```
-# Para Sqlite:
+# en la línea de comandos
+## cambiar al directorio descargado
 cd beisbol-analitica
+## instalar los requisitos de python
 source setup.sh
-# specific games
+## descargar un conjunto de juegos
 python3 scrapper/orchestrator.py --lg=MLB --team='Boston Red Sox' --startDate='05/01/2022' --endDate='05/07/2022'
-# all games
-source data/import_tooling/run_orchestrator.sh
 ```
+
 4. [Ejecución de Procedimientos.](https://github.com/andres-alvarado/beisbol-analitica/wiki/Ejecuci%C3%B3n-de-Procedimientos)
