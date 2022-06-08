@@ -167,9 +167,12 @@ start_date = yesterday.strftime("%m/%d/%Y")
 end_date  = today.strftime("%m/%d/%Y")
 
 # Argument Parser
-parser = argparse.ArgumentParser(usage="""
+parser = argparse.ArgumentParser(usage=f"""
     This script loads game data into a database.
     
+    The command below will load yesterdays mlb game data:
+        python3 {os.path.relpath(__file__)}
+
     The flags below are responsible for configuring:
         - what games to load               (ie. team, league, and/or date range)
         - where to store the game data     (ie. local sqlite.db file)
