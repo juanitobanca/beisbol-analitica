@@ -152,12 +152,13 @@ def preview_data(con):
     list_all_tables = "SELECT name FROM sqlite_master WHERE type='table';"
     print(f"Query: {list_all_tables}")
     tables = pd.read_sql_query(list_all_tables, con)
-    print(tables)
+    print(f"Table Names: {tables}")
     for _, table in tables.iterrows():
         table_name = table["name"]
         preview_table = f" SELECT * FROM {table_name} LIMIT 10;"
         print(f"Query: {preview_table}")
         print(pd.read_sql_query(preview_table, con))
+    print(f"Table Names: {tables}")
 
 
 # Default variables
@@ -196,12 +197,15 @@ batch = args.batch
 sport_id = lookupByValue(sport_id_map,args.lg) if args.lg else None
 league_id = lookupByValue(league_id_map,args.lg) if args.lg else None
 team_id = lookupByValue(team_id_map, args.team) if args.team else None
-print(f"League Name: {args.lg}")
-print(f"League Id: {sport_id}")
-print(f"Team Name: {args.team}")
-print(f"Team Id: {team_id}")
-print(f"Sport Id: {sport_id}")
-print(f"Database: {args.con}")
+parsed_details = f"""
+======================================================
+League Name: {args.lg}, League Id: {league_id}, Sport Id: {sport_id}
+Team Name: {args.team}, Team Id: {team_id}
+Database: {args.con}
+Start Date: {start_date}, End Date: {end_date}
+======================================================
+"""
+print(parsed_details)
 
 # Retrieve Game IDs
 games = getSchedule(start_date, end_date, sport_id, league_id, team_id)
@@ -211,6 +215,7 @@ scrapeAndInsertData(games, batch, con, league_id)
 
 # Preview tables that were built from game data
 preview_data(con)
+print(parsed_details)
 
 '''
 box.setData( [ '587933' ] )
