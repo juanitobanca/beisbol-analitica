@@ -4,4 +4,4 @@ source ./.venv/bin/activate
 
 pip3 install -r requirements.txt
 
-source data/import_tooling/run_orchestrator.sh
+python3 scrapper/orchestrator.py -h

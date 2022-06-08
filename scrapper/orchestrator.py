@@ -167,13 +167,20 @@ start_date = yesterday.strftime("%m/%d/%Y")
 end_date  = today.strftime("%m/%d/%Y")
 
 # Argument Parser
-parser = argparse.ArgumentParser(description="Parses details about what game data to load.")
-parser.add_argument("--con",       action = "store", dest = "con",       help="The database connection to use, Format: \"'sqlite:///$(pwd)/my_local.db\")", default = f"sqlite:///{os.getcwd()}/my_local.db")
-parser.add_argument("--startDate", action = "store", dest = "startDate", help="The oldest date to consider, Format: \"'MM/DD/YYYY'\")", default = start_date)
-parser.add_argument("--endDate",   action = "store", dest = "endDate",   help="The most recent date to consider, Format: \"'MM/DD/YYYY'\")", default = end_date)
-parser.add_argument("--batch",     action = "store", dest = "batch",     help="Number of games to load per batch, Recommendation: \"5000\")", default = 500, type = int)
-parser.add_argument("--lg",        action = "store", dest = "lg",        help="League name, Format: \"'MLB'\")", default = "MLB")
-parser.add_argument("--team",     action = "store", dest = "team",       help="Team name, Format: \"'Boston Red Sox'\")", default=None)
+parser = argparse.ArgumentParser(usage="""
+    This script loads game data into a database.
+    
+    The flags below are responsible for configuring:
+        - what games to load               (ie. team, league, and/or date range)
+        - where to store the game data     (ie. local sqlite.db file)
+        - how many games to load at a time (ie. 500 games w/ 16 GB of RAM)
+""")
+parser.add_argument("--con",       help="The database connection to use, Format: --con='sqlite:///" + os.getcwd() + "/my_local.db'", default = f"sqlite:///{os.getcwd()}/my_local.db")
+parser.add_argument("--startDate", help="The oldest date to consider, Format: --startDate='MM/DD/YYYY'", default = start_date)
+parser.add_argument("--endDate",   help="The most recent date to consider, Format: --endDate='MM/DD/YYYY'", default = end_date)
+parser.add_argument("--batch",     help="Games to load per batch, Format: --batch='500'", default = 500, type = int)
+parser.add_argument("--lg",        help="League name, Format: --lg='MLB'", default = "MLB")
+parser.add_argument("--team",      help="Team name, Format: --team='Boston Red Sox'", default=None)
 
 # Parse Arguments
 args = parser.parse_args()
