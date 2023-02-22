@@ -231,20 +231,3 @@ class boxscore:
                             self.setMetadata( self.player_game_positions, t_, p_)
                             for l_ in c.box_player_player_allPositions:
                                 self.player_game_positions[l_].append( pp_[l_] )
-
-'''
-b = boxscore()
-
-b.setData( [ '587454', '587453', '587452', '588115', '588114', '588113', '587455', '587456', '587457' ]   )
-d = c.toPandas( b.player_batting )
-c.writeToCSV(d, 'dummy')
-
-#d = b.player_batting
-#d2 = b.json
-#print( d )
-#bstats = b.getBattingStats()
-#p_p_stats = b.getPitchingStats()
-#p_f_stats = b.getFieldingStats()
-#req = r.get('http://statsapi.mlb.com/api/v1/game/583614/boxscore')
-#json = req.json()
-'''

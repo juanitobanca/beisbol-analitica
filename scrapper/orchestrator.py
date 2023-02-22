@@ -1,34 +1,33 @@
-import argparse
-from datetime import (
-    datetime as dt,
-    timedelta as td
-)
-import os
+import const  as c
 import pandas as pd
-from sqlalchemy import create_engine as ce
-
-import const as c
+import argparse
+from sqlalchemy import create_engine as ce, types
 from playByPlay import playByPlay
 from people     import people
 from boxscore   import boxscore
 from transactions import transactions
 from contextMetrics import contextMetrics
-from lookups.helpers import lookupByValue
-from lookups.mappings.sport_id_mapping import sport_id_map
-from lookups.mappings.league_id_mapping import league_id_map
-from lookups.mappings.team_id_mapping import team_id_map
+from datetime   import datetime as dt, timedelta as td
 
-
-def getSchedule(p_startDate, p_endDate, p_sportIds, p_leagueIds=None, p_teamIds=None):
+def getSchedule( p_file, p_date, p_startDate, p_endDate, p_sportId, p_leagueId ):
 
     print("Getting Schedules")
 
     games = set()
-    additional_query = f"startDate={p_startDate}&endDate={p_endDate}"
-    additional_query += "".join([f"&sportId={sport}" for sport in p_sportIds])
-    additional_query += "".join([f"&leagueId={league}" for league in p_leagueIds])
-    additional_query += "".join([f"&teamId={team}" for team in p_teamIds])
-    schedule = c.parseJson( additional_query, 'schedule' )
+
+    # MLB doesn't have a leagueId
+    if p_leagueId == 1:
+        p_leagueId = ""
+    else:
+        p_leagueId = f"&leagueId={p_leagueId}"
+
+    # Parse the schedule files
+    if p_startDate and p_endDate:
+        parsing_arg = f'sportId={p_sportId}{p_leagueId}&startDate={p_startDate}&endDate={p_endDate}'
+    elif p_date:
+        parsing_arg = f'sportId={p_sportId}{p_leagueId}'
+
+    schedule = c.parseJson( parsing_arg, 'schedule' )
 
     for d in schedule['dates']:
         for g in d['games']:
@@ -74,7 +73,7 @@ def toPandas( d ):
 
     return p
 
-def scrapeAndInsertData( p_games, p_batch, p_con, p_leagues ):
+def scrapeAndInsertData( p_games, p_batch, p_con ):
 
     print('Starting scrape and insert for '+str(len(p_games))+' games.')
     ppl_set = set()
@@ -93,7 +92,7 @@ def scrapeAndInsertData( p_games, p_batch, p_con, p_leagues ):
        # Set
        box.setData( p_games[ chunk_ : chunk_ + p_batch ] )
        play.setData( p_games[ chunk_ : chunk_ + p_batch ] )
-       cnt.setData( p_games[ chunk_ : chunk_ + p_batch ], p_leagues )
+       cnt.setData( p_games[ chunk_ : chunk_ + p_batch ] )
 
        ppl_set = ppl_set.union( set( box.player_game_info['playerId'] ) )
        official_set  = official_set.union( set( box.official_types['officialId'] ) )
@@ -146,43 +145,36 @@ def scrapeAndInsertData( p_games, p_batch, p_con, p_leagues ):
 
 
 # Default variables
-yesterday  = dt.today() - td(1)
-today = dt.today() 
-start_date = yesterday.strftime("%m/%d/%Y")
-end_date  = today.strftime("%m/%d/%Y")
+date  = dt.today() - td(1)
+date  = date.strftime("%Y_%m_%d")
 
 # Argument Parser
-parser = argparse.ArgumentParser(description="Parses details about what game data to load.")
-parser.add_argument("--con",       action = "store", dest = "con",       help="The database connection to use, Format: \"'sqlite:///$(pwd)/my_local.db\")", default = f"sqlite:///{os.getcwd()}my_local.db")
-parser.add_argument("--startDate", action = "store", dest = "startDate", help="The oldest date to consider, Format: \"'MM/DD/YYYY'\")", default = start_date)
-parser.add_argument("--endDate",   action = "store", dest = "endDate",   help="The most recent date to consider, Format: \"'MM/DD/YYYY'\")", default = end_date)
-parser.add_argument("--batch",     action = "store", dest = "batch",     help="Number of games to load per batch, Recommendation: \"5000\")", default = 500, type = int)
-parser.add_argument("--lg",        action = "store", dest = "lg",        help="League names, Format: \"'MLB,SDC'\")", default = "MLB")
-parser.add_argument("--teams",     action = "store", dest = "teams",     help="Team names, Format: \"'Boston Red Sox,Milwaukee Brewers'\")", default=None)
+parser = argparse.ArgumentParser(description="Whatever")
+
+# Add Arguments
+# 10.0.0.243
+
+parser.add_argument("--con",       action="store"  , dest = "con"                                        , default = None)
+parser.add_argument("--date",      action = "store", dest = "date",      help = "Date Format: YYYY_MM_DD", default = date)
+parser.add_argument("--startDate", action = "store", dest = "startDate", help = "Date Format: YYYY_MM_DD", default = None)
+parser.add_argument("--endDate",   action = "store", dest = "endDate",   help = "Date Format: YYYY_MM_DD", default = None)
+parser.add_argument("--file",      action = "store", dest = "file"                                       , default = None)
+parser.add_argument("--batch",     action = "store", dest = "batch"                                      , default = 500, type = int )
+parser.add_argument("--lg",        action = "store", dest = "lg",        help = "Pick aaa or win"        , default = None )
+
 
 # Parse Arguments
 args = parser.parse_args()
 
-# Initialize Variables
-con = initConnection(args.con)
-start_date = args.startDate
-end_date = args.endDate
-batch = args.batch
-sport_names = [lookupByValue(sport_id_map,league) for league in args.lg.split(",")]
-league_names = [lookupByValue(league_id_map,league) for league in args.lg.split(",")]
-team_names = [lookupByValue(team_id_map, team) for team in args.teams.split(",")] if args.teams else []
+# Here we assign the value thats gonna be inerted for major_league_id in the db.
+# Kindly look at contextMetrics.py
+c.major_league = args.lg
+c.major_league_id = c.major_id_dic[ args.lg ]
+sportId = c.sports_id_dic[args.lg]
 
-# Retrieve Game IDs
-games = getSchedule(start_date, end_date, sport_names, league_names, team_names)
+# Create connection
+con  = initConnection( args.con )
 
-# Download game data into python object, and load it into DB
-scrapeAndInsertData(games, batch, con, league_names)
-
-'''
-box.setData( [ '587933' ] )
-
-d = box.team_pitching
-
-play.setData( [ '587933' ] )
-d2 = play.atbat
-'''
+# Read and filter file
+d = getSchedule( args.file, args.date, args.startDate, args.endDate, sportId, c.major_league_id )
+scrapeAndInsertData( d, args.batch, con )
