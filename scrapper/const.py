@@ -1,7 +1,12 @@
 import requests as r
 import logging
 import datetime
-import time 
+import time
+
+# Sesión compartida: reutiliza conexiones TCP entre todas las llamadas a parseJson.
+# Se crea una sola vez al importar el módulo, así todos los scrapers (boxscore,
+# playByPlay, people, etc.) comparten el mismo pool de conexiones.
+_session = r.Session()
 
 def writeToCSV( d, file_name):
     print('Writing to CSV...')
@@ -52,7 +57,7 @@ def parseJson( parsing_arg, file ):
     while True:
 
         try:
-            req = r.get(url)
+            req = _session.get(url)
             return req.json()
         except Exception as e:
             print(f"Error parsing game {parsing_arg}, file {file}: {e}")
