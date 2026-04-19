@@ -68,6 +68,11 @@ rem_play_by_play_events AS (
 
   UNION ALL
 
+  /*
+  La segunda parte del UNION ALL agrupa muchos eventos bajo 'Out'. Varios de esos eventos ya aparecen transformados en la primera parte
+  (ej. 'Strikeout Double Play' → 'Strikeout', y también → 'Out'). Esto significa que una misma jugada puede contar dos veces: una como su evento específico
+  y otra como 'Out'. Esto es intencional, pero infla el conteo de events y distorsiona los runValue del grupo 'Out' al mezclar jugadas de naturaleza muy distinta.
+  */
   SELECT
     majorLeagueId,
     seasonId,
@@ -169,7 +174,7 @@ run_expectancies_majorleague_season_venue AS (
   INNER JOIN run_expectancy_matrix_majorleague_season_venue rem2
     ON rpbp.majorLeagueId = rem2.majorLeagueId
     AND rpbp.seasonId = rem2.seasonId
-    AND rpbp.venueId = rem.venueId
+    AND rpbp.venueId = rem2.venueId
     AND rpbp.outsAfterPlay = rem2.outsBeforePlay
     AND rpbp.runnersAfterPlay = rem2.runnersBeforePlay
   GROUP BY
