@@ -101,9 +101,11 @@ def toPandas( d ):
 def scrapeAndInsertData( p_games, p_batch, p_con, max_workers=10 ):
 
     print('Starting scrape and insert for '+str(len(p_games))+' games.')
-    ppl_set = set()
-    official_set = set()
-    tm_set = set()
+
+    # Sets acumulados a lo largo de todos los chunks — solo para tracking,
+    # nunca se pasan directamente a setData.
+    seen_ppl      = set()
+    seen_officials = set()
 
     ppl    = people()
     tr     = transactions()
@@ -144,8 +146,17 @@ def scrapeAndInsertData( p_games, p_batch, p_con, max_workers=10 ):
 
                _merge_dicts( cnt.contextMetrics, cm.contextMetrics )
 
-       ppl_set      = ppl_set.union( set( box.player_game_info['playerId'] ) )
-       official_set = official_set.union( set( box.official_types['officialId'] ) )
+       # IDs vistos en este chunk
+       chunk_ppl      = set( box.player_game_info['playerId'] )
+       chunk_officials = set( box.official_types['officialId'] )
+
+       # Solo fetchear los IDs que no se procesaron en chunks anteriores
+       new_ppl       = chunk_ppl      - seen_ppl
+       new_officials = chunk_officials - seen_officials
+
+       # Actualizar el tracking global
+       seen_ppl      |= chunk_ppl
+       seen_officials |= chunk_officials
 
        # Context Metrics
        insertToDatabase( toPandas( cnt.contextMetrics ), p_con, c.s_game_context )
@@ -181,11 +192,11 @@ def scrapeAndInsertData( p_games, p_batch, p_con, max_workers=10 ):
        insertToDatabase( toPandas( play.action ),  p_con, c.s_play_action )
        insertToDatabase( toPandas( play.pickoff ), p_con, c.s_play_pickoff )
 
-       # People
-       ppl.setData( ppl_set )
+       # People — solo IDs nuevos, nunca los ya insertados en chunks anteriores
+       ppl.setData( new_ppl )
        insertToDatabase( toPandas( ppl.people ), p_con, c.s_players )
 
-       ppl.setData( official_set )
+       ppl.setData( new_officials )
        insertToDatabase( toPandas( ppl.people ), p_con, c.s_officials )
 
        # Transactions
