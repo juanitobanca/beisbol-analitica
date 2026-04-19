@@ -1,0 +1,54 @@
+[
+    {
+        "description": "Regular Season Standings",
+        "name": "regularSeason"
+    },
+    {
+        "description": "Wild card standings",
+        "name": "wildCard"
+    },
+    {
+        "description": "Division Leader standings",
+        "name": "divisionLeaders"
+    },
+    {
+        "description": "Wild card standings with Division Leaders",
+        "name": "wildCardWithLeaders"
+    },
+    {
+        "description": "First half standings.  Only valid for leagues with a split season.",
+        "name": "firstHalf"
+    },
+    {
+        "description": "Second half standings. Only valid for leagues with a split season.",
+        "name": "secondHalf"
+    },
+    {
+        "description": "Spring Training Standings",
+        "name": "springTraining"
+    },
+    {
+        "description": "Postseason Standings",
+        "name": "postseason"
+    },
+    {
+        "description": "Standings by Division",
+        "name": "byDivision"
+    },
+    {
+        "description": "Standings by Conference",
+        "name": "byConference"
+    },
+    {
+        "description": "Standings by League",
+        "name": "byLeague"
+    },
+    {
+        "description": "Standing by Organization",
+        "name": "byOrganization"
+    },
+    {
+        "description": "Current Half Standings. Returns standings in the current half for split season leagues and overall standings for full season leagues.",
+        "name": "currentHalf"
+    }
+]

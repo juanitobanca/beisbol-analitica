@@ -1,0 +1,110 @@
+[
+    {
+        "code": "A",
+        "description": "Tag play"
+    },
+    {
+        "code": "F",
+        "description": "Close play at 1st"
+    },
+    {
+        "code": "C",
+        "description": "Force play"
+    },
+    {
+        "code": "H",
+        "description": "Home run"
+    },
+    {
+        "code": "O",
+        "description": "Fair/foul in outfield"
+    },
+    {
+        "code": "D",
+        "description": "Catch/drop in outfield"
+    },
+    {
+        "code": "T",
+        "description": "Trap play in outfield"
+    },
+    {
+        "code": "J",
+        "description": "Pitch result"
+    },
+    {
+        "code": "I",
+        "description": "Hit by pitch"
+    },
+    {
+        "code": "P",
+        "description": "Home-plate collision"
+    },
+    {
+        "code": "E",
+        "description": "Slide interference"
+    },
+    {
+        "code": "M",
+        "description": "Timing Play"
+    },
+    {
+        "code": "U",
+        "description": "Tag-up play"
+    },
+    {
+        "code": "B",
+        "description": "Touching a base"
+    },
+    {
+        "code": "R",
+        "description": "Passing runners"
+    },
+    {
+        "code": "Y",
+        "description": "Runner placement"
+    },
+    {
+        "code": "S",
+        "description": "Stadium boundary call"
+    },
+    {
+        "code": "N",
+        "description": "Fan interference"
+    },
+    {
+        "code": "V",
+        "description": "Catcher interference"
+    },
+    {
+        "code": "Q",
+        "description": "Rules check"
+    },
+    {
+        "code": "K",
+        "description": "Record keeping"
+    },
+    {
+        "code": "G",
+        "description": "Grounds rule"
+    },
+    {
+        "code": "L",
+        "description": "Multiple issues"
+    },
+    {
+        "code": "X",
+        "description": "Other"
+    },
+    {
+        "code": "W",
+        "description": "Defensive Shift"
+    },
+    {
+        "code": "Z",
+        "description": "Check Swing"
+    },
+    {
+        "code": "AA",
+        "description": "Runner Abandonment"
+    }
+]

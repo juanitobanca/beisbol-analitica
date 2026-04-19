@@ -1,0 +1,28 @@
+{
+    "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+    "seasons": [
+        {
+            "allStarDate": "2026-07-14",
+            "firstDate2ndHalf": "2026-07-19",
+            "gameLevelGamedayType": "P",
+            "hasWildcard": true,
+            "lastDate1stHalf": "2026-07-14",
+            "offSeasonEndDate": "2026-12-31",
+            "offseasonStartDate": "2026-11-01",
+            "postSeasonEndDate": "2026-10-31",
+            "postSeasonStartDate": "2026-09-28",
+            "preSeasonEndDate": "2026-02-19",
+            "preSeasonStartDate": "2026-01-01",
+            "qualifierOutsPitched": 3.0,
+            "qualifierPlateAppearances": 3.1,
+            "regularSeasonEndDate": "2026-09-27",
+            "regularSeasonStartDate": "2026-03-25",
+            "seasonEndDate": "2026-10-31",
+            "seasonId": "2026",
+            "seasonLevelGamedayType": "P",
+            "seasonStartDate": "2026-02-20",
+            "springEndDate": "2026-03-24",
+            "springStartDate": "2026-02-20"
+        }
+    ]
+}

@@ -1,0 +1,1650 @@
+[
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "S",
+        "detailedState": "Scheduled",
+        "statusCode": "S"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Pre-Game",
+        "statusCode": "P"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "P",
+        "detailedState": "Warmup",
+        "statusCode": "PW"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Rain",
+        "reason": "Rain",
+        "statusCode": "PR"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Snow",
+        "reason": "Snow",
+        "statusCode": "PS"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Wet Grounds",
+        "reason": "Wet Grounds",
+        "statusCode": "PG"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Venue",
+        "reason": "Venue",
+        "statusCode": "PV"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Fog",
+        "reason": "Fog",
+        "statusCode": "PF"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Cold",
+        "reason": "Cold",
+        "statusCode": "PC"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Air Quality",
+        "reason": "Air Quality",
+        "statusCode": "PD"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Wind",
+        "reason": "Wind",
+        "statusCode": "PB"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Inclement Weather",
+        "reason": "Inclement Weather",
+        "statusCode": "PI"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Power",
+        "reason": "Power",
+        "statusCode": "PP"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Ceremony",
+        "reason": "Ceremony",
+        "statusCode": "PY"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Lightning",
+        "reason": "Lightning",
+        "statusCode": "PL"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Emergency",
+        "reason": "Emergency",
+        "statusCode": "PE"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: COVID-19",
+        "reason": "COVID-19",
+        "statusCode": "P9"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start: Tragedy",
+        "reason": "Tragedy",
+        "statusCode": "PA"
+    },
+    {
+        "abstractGameCode": "P",
+        "abstractGameState": "Preview",
+        "codedGameState": "P",
+        "detailedState": "Delayed Start",
+        "statusCode": "PO"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "In Progress",
+        "statusCode": "I"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Rain",
+        "reason": "Rain",
+        "statusCode": "IR"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Snow",
+        "reason": "Snow",
+        "statusCode": "IS"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Wet Grounds",
+        "reason": "Wet Grounds",
+        "statusCode": "IG"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Venue",
+        "reason": "Venue",
+        "statusCode": "IV"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Fog",
+        "reason": "Fog",
+        "statusCode": "IF"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Cold",
+        "reason": "Cold",
+        "statusCode": "IC"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Air Quality",
+        "reason": "Air Quality",
+        "statusCode": "ID"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Wind",
+        "reason": "Wind",
+        "statusCode": "IB"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Inclement Weather",
+        "reason": "Inclement Weather",
+        "statusCode": "II"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Power",
+        "reason": "Power",
+        "statusCode": "IP"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Ceremony",
+        "reason": "Ceremony",
+        "statusCode": "IY"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Lightning",
+        "reason": "Lightning",
+        "statusCode": "IL"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Emergency",
+        "reason": "Emergency",
+        "statusCode": "IE"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: COVID-19",
+        "reason": "COVID-19",
+        "statusCode": "I9"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: Tragedy",
+        "reason": "Tragedy",
+        "statusCode": "IA"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Instant Replay",
+        "reason": "Review",
+        "statusCode": "IH"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed",
+        "statusCode": "IO"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "Delayed: About to Resume",
+        "reason": "About to Resume",
+        "statusCode": "IZ"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Close play at 1st",
+        "reason": "Close play at 1st",
+        "statusCode": "MF"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Tag play",
+        "reason": "Tag play",
+        "statusCode": "MA"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Tag-up play",
+        "reason": "Tag-up play",
+        "statusCode": "MU"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Timing play",
+        "reason": "Timing play",
+        "statusCode": "MM"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Force play",
+        "reason": "Force play",
+        "statusCode": "MC"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Home-plate collision",
+        "reason": "Home-plate collision",
+        "statusCode": "MP"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Slide interference",
+        "reason": "Slide interference",
+        "statusCode": "ME"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Home run",
+        "reason": "Home run",
+        "statusCode": "MH"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Fair/foul in outfield",
+        "reason": "Fair/foul in outfield",
+        "statusCode": "MO"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Catch/drop in outfield",
+        "reason": "Catch/drop in outfield",
+        "statusCode": "MD"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Trap play in outfield",
+        "reason": "Trap play in outfield",
+        "statusCode": "MT"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Hit by pitch",
+        "reason": "Hit by pitch",
+        "statusCode": "MI"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Touching a base",
+        "reason": "Touching a base",
+        "statusCode": "MB"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Passing runners",
+        "reason": "Passing runners",
+        "statusCode": "MR"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Fan interference",
+        "reason": "Fan interference",
+        "statusCode": "MN"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Stadium boundary call",
+        "reason": "Stadium boundary call",
+        "statusCode": "MS"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Grounds rule",
+        "reason": "Grounds rule",
+        "statusCode": "MG"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Rules check",
+        "reason": "Rules check",
+        "statusCode": "MQ"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Record keeping",
+        "reason": "Record keeping",
+        "statusCode": "MK"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Multiple issues",
+        "reason": "Multiple issues",
+        "statusCode": "ML"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge",
+        "statusCode": "MX"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Manager challenge: Catchers Interference",
+        "reason": "Catchers Interference",
+        "statusCode": "MV"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "M",
+        "detailedState": "Player challenge: Pitch Result",
+        "reason": "Pitch Result",
+        "statusCode": "MJ"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Close play at 1st",
+        "reason": "Close play at 1st",
+        "statusCode": "NF"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Tag play",
+        "reason": "Tag play",
+        "statusCode": "NA"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Def Shift Violation",
+        "reason": "Def Shift Violation",
+        "statusCode": "NW"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Tag-up play",
+        "reason": "Tag-up play",
+        "statusCode": "NU"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Timing play",
+        "reason": "Timing play",
+        "statusCode": "NM"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Force play",
+        "reason": "Force play",
+        "statusCode": "NC"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Home-plate collision",
+        "reason": "Home-plate collision",
+        "statusCode": "NP"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Slide interference",
+        "reason": "Slide interference",
+        "statusCode": "NE"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Home run",
+        "reason": "Home run",
+        "statusCode": "NH"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Fair/foul in outfield",
+        "reason": "Fair/foul in outfield",
+        "statusCode": "NO"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Catch/drop in outfield",
+        "reason": "Catch/drop in outfield",
+        "statusCode": "ND"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Trap play in outfield",
+        "reason": "Trap play in outfield",
+        "statusCode": "NT"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Hit by pitch",
+        "reason": "Hit by pitch",
+        "statusCode": "NI"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Touching a base",
+        "reason": "Touching a base",
+        "statusCode": "NB"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Passing runners",
+        "reason": "Passing runners",
+        "statusCode": "NR"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Fan interference",
+        "reason": "Fan interference",
+        "statusCode": "NN"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Stadium boundary call",
+        "reason": "Stadium boundary call",
+        "statusCode": "NS"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Grounds rule",
+        "reason": "Grounds rule",
+        "statusCode": "NG"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Rules check",
+        "reason": "Rules check",
+        "statusCode": "NQ"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Record keeping",
+        "reason": "Record keeping",
+        "statusCode": "NK"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review: Multiple issues",
+        "reason": "Multiple issues",
+        "statusCode": "NL"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire review",
+        "statusCode": "NX"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "N",
+        "detailedState": "Umpire Challenge: Pitch Result",
+        "reason": "Pitch Result",
+        "statusCode": "NJ"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Rain",
+        "reason": "Rain",
+        "statusCode": "DR"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Snow",
+        "reason": "Snow",
+        "statusCode": "DS"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Wet Grounds",
+        "reason": "Wet Grounds",
+        "statusCode": "DG"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Venue",
+        "reason": "Venue",
+        "statusCode": "DV"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Fog",
+        "reason": "Fog",
+        "statusCode": "DF"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Cold",
+        "reason": "Cold",
+        "statusCode": "DC"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Air Quality",
+        "reason": "Air Quality",
+        "statusCode": "DD"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Wind",
+        "reason": "Wind",
+        "statusCode": "DB"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Inclement Weather",
+        "reason": "Inclement Weather",
+        "statusCode": "DI"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Power",
+        "reason": "Power",
+        "statusCode": "DP"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Lightning",
+        "reason": "Lightning",
+        "statusCode": "DL"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Emergency",
+        "reason": "Emergency",
+        "statusCode": "DE"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: COVID-19",
+        "reason": "COVID-19",
+        "statusCode": "D9"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed: Tragedy",
+        "reason": "Tragedy",
+        "statusCode": "DA"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "D",
+        "detailedState": "Postponed",
+        "statusCode": "DO"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Rain",
+        "reason": "Rain",
+        "statusCode": "CR"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Snow",
+        "reason": "Snow",
+        "statusCode": "CS"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Wet Grounds",
+        "reason": "Wet Grounds",
+        "statusCode": "CG"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Venue",
+        "reason": "Venue",
+        "statusCode": "CV"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Fog",
+        "reason": "Fog",
+        "statusCode": "CF"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Cold",
+        "reason": "Cold",
+        "statusCode": "CC"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Air Quality",
+        "reason": "Air Quality",
+        "statusCode": "CD"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Wind",
+        "reason": "Wind",
+        "statusCode": "CB"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Inclement Weather",
+        "reason": "Inclement Weather",
+        "statusCode": "CI"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Power",
+        "reason": "Power",
+        "statusCode": "CP"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Lightning",
+        "reason": "Lightning",
+        "statusCode": "CL"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: COVID-19",
+        "reason": "COVID-19",
+        "statusCode": "C9"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Emergency",
+        "reason": "Emergency",
+        "statusCode": "CE"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled: Tragedy",
+        "reason": "Tragedy",
+        "statusCode": "CA"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "C",
+        "detailedState": "Cancelled",
+        "statusCode": "CO"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Game Over",
+        "statusCode": "O"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Rain",
+        "reason": "Rain",
+        "statusCode": "OR"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Snow",
+        "reason": "Snow",
+        "statusCode": "OS"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Wet Grounds",
+        "reason": "Wet Grounds",
+        "statusCode": "OG"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Venue",
+        "reason": "Venue",
+        "statusCode": "OV"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Fog",
+        "reason": "Fog",
+        "statusCode": "OF"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Cold",
+        "reason": "Cold",
+        "statusCode": "OC"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Air Quality",
+        "reason": "Air Quality",
+        "statusCode": "OD"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Wind",
+        "reason": "Wind",
+        "statusCode": "OB"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Inclement Weather",
+        "reason": "Inclement Weather",
+        "statusCode": "OI"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Power",
+        "reason": "Power",
+        "statusCode": "OP"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Lightning",
+        "reason": "Lightning",
+        "statusCode": "OL"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: COVID-19",
+        "reason": "COVID-19",
+        "statusCode": "O9"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Emergency",
+        "reason": "Emergency",
+        "statusCode": "OE"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Tragedy",
+        "reason": "Tragedy",
+        "statusCode": "OA"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early: Mercy",
+        "reason": "Mercy",
+        "statusCode": "OM"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Completed Early",
+        "statusCode": "OO"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Game Over: Tied",
+        "reason": "Tied",
+        "statusCode": "OT"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "O",
+        "detailedState": "Game Over: Tied (won in tiebreaker)",
+        "reason": "Tied (won in tiebreaker)",
+        "statusCode": "OW"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Final",
+        "statusCode": "F"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Rain",
+        "reason": "Rain",
+        "statusCode": "FR"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Snow",
+        "reason": "Snow",
+        "statusCode": "FS"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Wet Grounds",
+        "reason": "Wet Grounds",
+        "statusCode": "FG"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Venue",
+        "reason": "Venue",
+        "statusCode": "FV"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Fog",
+        "reason": "Fog",
+        "statusCode": "FF"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Cold",
+        "reason": "Cold",
+        "statusCode": "FC"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Air Quality",
+        "reason": "Air Quality",
+        "statusCode": "FD"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Wind",
+        "reason": "Wind",
+        "statusCode": "FB"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Inclement Weather",
+        "reason": "Inclement Weather",
+        "statusCode": "FI"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Power",
+        "reason": "Power",
+        "statusCode": "FP"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Lightning",
+        "reason": "Lightning",
+        "statusCode": "FL"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: COVID-19",
+        "reason": "COVID-19",
+        "statusCode": "F9"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Emergency",
+        "reason": "Emergency",
+        "statusCode": "FE"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Tragedy",
+        "reason": "Tragedy",
+        "statusCode": "FA"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early: Mercy",
+        "reason": "Mercy",
+        "statusCode": "FM"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Completed Early",
+        "statusCode": "FO"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Final: Tied",
+        "reason": "Tied",
+        "statusCode": "FT"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Final: Tied (won in tiebreaker)",
+        "reason": "Tied (won in tiebreaker)",
+        "statusCode": "FW"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended",
+        "statusCode": "T"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Rain",
+        "reason": "Rain",
+        "statusCode": "TR"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Snow",
+        "reason": "Snow",
+        "statusCode": "TS"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Wet Grounds",
+        "reason": "Wet Grounds",
+        "statusCode": "TG"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Venue",
+        "reason": "Venue",
+        "statusCode": "TV"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Fog",
+        "reason": "Fog",
+        "statusCode": "TF"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Cold",
+        "reason": "Cold",
+        "statusCode": "TC"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Air Quality",
+        "reason": "Air Quality",
+        "statusCode": "TD"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Wind",
+        "reason": "Wind",
+        "statusCode": "TB"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Inclement Weather",
+        "reason": "Inclement Weather",
+        "statusCode": "TI"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Power",
+        "reason": "Power",
+        "statusCode": "TP"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Lightning",
+        "reason": "Lightning",
+        "statusCode": "TL"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Preview",
+        "codedGameState": "T",
+        "detailedState": "Scheduled: COVID-19",
+        "reason": "COVID-19",
+        "statusCode": "T9"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Emergency",
+        "reason": "Emergency",
+        "statusCode": "TE"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Tragedy",
+        "reason": "Tragedy",
+        "statusCode": "TA"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended: Appeal Upheld",
+        "reason": "Appeal Upheld",
+        "statusCode": "TU"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "T",
+        "detailedState": "Suspended",
+        "statusCode": "TO"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended",
+        "statusCode": "U"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Rain",
+        "reason": "Rain",
+        "statusCode": "UR"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Snow",
+        "reason": "Snow",
+        "statusCode": "US"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Wet Grounds",
+        "reason": "Wet Grounds",
+        "statusCode": "UG"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Venue",
+        "reason": "Venue",
+        "statusCode": "UV"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Fog",
+        "reason": "Fog",
+        "statusCode": "UF"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Cold",
+        "reason": "Cold",
+        "statusCode": "UC"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Air Quality",
+        "reason": "Air Quality",
+        "statusCode": "UD"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Wind",
+        "reason": "Wind",
+        "statusCode": "UB"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Inclement Weather",
+        "reason": "Inclement Weather",
+        "statusCode": "UI"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Power",
+        "reason": "Power",
+        "statusCode": "UP"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Lightning",
+        "reason": "Lightning",
+        "statusCode": "UL"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: COVID-19",
+        "reason": "COVID-19",
+        "statusCode": "U9"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Emergency",
+        "reason": "Emergency",
+        "statusCode": "UE"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Tragedy",
+        "reason": "Tragedy",
+        "statusCode": "UA"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: Appeal Upheld",
+        "reason": "Appeal Upheld",
+        "statusCode": "UU"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended",
+        "statusCode": "UO"
+    },
+    {
+        "abstractGameCode": "L",
+        "abstractGameState": "Live",
+        "codedGameState": "U",
+        "detailedState": "Suspended: About to Resume",
+        "reason": "About to Resume",
+        "statusCode": "UZ"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "Q",
+        "detailedState": "Forfeit",
+        "statusCode": "Q"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "Q",
+        "detailedState": "Forfeit: Delay",
+        "reason": "Delay",
+        "statusCode": "QK"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "Q",
+        "detailedState": "Forfeit: Appear",
+        "reason": "Appear",
+        "statusCode": "QX"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "Q",
+        "detailedState": "Forfeit: Lineup",
+        "reason": "Lineup",
+        "statusCode": "QQ"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "Q",
+        "detailedState": "Forfeit: Ejection",
+        "reason": "Ejection",
+        "statusCode": "QJ"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "Q",
+        "detailedState": "Forfeit: Ineligible",
+        "reason": "Ineligible",
+        "statusCode": "QI"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "Q",
+        "detailedState": "Forfeit: Refusal",
+        "reason": "Refusal",
+        "statusCode": "QN"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "Q",
+        "detailedState": "Forfeit: Unplayable",
+        "reason": "Unplayable",
+        "statusCode": "QV"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "Q",
+        "detailedState": "Forfeit: Rule",
+        "reason": "Rule",
+        "statusCode": "QR"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "Q",
+        "detailedState": "Forfeit",
+        "statusCode": "QO"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "R",
+        "detailedState": "Forfeit",
+        "statusCode": "R"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "R",
+        "detailedState": "Forfeit: Delay",
+        "reason": "Delay",
+        "statusCode": "RK"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "R",
+        "detailedState": "Forfeit: Appear",
+        "reason": "Appear",
+        "statusCode": "RX"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "R",
+        "detailedState": "Forfeit: Lineup",
+        "reason": "Lineup",
+        "statusCode": "RQ"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "R",
+        "detailedState": "Forfeit: Ejection",
+        "reason": "Ejection",
+        "statusCode": "RJ"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "R",
+        "detailedState": "Forfeit: Ineligible",
+        "reason": "Ineligible",
+        "statusCode": "RI"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "R",
+        "detailedState": "Forfeit: Refusal",
+        "reason": "Refusal",
+        "statusCode": "RN"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "R",
+        "detailedState": "Forfeit: Unplayable",
+        "reason": "Unplayable",
+        "statusCode": "RV"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "R",
+        "detailedState": "Forfeit: Rule",
+        "reason": "Rule",
+        "statusCode": "RR"
+    },
+    {
+        "abstractGameCode": "F",
+        "abstractGameState": "Final",
+        "codedGameState": "R",
+        "detailedState": "Forfeit",
+        "statusCode": "RO"
+    },
+    {
+        "abstractGameCode": "O",
+        "abstractGameState": "Other",
+        "codedGameState": "X",
+        "detailedState": "Unknown",
+        "statusCode": "X"
+    },
+    {
+        "abstractGameCode": "O",
+        "abstractGameState": "Other",
+        "codedGameState": "W",
+        "detailedState": "Writing",
+        "statusCode": "W"
+    }
+]

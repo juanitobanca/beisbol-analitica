@@ -1,0 +1,122 @@
+[
+    {
+        "chance": true,
+        "code": "A",
+        "error": false,
+        "names": [
+            "assist"
+        ],
+        "statName": "f_assist"
+    },
+    {
+        "chance": false,
+        "code": "FOF",
+        "error": false,
+        "names": [
+            "outfieldAssist"
+        ],
+        "statName": "f_assist_of"
+    },
+    {
+        "chance": false,
+        "code": null,
+        "error": false,
+        "names": null,
+        "statName": "f_fielded_ball"
+    },
+    {
+        "chance": false,
+        "code": null,
+        "error": false,
+        "names": null,
+        "statName": "f_deflection"
+    },
+    {
+        "chance": true,
+        "code": "PO",
+        "error": false,
+        "names": [
+            "putout"
+        ],
+        "statName": "f_putout"
+    },
+    {
+        "chance": false,
+        "code": null,
+        "error": false,
+        "names": null,
+        "statName": "f_touch"
+    },
+    {
+        "chance": true,
+        "code": "E",
+        "error": true,
+        "names": [
+            "error"
+        ],
+        "statName": "f_error"
+    },
+    {
+        "chance": true,
+        "code": null,
+        "error": true,
+        "names": null,
+        "statName": "f_fielding_error"
+    },
+    {
+        "chance": true,
+        "code": null,
+        "error": true,
+        "names": null,
+        "statName": "f_foul_error"
+    },
+    {
+        "chance": true,
+        "code": null,
+        "error": true,
+        "names": null,
+        "statName": "f_error_dropped_ball"
+    },
+    {
+        "chance": true,
+        "code": null,
+        "error": true,
+        "names": null,
+        "statName": "f_interference"
+    },
+    {
+        "chance": true,
+        "code": null,
+        "error": true,
+        "names": null,
+        "statName": "f_throwing_error"
+    },
+    {
+        "chance": false,
+        "code": null,
+        "error": true,
+        "names": null,
+        "statName": "c_catcher_interf"
+    },
+    {
+        "chance": false,
+        "code": null,
+        "error": false,
+        "names": null,
+        "statName": "t_double_play"
+    },
+    {
+        "chance": false,
+        "code": null,
+        "error": false,
+        "names": null,
+        "statName": "t_triple_play"
+    },
+    {
+        "chance": false,
+        "code": null,
+        "error": true,
+        "names": null,
+        "statName": "f_defensive_shift_violation_error"
+    }
+]

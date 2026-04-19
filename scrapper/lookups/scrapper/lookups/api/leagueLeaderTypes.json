@@ -1,0 +1,212 @@
+[
+    {
+        "displayName": "assists"
+    },
+    {
+        "displayName": "shutouts"
+    },
+    {
+        "displayName": "homeRuns"
+    },
+    {
+        "displayName": "sacrificeBunts"
+    },
+    {
+        "displayName": "sacrificeFlies"
+    },
+    {
+        "displayName": "runs"
+    },
+    {
+        "displayName": "groundoutToFlyoutRatio"
+    },
+    {
+        "displayName": "stolenBases"
+    },
+    {
+        "displayName": "battingAverage"
+    },
+    {
+        "displayName": "groundOuts"
+    },
+    {
+        "displayName": "numberOfPitches"
+    },
+    {
+        "displayName": "onBasePercentage"
+    },
+    {
+        "displayName": "caughtStealing"
+    },
+    {
+        "displayName": "groundIntoDoublePlays"
+    },
+    {
+        "displayName": "totalBases"
+    },
+    {
+        "displayName": "earnedRunAverage"
+    },
+    {
+        "displayName": "fieldingPercentage"
+    },
+    {
+        "displayName": "walksAndHitsPerInningPitched"
+    },
+    {
+        "displayName": "flyouts"
+    },
+    {
+        "displayName": "hitByPitches"
+    },
+    {
+        "displayName": "gamesPlayed"
+    },
+    {
+        "displayName": "walks"
+    },
+    {
+        "displayName": "sluggingPercentage"
+    },
+    {
+        "displayName": "onBasePlusSlugging"
+    },
+    {
+        "displayName": "runsBattedIn"
+    },
+    {
+        "displayName": "triples"
+    },
+    {
+        "displayName": "extraBaseHits"
+    },
+    {
+        "displayName": "hits"
+    },
+    {
+        "displayName": "atBats"
+    },
+    {
+        "displayName": "strikeouts"
+    },
+    {
+        "displayName": "doubles"
+    },
+    {
+        "displayName": "totalPlateAppearances"
+    },
+    {
+        "displayName": "intentionalWalks"
+    },
+    {
+        "displayName": "wins"
+    },
+    {
+        "displayName": "losses"
+    },
+    {
+        "displayName": "saves"
+    },
+    {
+        "displayName": "wildPitch"
+    },
+    {
+        "displayName": "airOuts"
+    },
+    {
+        "displayName": "balk"
+    },
+    {
+        "displayName": "blownSaves"
+    },
+    {
+        "displayName": "catcherEarnedRunAverage"
+    },
+    {
+        "displayName": "catchersInterference"
+    },
+    {
+        "displayName": "chances"
+    },
+    {
+        "displayName": "completeGames"
+    },
+    {
+        "displayName": "doublePlays"
+    },
+    {
+        "displayName": "earnedRun"
+    },
+    {
+        "displayName": "errors"
+    },
+    {
+        "displayName": "gamesFinished"
+    },
+    {
+        "displayName": "gamesStarted"
+    },
+    {
+        "displayName": "hitBatsman"
+    },
+    {
+        "displayName": "hitsPer9Inn"
+    },
+    {
+        "displayName": "holds"
+    },
+    {
+        "displayName": "innings"
+    },
+    {
+        "displayName": "inningsPitched"
+    },
+    {
+        "displayName": "outfieldAssists"
+    },
+    {
+        "displayName": "passedBalls"
+    },
+    {
+        "displayName": "pickoffs"
+    },
+    {
+        "displayName": "pitchesPerInning"
+    },
+    {
+        "displayName": "putOuts"
+    },
+    {
+        "displayName": "rangeFactorPerGame"
+    },
+    {
+        "displayName": "rangeFactorPer9Inn"
+    },
+    {
+        "displayName": "saveOpportunities"
+    },
+    {
+        "displayName": "stolenBasePercentage"
+    },
+    {
+        "displayName": "strikeoutsPer9Inn"
+    },
+    {
+        "displayName": "strikeoutWalkRatio"
+    },
+    {
+        "displayName": "throwingErrors"
+    },
+    {
+        "displayName": "totalBattersFaced"
+    },
+    {
+        "displayName": "triplePlays"
+    },
+    {
+        "displayName": "walksPer9Inn"
+    },
+    {
+        "displayName": "winPercentage"
+    }
+]

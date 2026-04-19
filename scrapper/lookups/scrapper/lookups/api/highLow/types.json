@@ -1,0 +1,840 @@
+[
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM",
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "At bats",
+        "lookupParam": "atBats",
+        "name": "at_bats",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            },
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM",
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Total plate appearances",
+        "lookupParam": "plateAppearances",
+        "name": "total_plate_appearances",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM",
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Runs",
+        "lookupParam": "runs",
+        "name": "runs",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM",
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Runs batted in",
+        "lookupParam": "rbi",
+        "name": "runs_batted_in",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Home team runs",
+        "lookupParam": "runs",
+        "name": "home_team_runs",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Away team runs",
+        "lookupParam": "runs",
+        "name": "away_team_runs",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM",
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Hits",
+        "lookupParam": "hits",
+        "name": "hits",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Hits risp",
+        "lookupParam": "hitsRisp",
+        "name": "hits_risp",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Home team hits",
+        "lookupParam": "hits",
+        "name": "home_team_hits",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Away team hits",
+        "lookupParam": "hits",
+        "name": "away_team_hits",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Total bases",
+        "lookupParam": "totalBases",
+        "name": "total_bases",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            },
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM",
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Doubles",
+        "lookupParam": "doubles",
+        "name": "doubles",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            },
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM",
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Triples",
+        "lookupParam": "triples",
+        "name": "triples",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Home runs",
+        "lookupParam": "homeRuns",
+        "name": "home_runs",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            },
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Extra base hits",
+        "lookupParam": "extraBaseHits",
+        "name": "extra_base_hits",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Walks",
+        "lookupParam": "baseOnBalls",
+        "name": "walks",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            },
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Strikeouts",
+        "lookupParam": "strikeouts",
+        "name": "strikeouts",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            },
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Stolen bases",
+        "lookupParam": "stolenBases",
+        "name": "stolen_bases",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Caught stealing",
+        "lookupParam": "caughtStealing",
+        "name": "caught_stealing",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            },
+            {
+                "displayName": "pitching"
+            },
+            {
+                "displayName": "fielding"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Sacrifice flies",
+        "lookupParam": "sacFlies",
+        "name": "sacrifice_flies",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Sacrifice bunts",
+        "lookupParam": "sacBunts",
+        "name": "sacrifice_bunts",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Hit by pitches",
+        "lookupParam": "hitByPitch",
+        "name": "hit_by_pitches",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            },
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Left on base",
+        "lookupParam": "leftOnBase",
+        "name": "left_on_base",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "isCounting": true,
+        "label": "Ground into double plays",
+        "lookupParam": "groundIntoDoublePlay",
+        "name": "ground_into_double_plays",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "hitting"
+            },
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM",
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Strikes",
+        "lookupParam": "strikes",
+        "name": "strikes",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM",
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Pitches",
+        "lookupParam": "pitchesThrown",
+        "name": "pitches",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER",
+            "TEAM",
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Balks",
+        "lookupParam": "balks",
+        "name": "balks",
+        "orgTypes": [
+            "PLAYER",
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "PLAYER"
+        ],
+        "isCounting": true,
+        "label": "Innings pitched",
+        "lookupParam": "inningsPitched",
+        "name": "innings_pitched",
+        "orgTypes": [
+            "PLAYER"
+        ],
+        "statGroups": [
+            {
+                "displayName": "pitching"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [],
+        "isCounting": true,
+        "label": "Errors",
+        "lookupParam": "errors",
+        "name": "errors",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "fielding"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [],
+        "isCounting": true,
+        "label": "Home team errors",
+        "lookupParam": "errors",
+        "name": "home_team_errors",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "fielding"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [],
+        "isCounting": true,
+        "label": "Away team errors",
+        "lookupParam": "errors",
+        "name": "away_team_errors",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "fielding"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [],
+        "isCounting": true,
+        "label": "Chances",
+        "lookupParam": "chances",
+        "name": "chances",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "fielding"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [],
+        "isCounting": true,
+        "label": "Put outs",
+        "lookupParam": "putOuts",
+        "name": "put_outs",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "fielding"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [],
+        "isCounting": true,
+        "label": "Assists",
+        "lookupParam": "assists",
+        "name": "assists",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "fielding"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [],
+        "isCounting": true,
+        "label": "Double plays",
+        "lookupParam": "doublePlays",
+        "name": "double_plays",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "fielding"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Attendance",
+        "lookupParam": "attendance",
+        "name": "attendance",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "game"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Game time",
+        "lookupParam": "gameDuration",
+        "name": "game_time",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "game"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Delay time",
+        "lookupParam": "gameDuration",
+        "name": "delay_time",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "game"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [],
+        "isCounting": true,
+        "label": "Longest",
+        "lookupParam": "gameDuration",
+        "name": "longest",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "game"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [],
+        "isCounting": true,
+        "label": "Shortest",
+        "lookupParam": "gameDuration",
+        "name": "shortest",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "game"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [
+            "GAME"
+        ],
+        "isCounting": true,
+        "label": "Inning",
+        "lookupParam": "innings",
+        "name": "inning",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "game"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [],
+        "isCounting": true,
+        "label": "Win streak",
+        "lookupParam": "winStreak",
+        "name": "win_streak",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "streak"
+            }
+        ],
+        "streakLevels": []
+    },
+    {
+        "highLowTypes": [],
+        "isCounting": true,
+        "label": "Loss streak",
+        "lookupParam": "lossStreak",
+        "name": "loss_streak",
+        "orgTypes": [
+            "TEAM"
+        ],
+        "statGroups": [
+            {
+                "displayName": "streak"
+            }
+        ],
+        "streakLevels": []
+    }
+]
