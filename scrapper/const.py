@@ -38,7 +38,12 @@ def defaultMissingValue( d, k, v ):
 
 def parseJson( parsing_arg, file ):
 
-    if file == people_file:
+    if file == people_batch_file:
+        # parsing_arg es un string "123,456,789" ya construido por el caller
+        url = 'http://statsapi.mlb.com/api/v1/people?personIds=' + parsing_arg
+        print('Players (batch): '+parsing_arg+'. Parsing '+file+'. url: '+url)
+
+    elif file == people_file:
         url = 'http://statsapi.mlb.com/api/v1/people/' + str(int(parsing_arg))
         print('Player: '+str(int(parsing_arg))+'. Parsing '+file+'. url: '+url)
 
@@ -157,11 +162,12 @@ s_play_pickoff  = 'stg_play_pickoff'
 #
 # FILES FOR URL
 #
-playByPlay_file = 'playByPlay'
-boxscore_file   = 'boxscore'
-people_file     = 'people'
-context_file    = 'contextMetrics'
-schedule_file   = 'schedule'
+playByPlay_file   = 'playByPlay'
+boxscore_file     = 'boxscore'
+people_file       = 'people'
+people_batch_file = 'people_batch'   # endpoint batch: /api/v1/people?personIds=id1,id2,...
+context_file      = 'contextMetrics'
+schedule_file     = 'schedule'
 transactions_file = 'transactions'
 
 #
