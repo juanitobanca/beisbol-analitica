@@ -8,6 +8,32 @@ from boxscore   import boxscore
 from transactions import transactions
 from contextMetrics import contextMetrics
 from datetime   import datetime as dt, timedelta as td
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+def _merge_dicts( base, incoming ):
+    """Fusiona 'incoming' en 'base' extendiendo cada lista. Ambos dicts tienen las mismas keys."""
+    for key in base:
+        base[key].extend( incoming[key] )
+
+def _fetch_game( game_pk ):
+    """
+    Descarga y parsea los 3 endpoints de un juego usando instancias locales al thread.
+
+    Cada thread crea sus propios objetos boxscore/playByPlay/contextMetrics, por lo que
+    no hay estado compartido mutable — es thread-safe sin necesidad de locks.
+    La Session de requests en const._session sí es compartida, pero requests.Session
+    es thread-safe para lecturas concurrentes.
+    """
+    b = boxscore()
+    b.setData( [game_pk] )
+
+    p = playByPlay()
+    p.setData( [game_pk] )
+
+    cm = contextMetrics()
+    cm.setData( [game_pk] )
+
+    return b, p, cm
 
 def getSchedule( p_file, p_date, p_startDate, p_endDate, p_sportId, p_leagueId ):
 
@@ -72,29 +98,54 @@ def toPandas( d ):
 
     return p
 
-def scrapeAndInsertData( p_games, p_batch, p_con ):
+def scrapeAndInsertData( p_games, p_batch, p_con, max_workers=10 ):
 
     print('Starting scrape and insert for '+str(len(p_games))+' games.')
     ppl_set = set()
     official_set = set()
     tm_set = set()
 
-    play   = playByPlay()
-    box    = boxscore()
     ppl    = people()
-    cnt    = contextMetrics()
     tr     = transactions()
 
     for chunk_ in range( 0, len(p_games), p_batch ):
+       chunk_games = p_games[ chunk_ : chunk_ + p_batch ]
        print('Chunk: '+str(round((chunk_ + p_batch) / p_batch ))+'. Starting logic.' )
 
-       # Set
-       box.setData( p_games[ chunk_ : chunk_ + p_batch ] )
-       play.setData( p_games[ chunk_ : chunk_ + p_batch ] )
-       cnt.setData( p_games[ chunk_ : chunk_ + p_batch ] )
+       # Crear instancias vacías que recibirán los resultados fusionados
+       box = boxscore()
+       box.setData( [] )          # inicializa todos los dicts con listas vacías
+       play = playByPlay()
+       play.setData( [] )
+       cnt = contextMetrics()
+       cnt.setData( [] )
 
-       ppl_set = ppl_set.union( set( box.player_game_info['playerId'] ) )
-       official_set  = official_set.union( set( box.official_types['officialId'] ) )
+       # Descargar todos los juegos del chunk en paralelo.
+       # Cada worker opera sobre su propia instancia — sin estado compartido.
+       with ThreadPoolExecutor(max_workers=max_workers) as pool:
+           futures = { pool.submit(_fetch_game, gk): gk for gk in chunk_games }
+           for future in as_completed(futures):
+               gk = futures[future]
+               try:
+                   b, p, cm = future.result()
+               except Exception as e:
+                   print(f"Game {gk} failed: {e}")
+                   continue
+
+               # Fusionar resultados en los acumuladores del chunk
+               for attr in ('info','official_types','team','team_batting','team_pitching',
+                            'team_fielding','team_batting_order','player_batting',
+                            'player_pitching','player_fielding','player_game_info',
+                            'player_game_positions'):
+                   _merge_dicts( getattr(box, attr), getattr(b, attr) )
+
+               for attr in ('atbat','runner','credit','pitch','action','pickoff'):
+                   _merge_dicts( getattr(play, attr), getattr(p, attr) )
+
+               _merge_dicts( cnt.contextMetrics, cm.contextMetrics )
+
+       ppl_set      = ppl_set.union( set( box.player_game_info['playerId'] ) )
+       official_set = official_set.union( set( box.official_types['officialId'] ) )
 
        # Context Metrics
        insertToDatabase( toPandas( cnt.contextMetrics ), p_con, c.s_game_context )
@@ -160,6 +211,7 @@ parser.add_argument("--endDate",   action = "store", dest = "endDate",   help = 
 parser.add_argument("--file",      action = "store", dest = "file"                                       , default = None)
 parser.add_argument("--batch",     action = "store", dest = "batch"                                      , default = 500, type = int )
 parser.add_argument("--lg",        action = "store", dest = "lg",        help = "Pick aaa or win"        , default = None )
+parser.add_argument("--workers",   action = "store", dest = "workers",   help = "Threads concurrentes"   , default = 10,  type = int )
 
 
 # Parse Arguments
@@ -176,4 +228,4 @@ con  = initConnection( args.con )
 
 # Read and filter file
 d = getSchedule( args.file, args.date, args.startDate, args.endDate, sportId, c.major_league_id )
-scrapeAndInsertData( d, args.batch, con )
+scrapeAndInsertData( d, args.batch, con, max_workers=args.workers )
