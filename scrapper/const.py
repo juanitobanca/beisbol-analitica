@@ -80,24 +80,28 @@ def jsonIsValid( json ):
 
 sports_id_dic = { 'MLB' : 1
                 , 'LMB':  11 # 23
+                , 'DSL' : 16
                 , 'LIDOM': 17
                 , 'LMP': 17
                 , 'LBPRC': 17
+                , 'VSL' : 17
                 , 'LVBP': 17
                 , 'SDC' : 17
-                , 'DSL' : 16
+                , 'WBCQ': 51
                 , 'WBC' : 51
                 }
 
 major_id_dic = { 'MLB': 1
                , 'LMB': 125
+               , 'DSL' : 130
                , 'LIDOM': 131
                , 'LMP': 132
                , 'LBPRC': 133
+               , 'VSL' : 134
                , 'LVBP': 135
-               , 'SDC' : 162
-               , 'DSL' : 130
+               , 'WBCQ': 159
                , 'WBC' : 160
+               , 'SDC' : 162
                }
 
 
