@@ -55,7 +55,6 @@ def insertToDatabase( p_data, p_con, p_table ):
                          , con       = p_con
                          , if_exists = "append"
                          , index     = False
-                         #, flavor    = 'mysql'
                          )
         except Exception as e:
 
@@ -154,7 +153,7 @@ parser = argparse.ArgumentParser(description="Whatever")
 # Add Arguments
 # 10.0.0.243
 
-parser.add_argument("--con",       action="store"  , dest = "con"                                        , default = None)
+parser.add_argument("--con",       action="store"  , dest = "con"                                        , default = "sqlite:///baseball.db")
 parser.add_argument("--date",      action = "store", dest = "date",      help = "Date Format: YYYY_MM_DD", default = date)
 parser.add_argument("--startDate", action = "store", dest = "startDate", help = "Date Format: YYYY_MM_DD", default = None)
 parser.add_argument("--endDate",   action = "store", dest = "endDate",   help = "Date Format: YYYY_MM_DD", default = None)
