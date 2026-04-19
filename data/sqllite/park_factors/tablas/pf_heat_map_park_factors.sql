@@ -1,10 +1,10 @@
-DROP TABLE pf_heat_map_park_factors;
+DROP TABLE IF EXISTS pf_heat_map_park_factors;
 
 CREATE TABLE pf_heat_map_park_factors (
   groupingId INTEGER,
-  groupingDescription VARCHAR(255),
+  groupingDescription TEXT,
   majorLeagueId INTEGER,
-  seasonId DOUBLE,
+  seasonId REAL,
   venueId INTEGER,
   teamId INTEGER,
   homeGames INTEGER,
@@ -117,40 +117,40 @@ CREATE TABLE pf_heat_map_park_factors (
   HM8_RF3_H_AA INTEGER,
   HM8_RF4_HR_AA INTEGER,
   HM8_RF4_H_AA INTEGER,
-  HM4_FHP_PF DOUBLE,
-  HM4_FLF_PF DOUBLE,
-  HM4_FRF_PF DOUBLE,
-  HM4_LF1_HR_PF DOUBLE,
-  HM4_LF1_H_PF DOUBLE,
-  HM4_LF2_HR_PF DOUBLE,
-  HM4_LF2_H_PF DOUBLE,
-  HM4_RF1_HR_PF DOUBLE,
-  HM4_RF1_H_PF DOUBLE,
-  HM4_RF2_HR_PF DOUBLE,
-  HM4_RF2_H_PF DOUBLE,
-  HM8_LF1_HR_PF DOUBLE,
-  HM8_LF1_H_PF DOUBLE,
-  HM8_LF2_HR_PF DOUBLE,
-  HM8_LF2_H_PF DOUBLE,
-  HM8_LF3_HR_PF DOUBLE,
-  HM8_LF3_H_PF DOUBLE,
-  HM8_LF4_HR_PF DOUBLE,
-  HM8_LF4_H_PF DOUBLE,
-  HM8_RF1_HR_PF DOUBLE,
-  HM8_RF1_H_PF DOUBLE,
-  HM8_RF2_HR_PF DOUBLE,
-  HM8_RF2_H_PF DOUBLE,
-  HM8_RF3_HR_PF DOUBLE,
-  HM8_RF3_H_PF DOUBLE,
-  HM8_RF4_HR_PF DOUBLE,
-  HM8_RF4_H_PF DOUBLE,
+  HM4_FHP_PF REAL,
+  HM4_FLF_PF REAL,
+  HM4_FRF_PF REAL,
+  HM4_LF1_HR_PF REAL,
+  HM4_LF1_H_PF REAL,
+  HM4_LF2_HR_PF REAL,
+  HM4_LF2_H_PF REAL,
+  HM4_RF1_HR_PF REAL,
+  HM4_RF1_H_PF REAL,
+  HM4_RF2_HR_PF REAL,
+  HM4_RF2_H_PF REAL,
+  HM8_LF1_HR_PF REAL,
+  HM8_LF1_H_PF REAL,
+  HM8_LF2_HR_PF REAL,
+  HM8_LF2_H_PF REAL,
+  HM8_LF3_HR_PF REAL,
+  HM8_LF3_H_PF REAL,
+  HM8_LF4_HR_PF REAL,
+  HM8_LF4_H_PF REAL,
+  HM8_RF1_HR_PF REAL,
+  HM8_RF1_H_PF REAL,
+  HM8_RF2_HR_PF REAL,
+  HM8_RF2_H_PF REAL,
+  HM8_RF3_HR_PF REAL,
+  HM8_RF3_H_PF REAL,
+  HM8_RF4_HR_PF REAL,
+  HM8_RF4_H_PF REAL,
   -- Atributos
-  majorLeague VARCHAR(10),
-  venueName VARCHAR(100)
+  majorLeague TEXT,
+  venueName TEXT
 );
 
-ALTER TABLE pf_heat_map_park_factors ADD INDEX(groupingId);
-ALTER TABLE pf_heat_map_park_factors ADD INDEX(groupingDescription);
-ALTER TABLE pf_heat_map_park_factors ADD INDEX(majorLeagueId);
-ALTER TABLE pf_heat_map_park_factors ADD INDEX(seasonId);
-ALTER TABLE pf_heat_map_park_factors ADD INDEX(venueId);
+CREATE INDEX IF NOT EXISTS idx_pf_heat_map_park_factors_groupingId ON pf_heat_map_park_factors(groupingId);
+CREATE INDEX IF NOT EXISTS idx_pf_heat_map_park_factors_groupingDescription ON pf_heat_map_park_factors(groupingDescription);
+CREATE INDEX IF NOT EXISTS idx_pf_heat_map_park_factors_majorLeagueId ON pf_heat_map_park_factors(majorLeagueId);
+CREATE INDEX IF NOT EXISTS idx_pf_heat_map_park_factors_seasonId ON pf_heat_map_park_factors(seasonId);
+CREATE INDEX IF NOT EXISTS idx_pf_heat_map_park_factors_venueId ON pf_heat_map_park_factors(venueId);

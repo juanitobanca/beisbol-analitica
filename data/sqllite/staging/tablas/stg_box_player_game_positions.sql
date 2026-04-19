@@ -1,14 +1,12 @@
-USE baseball;
-
-DROP TABLE stg_box_player_game_positions;
+DROP TABLE IF EXISTS stg_box_player_game_positions;
 
 CREATE TABLE IF NOT EXISTS stg_box_player_game_positions (
-  code VARCHAR(100),
-  name VARCHAR(100),
-  type VARCHAR(100),
-  abbreviation VARCHAR(100),
+  code TEXT,
+  name TEXT,
+  type TEXT,
+  abbreviation TEXT,
   gamePk INTEGER,
   teamId INTEGER,
-  teamType VARCHAR(20),
+  teamType TEXT,
   playerId INTEGER
-) ENGINE = INNODB;
+);

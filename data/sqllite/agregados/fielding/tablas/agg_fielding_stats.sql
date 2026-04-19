@@ -1,17 +1,17 @@
-DROP TABLE agg_fielding_stats;
+DROP TABLE IF EXISTS agg_fielding_stats;
 
 CREATE TABLE agg_fielding_stats (
-  groupingId INTEGER UNSIGNED,
-  groupingDescription VARCHAR(255),
-  aggregationType VARCHAR(20),
+  groupingId INTEGER,
+  groupingDescription TEXT,
+  aggregationType TEXT,
   majorLeagueId INTEGER,
-  seasonId DOUBLE,
-  gameDate DATE,
-  gameType2 VARCHAR(10),
-  teamType VARCHAR(10),
+  seasonId REAL,
+  gameDate TEXT,
+  gameType2 TEXT,
+  teamType TEXT,
   venueId INTEGER,
   teamId INTEGER,
-  positionAbbrev VARCHAR(10),
+  positionAbbrev TEXT,
   playerId INTEGER,
   assists INTEGER,
   catcherInterferences INTEGER,
@@ -20,21 +20,21 @@ CREATE TABLE agg_fielding_stats (
   putOuts INTEGER,
   totalChances INTEGER,
   outsPlayed INTEGER,
-  inningsPlayed DOUBLE,
-  gamesPlayed DOUBLE,
-  fieldingPercentage DOUBLE,
-  rangeFactorPerInning DOUBLE,
-  rangeFactorPerGame DOUBLE,
+  inningsPlayed REAL,
+  gamesPlayed REAL,
+  fieldingPercentage REAL,
+  rangeFactorPerInning REAL,
+  rangeFactorPerGame REAL,
   -- Atributos
-  majorLeague VARCHAR(10),
-  playerName VARCHAR(100),
-  teamName VARCHAR(100),
-  venueName VARCHAR(100)
+  majorLeague TEXT,
+  playerName TEXT,
+  teamName TEXT,
+  venueName TEXT
 );
 
-ALTER TABLE agg_fielding_stats ADD INDEX(groupingId);
-ALTER TABLE agg_fielding_stats ADD INDEX(majorLeagueId);
-ALTER TABLE agg_fielding_stats ADD INDEX(seasonId);
-ALTER TABLE agg_fielding_stats ADD INDEX(venueId);
-ALTER TABLE agg_fielding_stats ADD INDEX(teamId);
-ALTER TABLE agg_fielding_stats ADD INDEX(playerId);
+CREATE INDEX IF NOT EXISTS idx_agg_fielding_stats_groupingId ON agg_fielding_stats(groupingId);
+CREATE INDEX IF NOT EXISTS idx_agg_fielding_stats_majorLeagueId ON agg_fielding_stats(majorLeagueId);
+CREATE INDEX IF NOT EXISTS idx_agg_fielding_stats_seasonId ON agg_fielding_stats(seasonId);
+CREATE INDEX IF NOT EXISTS idx_agg_fielding_stats_venueId ON agg_fielding_stats(venueId);
+CREATE INDEX IF NOT EXISTS idx_agg_fielding_stats_teamId ON agg_fielding_stats(teamId);
+CREATE INDEX IF NOT EXISTS idx_agg_fielding_stats_playerId ON agg_fielding_stats(playerId);

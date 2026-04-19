@@ -1,13 +1,11 @@
-USE baseball;
-
-DROP TABLE fielding_credits;
+DROP TABLE IF EXISTS fielding_credits;
 
 CREATE TABLE fielding_credits (
   gamePk INTEGER,
   atBatIndex INTEGER,
   playerId INTEGER,
-  positionAbbrev VARCHAR(10),
-  credit VARCHAR(30)
-) ENGINE = INNODB;
+  positionAbbrev TEXT,
+  credit TEXT
+);
 
-ALTER TABLE fielding_credits ADD INDEX(gamePk, atBatIndex);
+CREATE INDEX IF NOT EXISTS idx_fielding_credits_gamePk_atBatIndex ON fielding_credits(gamePk, atBatIndex);

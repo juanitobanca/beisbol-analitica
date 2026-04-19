@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE games;
-
-DELIMITER //
-
-CREATE PROCEDURE games()
-BEGIN
-
+-- Procedure: games
 INSERT INTO games(
     gamePk,
     gameType,
@@ -48,10 +40,10 @@ INSERT INTO games(
       gamePk,
       gameType,
       CASE WHEN majorLeague = 'WBC' THEN
-           CAST(SUBSTR(CAST(season AS CHAR(30) ),1,4) AS DOUBLE )
+           CAST(SUBSTR(CAST(season AS TEXT),1,4) AS REAL )
            ELSE season
       END seasonId,
-      str_to_date(SUBSTR(gameDate, 1, 10), '%Y-%m-%d') gameDate,
+      date(SUBSTR(gameDate, 1, 10)) gameDate,
       isTie,
       gameNumber,
       doubleHeader,
@@ -97,15 +89,8 @@ WHERE
   )
   AND gamePk IS NOT NULL;
 
-UPDATE games g
-INNER JOIN stg_box_info  gi
-ON g.gamePk   = gi.gamePk
-SET g.weather = gi.weather
-,   g.wind    = gi.wind
-,   g.attendance  = CAST(REPLACE(REPLACE(gi.attendance,',',''),'.','') AS UNSIGNED);
-
-COMMIT;
-
-END //
-
-DELIMITER ;
+UPDATE games
+SET weather    = (SELECT gi.weather FROM stg_box_info gi WHERE games.gamePk = gi.gamePk),
+    wind       = (SELECT gi.wind FROM stg_box_info gi WHERE games.gamePk = gi.gamePk),
+    attendance = (SELECT CAST(REPLACE(REPLACE(gi.attendance,',',''),'.','') AS INTEGER) FROM stg_box_info gi WHERE games.gamePk = gi.gamePk)
+WHERE EXISTS (SELECT 1 FROM stg_box_info gi WHERE games.gamePk = gi.gamePk);

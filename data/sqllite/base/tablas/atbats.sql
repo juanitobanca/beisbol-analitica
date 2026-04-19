@@ -1,11 +1,9 @@
-USE baseball;
-
-DROP TABLE atbats;
+DROP TABLE IF EXISTS atbats;
 
 CREATE TABLE atbats (
   gamePk INTEGER,
   inning INTEGER,
-  halfInning VARCHAR(15),
+  halfInning TEXT,
   atBatIndex INTEGER,
   battingTeamId INTEGER,
   pitchingTeamId INTEGER,
@@ -14,21 +12,21 @@ CREATE TABLE atbats (
   endStrikes INTEGER,
   batterId INTEGER,
   pitcherId INTEGER,
-  hasOut TINYINT,
-  hasReview TINYINT,
-  isScoringPlay TINYINT,
+  hasOut INTEGER,
+  hasReview INTEGER,
+  isScoringPlay INTEGER,
   rbi INTEGER,
   awayScore INTEGER,
   homeScore INTEGER,
-  event VARCHAR(100),
-  eventType VARCHAR(100),
-  batSide VARCHAR(1),
-  pitchHand VARCHAR(1),
-  menOnBase VARCHAR(10),
-  description VARCHAR(700),
+  event TEXT,
+  eventType TEXT,
+  batSide TEXT,
+  pitchHand TEXT,
+  menOnBase TEXT,
+  description TEXT,
   pitches INTEGER,
-  HM4 VARCHAR(10),
-  HM8 VARCHAR(10)
-) ENGINE = INNODB;
+  HM4 TEXT,
+  HM8 TEXT,
+  PRIMARY KEY(gamePk, atBatIndex)
+);
 
-ALTER TABLE atbats ADD PRIMARY KEY(gamePk, atBatIndex);

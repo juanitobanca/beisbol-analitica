@@ -1,17 +1,15 @@
-USE baseball;
-
-DROP TABLE game_player_balls_in_play_heatmaps;
+DROP TABLE IF EXISTS game_player_balls_in_play_heatmaps;
 
 CREATE TABLE game_player_balls_in_play_heatmaps (
   gamePk INTEGER,
   atBatIndex INTEGER,
   battingTeamId INTEGER,
   batterId INTEGER,
-  batSide VARCHAR(1),
+  batSide TEXT,
   pitchingTeamId INTEGER,
   pitcherId INTEGER,
-  pitchHand VARCHAR(1),
-  menOnBase VARCHAR(10),
+  pitchHand TEXT,
+  menOnBase TEXT,
   -- These metrics come from pitches
   -- Heat Maps
   -- HM 4: 4 quadrants
@@ -180,4 +178,4 @@ CREATE TABLE game_player_balls_in_play_heatmaps (
   HM8_LF4_LDB INTEGER
 );
 
-ALTER TABLE game_player_balls_in_play_heatmaps ADD INDEX(gamePk, atBatIndex);
+CREATE INDEX IF NOT EXISTS idx_game_player_balls_in_play_heatmaps_gamePk_atBatIndex ON game_player_balls_in_play_heatmaps(gamePk, atBatIndex);

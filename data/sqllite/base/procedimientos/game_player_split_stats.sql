@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE game_player_split_stats;
-
-DELIMITER //
-
-CREATE PROCEDURE game_player_split_stats()
-BEGIN
-
+-- Procedure: game_player_split_stats
 INSERT INTO game_player_split_stats(
     gamePk,
     atBatIndex,
@@ -55,35 +47,35 @@ SELECT
   pitcherId,
   pitchHand,
   menOnBase,
-  SUM(IF(event = 'Balk', 1, 0)) AS balks,
-  SUM(IF(event = 'Batter Interference', 1, 0)) AS batterInterferences,
-  SUM(IF(event IN ('Bunt Groundout', 'Bunt Lineout', 'Bunt Pop Out'), 1, 0)) AS bunts,
-  SUM(IF(event = 'Catcher Interference', 1, 0)) AS catcherInterferences,
-  SUM(IF(event = 'Double', 1, 0)) AS doubles,
-  SUM(IF(event = 'Fan Interference', 1, 0)) AS fanInterferences,
-  SUM(IF(event = 'Field Error', 1, 0)) fieldErrors,
-  SUM(IF(event IN ('Fielders Choice', 'Fielders Choice Out'), 1, 0)) AS fieldersChoice,
-  SUM(IF(event = 'Flyout', 1, 0)) AS flyouts,
-  SUM(IF(event = 'Forceout', 1, 0)) AS forceOuts,
-  SUM(IF(event IN ('Double Play', 'Grounded Into DP'), 1, 0)) AS groundedIntoDoublePlays,
-  SUM(IF(event = 'Groundout', 1, 0)) AS groundOuts,
-  SUM(IF(event = 'Hit By Pitch', 1, 0)) AS hitByPitch,
-  SUM(IF(event = 'Home Run', 1, 0)) AS homeRuns,
-  SUM(IF(event = 'Intent Walk', 1, 0)) AS intentionalWalks,
-  SUM(IF(event = 'Lineout', 1, 0)) AS lineOuts,
-  SUM(IF(event = 'Passed Ball', 1, 0)) AS passedBalls,
-  SUM(IF(event = 'Pop Out', 1, 0)) AS popOuts,
+  SUM(CASE WHEN event = 'Balk' THEN 1 ELSE 0 END) AS balks,
+  SUM(CASE WHEN event = 'Batter Interference' THEN 1 ELSE 0 END) AS batterInterferences,
+  SUM(CASE WHEN event IN ('Bunt Groundout', 'Bunt Lineout', 'Bunt Pop Out') THEN 1 ELSE 0 END) AS bunts,
+  SUM(CASE WHEN event = 'Catcher Interference' THEN 1 ELSE 0 END) AS catcherInterferences,
+  SUM(CASE WHEN event = 'Double' THEN 1 ELSE 0 END) AS doubles,
+  SUM(CASE WHEN event = 'Fan Interference' THEN 1 ELSE 0 END) AS fanInterferences,
+  SUM(CASE WHEN event = 'Field Error' THEN 1 ELSE 0 END) fieldErrors,
+  SUM(CASE WHEN event IN ('Fielders Choice', 'Fielders Choice Out') THEN 1 ELSE 0 END) AS fieldersChoice,
+  SUM(CASE WHEN event = 'Flyout' THEN 1 ELSE 0 END) AS flyouts,
+  SUM(CASE WHEN event = 'Forceout' THEN 1 ELSE 0 END) AS forceOuts,
+  SUM(CASE WHEN event IN ('Double Play', 'Grounded Into DP') THEN 1 ELSE 0 END) AS groundedIntoDoublePlays,
+  SUM(CASE WHEN event = 'Groundout' THEN 1 ELSE 0 END) AS groundOuts,
+  SUM(CASE WHEN event = 'Hit By Pitch' THEN 1 ELSE 0 END) AS hitByPitch,
+  SUM(CASE WHEN event = 'Home Run' THEN 1 ELSE 0 END) AS homeRuns,
+  SUM(CASE WHEN event = 'Intent Walk' THEN 1 ELSE 0 END) AS intentionalWalks,
+  SUM(CASE WHEN event = 'Lineout' THEN 1 ELSE 0 END) AS lineOuts,
+  SUM(CASE WHEN event = 'Passed Ball' THEN 1 ELSE 0 END) AS passedBalls,
+  SUM(CASE WHEN event = 'Pop Out' THEN 1 ELSE 0 END) AS popOuts,
   SUM(rbi) AS runsBattedIn,
-  SUM(IF(event IN ('Sac Bunt', 'Sac Bunt Double Play'), 1, 0)) AS sacBunts,
-  SUM(IF(event IN ('Sac Fly', 'Sac Fly Double Play'), 1, 0)) AS sacFlies,
-  SUM(IF(event = 'Single', 1, 0)) AS singles,
+  SUM(CASE WHEN event IN ('Sac Bunt', 'Sac Bunt Double Play') THEN 1 ELSE 0 END) AS sacBunts,
+  SUM(CASE WHEN event IN ('Sac Fly', 'Sac Fly Double Play') THEN 1 ELSE 0 END) AS sacFlies,
+  SUM(CASE WHEN event = 'Single' THEN 1 ELSE 0 END) AS singles,
   SUM(
-    IF(event IN ('Strikeout', 'Strikeout Double Play', 'Strikeout Triple Play'), 1, 0)
+    CASE WHEN event IN ('Strikeout', 'Strikeout Double Play', 'Strikeout Triple Play') THEN 1 ELSE 0 END
   ) AS strikeOuts,
-  SUM(IF(event = 'Triple', 1, 0)) AS triples,
-  SUM(IF(event = 'Triple Play', 1, 0)) AS triplePlays,
-  SUM(IF(event = 'Walk', 1, 0)) AS walks,
-  SUM(IF(event = 'Wild Pitch', 1, 0)) AS wildPitches
+  SUM(CASE WHEN event = 'Triple' THEN 1 ELSE 0 END) AS triples,
+  SUM(CASE WHEN event = 'Triple Play' THEN 1 ELSE 0 END) AS triplePlays,
+  SUM(CASE WHEN event = 'Walk' THEN 1 ELSE 0 END) AS walks,
+  SUM(CASE WHEN event = 'Wild Pitch' THEN 1 ELSE 0 END) AS wildPitches
 FROM atbats
 WHERE ( gamePk, atBatIndex ) NOT IN ( SELECT gamePk, atBatIndex
                                       FROM game_player_split_stats
@@ -93,114 +85,49 @@ GROUP BY
 
 
 -- Stats from pitching
-UPDATE game_player_split_stats a
-INNER JOIN
-(
-    SELECT
-      gamePk,
-      atBatIndex,
-      SUM(IF(callCode IN ('B', 'I', 'P', 'V', '*B'), 1, 0 )) AS balls,
-      SUM(IF(callCode IN ('P'), 1, 0 ) ) AS ballsPitchOut,
-      SUM(IF(callCode IN ('*B'), 1, 0 ) ) AS ballsInDirt,
-      SUM(IF(callCode IN ('I'), 1, 0 ) ) AS intentBalls,
-      SUM(IF(callCode IN ('F', 'L', 'O', 'R', 'T'), 1, 0 ) ) AS fouls,
-      SUM(IF(callCode IN ('L'), 1, 0 ) ) AS foulBunts,
-      SUM(IF(callCode IN ('T','O'), 1, 0 ) ) AS foulTips,
-      SUM(IF(callCode IN ('R'), 1, 0 ) ) AS foulPitchouts,
-      SUM(IF(callCode IN ('D','E','J','X','Y','Z'), 1, 0 ) ) AS hitIntoPlay,
-      COUNT(1) pitches,
-      SUM(IF(callCode IN ('J','P','Q','R','Y','Z'), 1, 0 ) ) AS pitchouts,
-      SUM(IF(callCode IN ('A', 'C', 'K', 'M', 'Q', 'S',  'W' )
-          OR callDescription2 IN ( 'Strike - Foul', 'Strike - Foul Bunt', 'Strike - Foul Tip' )
-          , 1, 0 ) ) AS strikes,
-      SUM(IF(callCode IN ('C'), 1, 0 ) ) AS strikesCalled,
-      SUM(IF(callCode IN ('Q')
-          OR callDescription2 IN ( 'Strike - Foul on Pitchout' ), 1, 0 ) ) AS strikesPitchOuts,
-      SUM(IF(callCode IN ('M'), 1, 0 )) AS missedBunts,
-      SUM(IF(callCode IN ('Q', 'S', 'W'), 1, 0 )) swingAndMissStrikes,
-      SUM(IF(callCode IN ('J','Q','R','Y','Z'), 1, 0 )) AS swingsPitchOuts,
-      SUM(IF(callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 )) AS swings,
-      -- Swings Per Ball and Strikes
-      -- 0 Ball(s)
-      SUM( IF(startBalls = 0 AND startStrikes = 0 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsZeroAndZero,
-      SUM( IF(startBalls = 0 AND startStrikes = 1 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsZeroAndOne,
-      SUM( IF(startBalls = 0 AND startStrikes = 2 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsZeroAndTwo,
-      -- 1 Ball(s)
-      SUM( IF(startBalls = 1 AND startStrikes = 0 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsOneAndZero,
-      SUM( IF(startBalls = 1 AND startStrikes = 1 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsOneAndOne,
-      SUM( IF(startBalls = 1 AND startStrikes = 2 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsOneAndTwo,
-      -- 2 Ball(s)
-      SUM( IF(startBalls = 2 AND startStrikes = 0 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsTwoAndZero,
-      SUM( IF(startBalls = 2 AND startStrikes = 1 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsTwoAndOne,
-      SUM( IF(startBalls = 2 AND startStrikes = 2 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsTwoAndTwo,
-      -- 3 Ball(s)
-      SUM( IF(startBalls = 3 AND startStrikes = 0 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsThreeAndZero,
-      SUM( IF(startBalls = 3 AND startStrikes = 1 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsThreeAndOne,
-      SUM( IF(startBalls = 3 AND startStrikes = 2 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z'), 1, 0 ) ) AS swingsThreeAndTwo,
-      -- Trajectories
-      SUM(IF( trajectory = 'fly_ball', 1, 0 ) ) AS flyBalls,
-      SUM(IF( trajectory = 'ground_ball', 1, 0 ) ) AS groundBalls,
-      SUM(IF( trajectory = 'line_drive', 1, 0 ) ) AS lineDrives,
-      SUM(IF( trajectory = 'popup', 1, 0 ) ) AS popUps,
-      SUM(IF( trajectory = 'bunt_grounder', 1, 0 ) ) AS groundBunts,
-      SUM(IF( trajectory = 'bunt_popup', 1, 0 ) ) AS popupBunts,
-      SUM(IF( trajectory = 'bunt_line_drive', 1, 0 ) ) AS lineDriveBunts
-    FROM pitches
-    WHERE ( gamePk, atBatIndex ) IN ( -- Only update deltas.
-                                       SELECT gamePk, atBatIndex
-                                       FROM game_player_split_stats
-                                       WHERE balls IS NULL
-                                    )
-    GROUP BY 1, 2
-) p
-ON a.gamePk = p.gamePk
-AND a.atBatIndex = p.atBatIndex
-SET a.balls = p.balls,
-    a.ballsPitchOut = p.ballsPitchOut,
-    a.ballsInDirt = p.ballsInDirt,
-    a.intentBalls = p.intentBalls,
-    a.fouls = p.fouls,
-    a.foulBunts = p.foulBunts,
-    a.foulTips = p.foulTips,
-    a.foulPitchOuts = p.foulPitchOuts,
-    a.hitIntoPlay = p.hitIntoPlay,
-    a.pitches = p.pitches,
-    a.pitchOuts = p.pitchOuts,
-    a.strikes = p.strikes,
-    a.strikesCalled = p.strikesCalled,
-    a.strikesPitchOuts = p.strikesPitchOuts,
-    a.missedBunts = p.missedBunts,
-    a.swingAndMissStrikes = p.swingAndMissStrikes,
-    a.swingsPitchOuts = p.swingsPitchOuts,
-    a.swings = p.swings,
+UPDATE game_player_split_stats
+SET balls              = (SELECT SUM(CASE WHEN callCode IN ('B', 'I', 'P', 'V', '*B') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    ballsPitchOut      = (SELECT SUM(CASE WHEN callCode IN ('P') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    ballsInDirt        = (SELECT SUM(CASE WHEN callCode IN ('*B') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    intentBalls        = (SELECT SUM(CASE WHEN callCode IN ('I') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    fouls              = (SELECT SUM(CASE WHEN callCode IN ('F', 'L', 'O', 'R', 'T') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    foulBunts          = (SELECT SUM(CASE WHEN callCode IN ('L') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    foulTips           = (SELECT SUM(CASE WHEN callCode IN ('T','O') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    foulPitchOuts      = (SELECT SUM(CASE WHEN callCode IN ('R') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    hitIntoPlay        = (SELECT SUM(CASE WHEN callCode IN ('D','E','J','X','Y','Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    pitches            = (SELECT COUNT(1) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    pitchOuts          = (SELECT SUM(CASE WHEN callCode IN ('J','P','Q','R','Y','Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    strikes            = (SELECT SUM(CASE WHEN callCode IN ('A', 'C', 'K', 'M', 'Q', 'S', 'W') OR callDescription2 IN ('Strike - Foul', 'Strike - Foul Bunt', 'Strike - Foul Tip') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    strikesCalled      = (SELECT SUM(CASE WHEN callCode IN ('C') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    strikesPitchOuts   = (SELECT SUM(CASE WHEN callCode IN ('Q') OR callDescription2 IN ('Strike - Foul on Pitchout') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    missedBunts        = (SELECT SUM(CASE WHEN callCode IN ('M') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    swingAndMissStrikes = (SELECT SUM(CASE WHEN callCode IN ('Q', 'S', 'W') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    swingsPitchOuts    = (SELECT SUM(CASE WHEN callCode IN ('J','Q','R','Y','Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    swings             = (SELECT SUM(CASE WHEN callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
     -- Swings Per Ball and Strikes
     -- 0 Ball(s)
-    a.swingsZeroAndZero = p.swingsZeroAndZero,
-    a.swingsZeroAndOne = p.swingsZeroAndOne,
-    a.swingsZeroAndTwo = p.swingsZeroAndTwo,
+    swingsZeroAndZero  = (SELECT SUM(CASE WHEN startBalls = 0 AND startStrikes = 0 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    swingsZeroAndOne   = (SELECT SUM(CASE WHEN startBalls = 0 AND startStrikes = 1 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    swingsZeroAndTwo   = (SELECT SUM(CASE WHEN startBalls = 0 AND startStrikes = 2 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
     -- 1 Ball(s)
-    a.swingsOneAndZero = p.swingsOneAndZero,
-    a.swingsOneAndOne = p.swingsOneAndOne,
-    a.swingsOneAndTwo = p.swingsOneAndTwo,
+    swingsOneAndZero   = (SELECT SUM(CASE WHEN startBalls = 1 AND startStrikes = 0 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    swingsOneAndOne    = (SELECT SUM(CASE WHEN startBalls = 1 AND startStrikes = 1 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    swingsOneAndTwo    = (SELECT SUM(CASE WHEN startBalls = 1 AND startStrikes = 2 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
     -- 2 Ball(s)
-    a.swingsTwoAndZero = p.swingsTwoAndZero,
-    a.swingsTwoAndOne = p.swingsTwoAndOne,
-    a.swingsTwoAndTwo = p.swingsTwoAndTwo,
+    swingsTwoAndZero   = (SELECT SUM(CASE WHEN startBalls = 2 AND startStrikes = 0 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    swingsTwoAndOne    = (SELECT SUM(CASE WHEN startBalls = 2 AND startStrikes = 1 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    swingsTwoAndTwo    = (SELECT SUM(CASE WHEN startBalls = 2 AND startStrikes = 2 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
     -- 3 Ball(s)
-    a.swingsThreeAndZero = p.swingsThreeAndZero,
-    a.swingsThreeAndOne = p.swingsThreeAndOne,
-    a.swingsThreeAndTwo = p.swingsThreeAndTwo,
+    swingsThreeAndZero = (SELECT SUM(CASE WHEN startBalls = 3 AND startStrikes = 0 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    swingsThreeAndOne  = (SELECT SUM(CASE WHEN startBalls = 3 AND startStrikes = 1 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    swingsThreeAndTwo  = (SELECT SUM(CASE WHEN startBalls = 3 AND startStrikes = 2 AND callCode IN ('D', 'E', 'F', 'J', 'Q', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z') THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
     -- Trajectories
-    a.flyBalls = p.flyBalls,
-    a.groundBalls	= p.groundBalls,
-    a.lineDrives = p.lineDrives,
-    a.popUps = p.popUps,
-    a.groundBunts = p.groundBunts,
-    a.popupBunts = p.popupBunts,
-    a.lineDriveBunts = p.lineDriveBunts;
-
-COMMIT;
-
-END //
-
-DELIMITER ;
+    flyBalls           = (SELECT SUM(CASE WHEN trajectory = 'fly_ball' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    groundBalls        = (SELECT SUM(CASE WHEN trajectory = 'ground_ball' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    lineDrives         = (SELECT SUM(CASE WHEN trajectory = 'line_drive' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    popUps             = (SELECT SUM(CASE WHEN trajectory = 'popup' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    groundBunts        = (SELECT SUM(CASE WHEN trajectory = 'bunt_grounder' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    popupBunts         = (SELECT SUM(CASE WHEN trajectory = 'bunt_popup' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex),
+    lineDriveBunts     = (SELECT SUM(CASE WHEN trajectory = 'bunt_line_drive' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex)
+WHERE game_player_split_stats.balls IS NULL
+AND EXISTS (SELECT 1 FROM pitches p WHERE game_player_split_stats.gamePk = p.gamePk AND game_player_split_stats.atBatIndex = p.atBatIndex);

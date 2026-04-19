@@ -1,11 +1,7 @@
-USE baseball;
-
-DROP PROCEDURE rem_event_run_value;
-
-DELIMITER //
-
-CREATE PROCEDURE rem_event_run_value()
-BEGIN
+-- Procedure: rem_event_run_value
+-- NOTE: This procedure references MySQL UDFs agg_grouping_id() and agg_grouping_description()
+-- which must be handled at the application layer. Replace those calls with hardcoded values
+-- or application-computed values before executing.
 
 INSERT INTO rem_event_run_value(
   majorLeagueId,
@@ -127,8 +123,10 @@ run_expectancies_majorleague_season AS (
     rpbp.seasonId,
     NULL AS venueId,
     rpbp.event,
-    agg_grouping_id("majorLeagueId,seasonId") groupingId,
-    agg_grouping_description("majorLeagueId,seasonId") groupingDescription,
+    -- agg_grouping_id('majorLeagueId,seasonId') -- must be computed in application layer
+    NULL AS groupingId,
+    -- agg_grouping_description('majorLeagueId,seasonId') -- must be computed in application layer
+    'MAJORLEAGUEID_SEASONID' AS groupingDescription,
     SUM(rem.runExpectancy) startRunExpectancy,
     SUM(runsScoredInPlay) runsScoredInPlay,
     SUM(rem2.runExpectancy) endRunExpectancy,
@@ -153,8 +151,10 @@ run_expectancies_majorleague_season_venue AS (
     rpbp.seasonId,
     rpbp.venueId,
     rpbp.event,
-    agg_grouping_id("majorLeagueId,seasonId,venueId") groupingId,
-    agg_grouping_description("majorLeagueId,seasonId,venueId") groupingDescription,
+    -- agg_grouping_id('majorLeagueId,seasonId,venueId') -- must be computed in application layer
+    NULL AS groupingId,
+    -- agg_grouping_description('majorLeagueId,seasonId,venueId') -- must be computed in application layer
+    'MAJORLEAGUEID_SEASONID_VENUEID' AS groupingDescription,
     SUM(rem.runExpectancy) startRunExpectancy,
     SUM(runsScoredInPlay) runsScoredInPlay,
     SUM(rem2.runExpectancy) endRunExpectancy,
@@ -204,9 +204,3 @@ SELECT
   events,
   ( endRunExpectancy - startRunExpectancy + runsScoredInPlay ) / events runValue
 FROM run_expectancies_majorleague_season_venue;
-
-COMMIT;
-
-END //
-
-DELIMITER ;

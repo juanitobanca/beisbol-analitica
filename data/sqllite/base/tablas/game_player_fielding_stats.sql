@@ -1,11 +1,9 @@
-USE baseball;
-
-DROP TABLE game_player_fielding_stats;
+DROP TABLE IF EXISTS game_player_fielding_stats;
 
 CREATE TABLE game_player_fielding_stats (
   gamePk INTEGER,
   teamId INTEGER,
-  teamType VARCHAR(10),
+  teamType TEXT,
   playerId INTEGER,
   assists INTEGER,
   caughtStealing INTEGER,
@@ -14,7 +12,7 @@ CREATE TABLE game_player_fielding_stats (
   passedBall INTEGER,
   pickoffs INTEGER,
   putOuts INTEGER,
-  stolenBases INTEGER
-) ENGINE = INNODB;
+  stolenBases INTEGER,
+  PRIMARY KEY(gamePk, teamId, playerId)
+);
 
-ALTER TABLE game_player_fielding_stats ADD PRIMARY KEY(gamePk, teamId, playerId);

@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE officials;
-
-DELIMITER //
-
-CREATE PROCEDURE officials()
-BEGIN
-
+-- Procedure: officials
 INSERT INTO officials(
     officialId,
     firstName,
@@ -33,9 +25,3 @@ WHERE
       officialId
     FROM officials
   );
-
-COMMIT;
-
-END //
-
-DELIMITER ;

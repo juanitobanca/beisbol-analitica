@@ -1,37 +1,35 @@
-USE baseball;
-
-DROP TABLE rem_play_by_play;
+DROP TABLE IF EXISTS rem_play_by_play;
 
 CREATE TABLE IF NOT EXISTS rem_play_by_play (
   majorLeagueId INTEGER,
-  seasonId DOUBLE,
+  seasonId REAL,
   venueId INTEGER,
-  gameType2 VARCHAR(10),
+  gameType2 TEXT,
   gamePk INTEGER,
   inning INTEGER,
-  halfInning VARCHAR(15),
+  halfInning TEXT,
   atBatIndex INTEGER,
   playIndex INTEGER,
   strikesBeforePlay INTEGER,
   ballsBeforePlay INTEGER,
-  event VARCHAR(100),
-  runnersBeforePlay VARCHAR(3),
-  menOnBaseBeforePlay VARCHAR(10),
+  event TEXT,
+  runnersBeforePlay TEXT,
+  menOnBaseBeforePlay TEXT,
   runsScoredBeforePlay INTEGER,
   outsBeforePlay INTEGER,
   runsScoredInPlay INTEGER,
   outsInPlay INTEGER,
   runsScoredAfterPlay INTEGER,
   outsAfterPlay INTEGER,
-  runnersAfterPlay VARCHAR(3),
-  menOnBaseAfterPlay VARCHAR(10),
+  runnersAfterPlay TEXT,
+  menOnBaseAfterPlay TEXT,
   runsScoredEndInning INTEGER,
   battingTeamId INTEGER,
   pitchingTeamId INTEGER,
   batterId INTEGER,
-  batSide VARCHAR(1),
+  batSide TEXT,
   pitcherId INTEGER,
-  pitchHand VARCHAR(1),
+  pitchHand TEXT,
   responsiblePitcherId INTEGER,
   runnerId INTEGER,
   scheduledInnings INTEGER,
@@ -42,4 +40,4 @@ CREATE TABLE IF NOT EXISTS rem_play_by_play (
   isPlateAppearance BOOLEAN
 );
 
-ALTER TABLE rem_play_by_play ADD INDEX(gamePk, atBatIndex, playIndex);
+CREATE INDEX IF NOT EXISTS idx_rem_play_by_play_gamePk_atBatIndex_playIndex ON rem_play_by_play(gamePk, atBatIndex, playIndex);

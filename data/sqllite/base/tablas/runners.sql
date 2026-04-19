@@ -1,29 +1,27 @@
-USE baseball;
-
-DROP TABLE runners;
+DROP TABLE IF EXISTS runners;
 
 CREATE TABLE runners (
   gamePk INTEGER,
   inning INTEGER,
-  halfInning VARCHAR(15),
+  halfInning TEXT,
   pitchingTeamId INTEGER,
   battingTeamId INTEGER,
   atBatIndex INTEGER,
   playIndex INTEGER,
-  event VARCHAR(100),
-  eventType VARCHAR(100),
-  isScoringPlay TINYINT,
-  movementReason VARCHAR(100),
-  rbi TINYINT,
+  event TEXT,
+  eventType TEXT,
+  isScoringPlay INTEGER,
+  movementReason TEXT,
+  rbi INTEGER,
   responsiblePitcherId INTEGER,
   runnerId INTEGER,
-  startBase VARCHAR(10),
-  endBase VARCHAR(10),
-  isOut TINYINT,
-  outBase VARCHAR(10),
+  startBase TEXT,
+  endBase TEXT,
+  isOut INTEGER,
+  outBase TEXT,
   outNumber INTEGER,
-  earned TINYINT,
-  teamUnearned TINYINT
-) ENGINE = INNODB;
+  earned INTEGER,
+  teamUnearned INTEGER
+);
 
-ALTER TABLE runners ADD INDEX(gamePk, atBatIndex);
+CREATE INDEX IF NOT EXISTS idx_runners_gamePk_atBatIndex ON runners(gamePk, atBatIndex);

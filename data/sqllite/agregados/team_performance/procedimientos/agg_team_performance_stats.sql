@@ -1,98 +1,76 @@
-USE baseball;
+-- Procedure: agg_team_performance_stats
+-- NOTE: This procedure used dynamic SQL in MySQL. In SQLite, each grouping combination
+-- must be called as a separate static SQL statement from the application layer.
+-- The template query is preserved below as a reference.
 
-DROP PROCEDURE agg_team_performance_stats;
+-- Parameters were: p_grouping_fields VARCHAR(255), p_aggregation_type VARCHAR(255)
 
-DELIMITER //
+/*
+INSERT INTO agg_team_performance_stats(
+    -- IF p_aggregation_type = 'CUMULATIVE': gameDate,
+    {p_grouping_fields},
+    aggregationType,
+    runs, runsAllowed, wins, losses, attendance,
+    groupingId, groupingDescription
+)
+WITH g AS
+(
+    SELECT
+        majorLeagueId, seasonId, gameDate, gameType2,
+        "home" teamType, venueId,
+        homeTeamId AS teamId,
+        homeScore runs, awayScore runsAllowed,
+        CASE WHEN homeIsWinner = 1 THEN 1 ELSE 0 END AS wins,
+        CASE WHEN awayIsWinner = 1 THEN 1 ELSE 0 END AS losses,
+        attendance
+    FROM games
 
-CREATE PROCEDURE agg_team_performance_stats( IN p_grouping_fields VARCHAR(255),
-                                    IN p_aggregation_type VARCHAR(255),
-                                    OUT insert_stmt VARCHAR(16000)
-                                  )
-BEGIN
+    UNION ALL
 
-/* Para probar este procedimiento hacer: CALL agg_team_performance_stats( 'majorLeagueId', @insert_stmt);  */
-
-SET @insert_stmt = CONCAT('INSERT INTO agg_team_performance_stats(',
-                            IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),
-                            p_grouping_fields,',',
-                           'aggregationType,
-                            runs,
-                            runsAllowed,
-                            wins,
-                            losses,
-                            attendance,
-                            groupingId,
-                            groupingDescription
-                            ) WITH g AS
-                            (
-                            SELECT
-                                majorLeagueId,
-                                seasonId,
-                                gameDate,
-                                gameType2,
-                                "home" teamType,
-                                venueId,
-                                homeTeamId AS teamId,
-                                homeScore runs,
-                                awayScore runsAllowed,
-                                IF( homeIsWinner = 1, 1,  0 ) wins,
-                                IF( awayIsWinner = 1, 1,  0 ) losses,
-                                attendance
-                                FROM games
-
-                                UNION ALL
-
-                            SELECT
-                                majorLeagueId,
-                                seasonId,
-                                gameDate,
-                                gameType2,
-                                "away" teamType,
-                                venueId,
-                                awayTeamId AS teamId,
-                                awayScore runs,
-                                homeScore runsAllowed,
-                                IF( awayIsWinner = 1, 1,  0 ) wins,
-                                IF( homeIsWinner = 1, 1,  0 ) losses,
-                                attendance
-                                FROM games
-                            ), d AS
-                            (
-                                SELECT ',
-                                IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),
-                                p_grouping_fields,',',
-                               'SUM(runs) AS runs,
-                                SUM(runsAllowed) AS runsAllowed,
-                                SUM(wins) AS wins,
-                                SUM(losses) AS losses,
-                                SUM(attendance) AS attendance
-                                FROM g
-                                WHERE gameType2 IN ( "RS", "PS" )
-                                GROUP BY ',
-                                IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),
-                                p_grouping_fields,
-                            ')
-                            SELECT ',
-                                IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),
-                                p_grouping_fields, ',',
-                                IF( p_aggregation_type = 'CUMULATIVE', '"CUMULATIVE",','"AGGREGATED",'),
-                                AGG_OR_CUM_QUERIES('SUM(runs)', p_grouping_fields, p_aggregation_type ), ' AS runs,',
-                                AGG_OR_CUM_QUERIES('SUM(runsAllowed)', p_grouping_fields, p_aggregation_type ), ' AS runsAllowed,',
-                                AGG_OR_CUM_QUERIES('SUM(wins)', p_grouping_fields, p_aggregation_type ), ' AS wins,',
-                                AGG_OR_CUM_QUERIES('SUM(losses)', p_grouping_fields, p_aggregation_type ), ' AS losses,',
-                                AGG_OR_CUM_QUERIES('SUM(attendance)', p_grouping_fields, p_aggregation_type ), ' AS attendance,',
-                                'agg_grouping_id("', p_grouping_fields, '") groupingId,
-                                agg_grouping_description("', p_grouping_fields, '") groupingDescription
-                                FROM d
-                                GROUP BY ',
-                                IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),
-                                p_grouping_fields
-                      );
-
-SELECT @insert_stmt;
-PREPARE insert_stmt_sql FROM @insert_stmt;
-EXECUTE insert_stmt_sql;
-
-END //
-
-DELIMITER ;
+    SELECT
+        majorLeagueId, seasonId, gameDate, gameType2,
+        "away" teamType, venueId,
+        awayTeamId AS teamId,
+        awayScore runs, homeScore runsAllowed,
+        CASE WHEN awayIsWinner = 1 THEN 1 ELSE 0 END AS wins,
+        CASE WHEN homeIsWinner = 1 THEN 1 ELSE 0 END AS losses,
+        attendance
+    FROM games
+),
+d AS
+(
+    SELECT
+        -- IF p_aggregation_type = 'CUMULATIVE': gameDate,
+        {p_grouping_fields},
+        SUM(runs) AS runs,
+        SUM(runsAllowed) AS runsAllowed,
+        SUM(wins) AS wins,
+        SUM(losses) AS losses,
+        SUM(attendance) AS attendance
+    FROM g
+    WHERE gameType2 IN ( "RS", "PS" )
+    GROUP BY
+        -- IF p_aggregation_type = 'CUMULATIVE': gameDate,
+        {p_grouping_fields}
+)
+SELECT
+    -- IF p_aggregation_type = 'CUMULATIVE': gameDate,
+    {p_grouping_fields},
+    -- IF p_aggregation_type = 'CUMULATIVE': "CUMULATIVE", ELSE: "AGGREGATED",
+    -- NOTE: AGG_OR_CUM_QUERIES() was a MySQL UDF that generated SUM() or cumulative SUM() OVER() expressions
+    -- For AGGREGATED: use SUM(col) directly
+    -- For CUMULATIVE: use SUM(SUM(col)) OVER (PARTITION BY {p_grouping_fields} ORDER BY gameDate)
+    SUM(runs) AS runs,
+    SUM(runsAllowed) AS runsAllowed,
+    SUM(wins) AS wins,
+    SUM(losses) AS losses,
+    SUM(attendance) AS attendance,
+    -- NOTE: agg_grouping_id() was a MySQL UDF - replace with appropriate grouping id value
+    -- NOTE: agg_grouping_description() was a MySQL UDF - replace with appropriate grouping description value
+    {groupingId} AS groupingId,
+    {groupingDescription} AS groupingDescription
+FROM d
+GROUP BY
+    -- IF p_aggregation_type = 'CUMULATIVE': gameDate,
+    {p_grouping_fields}
+*/

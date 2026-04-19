@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE game_officials;
-
-DELIMITER //
-
-CREATE PROCEDURE game_officials()
-BEGIN
-
+-- Procedure: game_officials
 INSERT INTO game_officials(
     gamePk,
     officialId,
@@ -25,9 +17,3 @@ WHERE
     FROM game_officials
   )
   AND gamePk IS NOT NULL;
-
-COMMIT;
-
-END //
-
-DELIMITER ;

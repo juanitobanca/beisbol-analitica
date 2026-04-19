@@ -1,11 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE rem_play_by_play;
-
-DELIMITER //
-
-CREATE PROCEDURE rem_play_by_play()
-BEGIN
+-- Procedure: rem_play_by_play
 
 INSERT INTO rem_play_by_play(
     majorLeagueId,
@@ -45,9 +38,9 @@ game_runners AS (
     r.outNumber,
     CASE
       WHEN r.isOut OR endBase = 'score' THEN 4
-      ELSE CAST(REPLACE(endBase, 'B', '') AS UNSIGNED)
+      ELSE CAST(REPLACE(endBase, 'B', '') AS INTEGER)
     END runnerBase,
-    IF(endBase = 'score', 1, 0) runScored
+    CASE WHEN endBase = 'score' THEN 1 ELSE 0 END AS runScored
   FROM games g
   INNER JOIN runners r
     ON g.gamePk = r.gamePk
@@ -117,11 +110,10 @@ runners_at_beginning_of_play AS (
     atBatIndex,
     playIndex,
     event,
-    CONCAT(
-      IF(SUM(IF(runnerBase = 1, 1, 0)) = '1', '1', '-'),
-      IF(SUM(IF(runnerBase = 2, 1, 0)) = '1', '2', '-'),
-      IF(SUM(IF(runnerBase = 3, 1, 0)) = '1', '3', '-')
-    ) runnersBeforePlay
+    CASE WHEN SUM(CASE WHEN runnerBase = 1 THEN 1 ELSE 0 END) = 1 THEN '1' ELSE '-' END
+    || CASE WHEN SUM(CASE WHEN runnerBase = 2 THEN 1 ELSE 0 END) = 1 THEN '2' ELSE '-' END
+    || CASE WHEN SUM(CASE WHEN runnerBase = 3 THEN 1 ELSE 0 END) = 1 THEN '3' ELSE '-' END
+    AS runnersBeforePlay
   FROM runner_max_movement
   GROUP BY
     1, 2, 3, 4, 5, 6, 7, 8, 9
@@ -232,207 +224,149 @@ INNER JOIN outs_and_runs_end_inning ore
   AND rb.halfInning = ore.halfInning;
 
 /* Actualizar Runners After Play */
-UPDATE
-  rem_play_by_play pbp
-INNER JOIN (
-    WITH /* Obtener la siguiente jugada para todas las jugadas. Puede ser por medio de atBatIndex o  atBatIndex, playIndex. */
-    rem_next_play AS (
-      SELECT
-        n.gamePk,
-        n.inning,
-        n.halfInning,
-        n.atBatIndex,
-        n.playIndex
-        -- Mismo atbat
-        , (
-          SELECT
-            MIN(a.playIndex)
-          FROM rem_play_by_play a
-          WHERE
-            n.gamePk = a.gamePk
-            AND n.atBatIndex = a.atBatIndex
-            AND n.playIndex < a.playIndex
-        ) playIndex2
-        -- Siguiente atbat
-        , n.atBatIndex + 1 atBatIndex2,
-        (
-          SELECT
-            MIN(a.playIndex)
-          FROM rem_play_by_play a
-          WHERE
-            n.gamePk = a.gamePk
-            AND n.inning = a.inning
-            AND n.halfInning = a.halfInning
-            AND n.atBatIndex + 1 = a.atBatIndex
-        ) playIndex3
-      FROM rem_play_by_play n
-      WHERE
-        runnersAfterPlay IS NULL
-    )
-      /* Obtener corredores iniciales de la siguiente jugada. */
-      SELECT
-        rnp.gamePk,
-        rnp.inning,
-        rnp.halfInning,
-        rnp.atBatIndex,
-        rnp.playIndex,
-        COALESCE(runnersBeforePlay, '---') runnersAfterPlay,
-        CASE WHEN runnersBeforePlay = '---' OR runnersBeforePlay IS NULL THEN 'Empty'
-             WHEN runnersBeforePlay = '123' THEN 'Loaded'
-             WHEN runnersBeforePlay = '1--' THEN 'Men_On'
-             WHEN runnersBeforePlay IN ( '-23', '-2-', '--3', '1-3' , '12-') THEN 'RISP'
-        END menOnBaseAfterPlay
-      FROM rem_next_play rnp
-      LEFT JOIN rem_play_by_play pbp
-        ON rnp.gamePk = pbp.gamePk
-        AND rnp.inning = pbp.inning
-        AND rnp.halfInning = pbp.halfInning
-        /* Si no hay playIndex2, significa que la jugada se dio en el siguiente atbat.
-           Si hay playIndex2, significa que la jugada se dio en el mismo atbat. */
-        AND IF(rnp.playIndex2 IS NOT NULL, rnp.atBatIndex, rnp.atBatIndex2) = pbp.atBatIndex
-        AND IF(rnp.playIndex2 IS NOT NULL, rnp.playIndex2, rnp.playIndex3) = pbp.playIndex
-  ) rap
-  ON pbp.gamePk = rap.gamePk
-  AND pbp.inning = rap.inning
-  AND pbp.halfInning = rap.halfInning
-  AND pbp.atBatIndex = rap.atBatIndex
-  AND pbp.playIndex = rap.playIndex
-  SET pbp.runnersAfterPlay = rap.runnersAfterPlay
-  ,   pbp.menOnBaseAfterPlay = rap.menOnBaseAfterPlay;
+UPDATE rem_play_by_play
+SET runnersAfterPlay = (
+  SELECT COALESCE(pbp2.runnersBeforePlay, '---')
+  FROM rem_play_by_play pbp2
+  WHERE rem_play_by_play.gamePk = pbp2.gamePk
+    AND rem_play_by_play.inning = pbp2.inning
+    AND rem_play_by_play.halfInning = pbp2.halfInning
+    AND pbp2.atBatIndex = CASE
+      WHEN (SELECT MIN(a.playIndex) FROM rem_play_by_play a
+            WHERE rem_play_by_play.gamePk = a.gamePk
+              AND rem_play_by_play.atBatIndex = a.atBatIndex
+              AND rem_play_by_play.playIndex < a.playIndex) IS NOT NULL
+      THEN rem_play_by_play.atBatIndex
+      ELSE rem_play_by_play.atBatIndex + 1
+    END
+    AND pbp2.playIndex = CASE
+      WHEN (SELECT MIN(a.playIndex) FROM rem_play_by_play a
+            WHERE rem_play_by_play.gamePk = a.gamePk
+              AND rem_play_by_play.atBatIndex = a.atBatIndex
+              AND rem_play_by_play.playIndex < a.playIndex) IS NOT NULL
+      THEN (SELECT MIN(a.playIndex) FROM rem_play_by_play a
+            WHERE rem_play_by_play.gamePk = a.gamePk
+              AND rem_play_by_play.atBatIndex = a.atBatIndex
+              AND rem_play_by_play.playIndex < a.playIndex)
+      ELSE (SELECT MIN(a.playIndex) FROM rem_play_by_play a
+            WHERE rem_play_by_play.gamePk = a.gamePk
+              AND rem_play_by_play.inning = a.inning
+              AND rem_play_by_play.halfInning = a.halfInning
+              AND rem_play_by_play.atBatIndex + 1 = a.atBatIndex)
+    END
+)
+WHERE runnersAfterPlay IS NULL;
+
+UPDATE rem_play_by_play
+SET menOnBaseAfterPlay = CASE
+  WHEN runnersAfterPlay = '---' OR runnersAfterPlay IS NULL THEN 'Empty'
+  WHEN runnersAfterPlay = '123' THEN 'Loaded'
+  WHEN runnersAfterPlay = '1--' THEN 'Men_On'
+  WHEN runnersAfterPlay IN ( '-23', '-2-', '--3', '1-3' , '12-') THEN 'RISP'
+END
+WHERE runnersAfterPlay IS NOT NULL;
 
 /* Actualizar battingTeamId, pitchingTeamId, batterId, pitcherId */
-UPDATE rem_play_by_play pbp
-INNER JOIN atbats ab
-ON pbp.gamePk = ab.gamePk
-AND pbp.atbatIndex = ab.atBatIndex
-SET pbp.battingTeamId = ab.battingTeamId
-,   pbp.pitchingTeamId = ab.pitchingTeamId
-,   pbp.batterId = ab.batterId
-,   pbp.pitcherId = ab.pitcherId
-,   pbp.batSide =  ab.batSide
-,   pbp.pitchHand = ab.pitchHand;
+UPDATE rem_play_by_play
+SET battingTeamId = (SELECT ab.battingTeamId FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex),
+    pitchingTeamId = (SELECT ab.pitchingTeamId FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex),
+    batterId = (SELECT ab.batterId FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex),
+    pitcherId = (SELECT ab.pitcherId FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex),
+    batSide = (SELECT ab.batSide FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex),
+    pitchHand = (SELECT ab.pitchHand FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex)
+WHERE EXISTS (SELECT 1 FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex);
 
 /* Actualizar scheduledInnings, battingTeamScoreEndGame,  pitchingTeamScoreEndGame */
-UPDATE
-  rem_play_by_play pbp
-INNER JOIN games g
-ON pbp.gamePk = g.gamePk
-SET pbp.scheduledInnings = g.scheduledInnings
-,   pbp.battingTeamScoreEndGame  = IF( pbp.battingTeamId = g.homeTeamId, g.homeScore, g.awayScore )
-,   pbp.pitchingTeamScoreEndGame = IF( pbp.pitchingTeamId = g.homeTeamId, g.homeScore, g.awayScore )
-,   pbp.gameType2                = g.gameType2;
+UPDATE rem_play_by_play
+SET scheduledInnings = (SELECT g.scheduledInnings FROM games g WHERE rem_play_by_play.gamePk = g.gamePk),
+    battingTeamScoreEndGame = (SELECT CASE WHEN rem_play_by_play.battingTeamId = g.homeTeamId THEN g.homeScore ELSE g.awayScore END FROM games g WHERE rem_play_by_play.gamePk = g.gamePk),
+    pitchingTeamScoreEndGame = (SELECT CASE WHEN rem_play_by_play.pitchingTeamId = g.homeTeamId THEN g.homeScore ELSE g.awayScore END FROM games g WHERE rem_play_by_play.gamePk = g.gamePk),
+    gameType2 = (SELECT g.gameType2 FROM games g WHERE rem_play_by_play.gamePk = g.gamePk)
+WHERE EXISTS (SELECT 1 FROM games g WHERE rem_play_by_play.gamePk = g.gamePk);
 
 /* Actualizar score en cada momento del juego( battingTeamScoreStartInning, pitchingTeamScoreStartInning )*/
-UPDATE
-  rem_play_by_play pbp
-INNER JOIN (
-    WITH runs_scored_per_inning AS (
-      SELECT DISTINCT
-        gamePk,
-        inning,
-        atBatIndex,
-        playIndex,
-        runsScoredInPlay,
-        battingTeamId,
-        pitchingTeamId
-      FROM rem_play_by_play
-    )
-    SELECT
-      n.gamePk,
-      n.atBatIndex,
-      n.playIndex,
-      runsScoredInPlay,
-      (
-      SELECT
-        SUM(runsScoredInPlay)
-      FROM runs_scored_per_inning b
-      WHERE
-        n.gamePk = b.gamePk
-        AND n.battingTeamId = b.battingTeamId
+UPDATE rem_play_by_play
+SET battingTeamScore = COALESCE((
+      SELECT SUM(b.runsScoredInPlay)
+      FROM rem_play_by_play b
+      WHERE rem_play_by_play.gamePk = b.gamePk
+        AND rem_play_by_play.battingTeamId = b.battingTeamId
         AND (
-          n.atBatIndex > b.atBatIndex
+          rem_play_by_play.atBatIndex > b.atBatIndex
           OR (
-            n.atBatIndex = b.atBatIndex
-            AND n.playIndex > b.playIndex
+            rem_play_by_play.atBatIndex = b.atBatIndex
+            AND rem_play_by_play.playIndex > b.playIndex
           )
         )
-    ) battingTeamScore,
-      (
-      SELECT
-        SUM(runsScoredInPlay)
-      FROM runs_scored_per_inning p
-      WHERE
-        n.gamePk = p.gamePk
-        AND n.pitchingTeamId = p.battingTeamId
-        AND n.atBatIndex > p.atBatIndex
-    ) pitchingTeamScore
-    FROM rem_play_by_play n
-  ) rsi
-  ON pbp.gamePk = rsi.gamePk
-  AND pbp.atBatIndex = rsi.atBatIndex
-  AND pbp.playIndex = rsi.playIndex
-  SET pbp.battingTeamScore = Coalesce( rsi.battingTeamScore,0)
-  ,   pbp.pitchingTeamScore = Coalesce( rsi.pitchingTeamScore,0);
+    ), 0),
+    pitchingTeamScore = COALESCE((
+      SELECT SUM(p.runsScoredInPlay)
+      FROM rem_play_by_play p
+      WHERE rem_play_by_play.gamePk = p.gamePk
+        AND rem_play_by_play.pitchingTeamId = p.battingTeamId
+        AND rem_play_by_play.atBatIndex > p.atBatIndex
+    ), 0);
 
 /* Actualizar los strikes y bolas antes de la jugada */
-UPDATE
-  rem_play_by_play pbp
-LEFT JOIN (
-  SELECT
-    pbp.gamePk,
-    pbp.atBatIndex,
-    pbp.playIndex,
-    MAX(startStrikes) strikesBeforePlay,
-    MAX(startBalls) ballsBeforePlay
-  FROM rem_play_by_play pbp
-  INNER JOIN pitches p
-    ON pbp.gamePk = p.gamePk
-    AND pbp.atBatIndex = p.atBatIndex
-    AND pbp.playIndex >= pbp.playIndex
-  GROUP BY
-    1, 2, 3
-) bs
-  ON pbp.gamePk = bs.gamePk
-  AND pbp.atBatIndex = bs.atBatIndex
-  AND pbp.playIndex = bs.playIndex
-  SET pbp.strikesBeforePlay = Coalesce(bs.strikesBeforePlay,0)
-  ,   pbp.ballsBeforePlay = Coalesce(bs.ballsBeforePlay,0);
+UPDATE rem_play_by_play
+SET strikesBeforePlay = COALESCE((
+      SELECT MAX(p.startStrikes)
+      FROM pitches p
+      WHERE rem_play_by_play.gamePk = p.gamePk
+        AND rem_play_by_play.atBatIndex = p.atBatIndex
+        AND rem_play_by_play.playIndex >= rem_play_by_play.playIndex
+    ), 0),
+    ballsBeforePlay = COALESCE((
+      SELECT MAX(p.startBalls)
+      FROM pitches p
+      WHERE rem_play_by_play.gamePk = p.gamePk
+        AND rem_play_by_play.atBatIndex = p.atBatIndex
+        AND rem_play_by_play.playIndex >= rem_play_by_play.playIndex
+    ), 0);
 
 /* Actualizar corredor a cargo de la jugada y pitcher responsable de corredor. */
-UPDATE
-  rem_play_by_play pbp
-INNER JOIN (
-  SELECT
-    gamePk,
-    atBatIndex,
-    playIndex,
-    runnerId,
-    event,
-    responsiblePitcherId
-  FROM runners
-  WHERE
-    eventType IN
-    (
-      'caught_stealing_2b',
-      'caught_stealing_3b',
-      'caught_stealing_home',
-      'pickoff_1b',
-      'pickoff_2b',
-      'pickoff_3b',
-      'pickoff_caught_stealing_2b',
-      'pickoff_caught_stealing_3b',
-      'pickoff_caught_stealing_home',
-      'stolen_base_2b',
-      'stolen_base_3b',
-      'stolen_base_home'
+UPDATE rem_play_by_play
+SET runnerId = (
+      SELECT r.runnerId FROM runners r
+      WHERE rem_play_by_play.gamePk = r.gamePk
+        AND rem_play_by_play.atBatIndex = r.atBatIndex
+        AND rem_play_by_play.playIndex = r.playIndex
+        AND rem_play_by_play.event = r.event
+        AND r.eventType IN (
+          'caught_stealing_2b','caught_stealing_3b','caught_stealing_home',
+          'pickoff_1b','pickoff_2b','pickoff_3b',
+          'pickoff_caught_stealing_2b','pickoff_caught_stealing_3b','pickoff_caught_stealing_home',
+          'stolen_base_2b','stolen_base_3b','stolen_base_home'
+        )
+      LIMIT 1
+    ),
+    responsiblePitcherId = (
+      SELECT r.responsiblePitcherId FROM runners r
+      WHERE rem_play_by_play.gamePk = r.gamePk
+        AND rem_play_by_play.atBatIndex = r.atBatIndex
+        AND rem_play_by_play.playIndex = r.playIndex
+        AND rem_play_by_play.event = r.event
+        AND r.eventType IN (
+          'caught_stealing_2b','caught_stealing_3b','caught_stealing_home',
+          'pickoff_1b','pickoff_2b','pickoff_3b',
+          'pickoff_caught_stealing_2b','pickoff_caught_stealing_3b','pickoff_caught_stealing_home',
+          'stolen_base_2b','stolen_base_3b','stolen_base_home'
+        )
+      LIMIT 1
     )
-  ) r
-ON pbp.gamePk = r.gamePk
-AND pbp.atBatIndex = r.atBatIndex
-AND pbp.playIndex = r.playIndex
-AND pbp.event = r.event
-SET pbp.runnerId = r.runnerId
-,   pbp.responsiblePitcherId = r.responsiblePitcherId;
+WHERE EXISTS (
+  SELECT 1 FROM runners r
+  WHERE rem_play_by_play.gamePk = r.gamePk
+    AND rem_play_by_play.atBatIndex = r.atBatIndex
+    AND rem_play_by_play.playIndex = r.playIndex
+    AND rem_play_by_play.event = r.event
+    AND r.eventType IN (
+      'caught_stealing_2b','caught_stealing_3b','caught_stealing_home',
+      'pickoff_1b','pickoff_2b','pickoff_3b',
+      'pickoff_caught_stealing_2b','pickoff_caught_stealing_3b','pickoff_caught_stealing_home',
+      'stolen_base_2b','stolen_base_3b','stolen_base_home'
+    )
+);
 
 /*  Es aparicion al plato? */
 UPDATE rem_play_by_play
@@ -460,9 +394,3 @@ SET isPlateAppearance = event NOT IN (
   'Stolen Base Home',
   'Wild Pitch'
 );
-
-COMMIT;
-
-END //
-
-DELIMITER ;

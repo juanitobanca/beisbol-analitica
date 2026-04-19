@@ -1,11 +1,7 @@
-USE baseball;
-
-DROP PROCEDURE we_win_expectancy;
-
-DELIMITER //
-
-CREATE PROCEDURE we_win_expectancy()
-BEGIN
+-- Procedure: we_win_expectancy
+-- NOTE: This procedure references MySQL UDFs agg_grouping_id() and agg_grouping_description()
+-- which must be handled at the application layer. Replace those calls with hardcoded values
+-- or application-computed values before executing.
 
 INSERT INTO we_win_expectancy (
     groupingId,
@@ -98,8 +94,10 @@ WHERE
         AND outsAfterPlay = 3
   )
 SELECT
-  agg_grouping_id('majorLeagueId,seasonId,inning,gameType2,menOnBase,outs') groupingId,
-  agg_grouping_description('majorLeagueId,seasonId,inning,gameType2,menOnBase,outs') groupingDescription,
+  -- agg_grouping_id('majorLeagueId,seasonId,inning,gameType2,menOnBase,outs') -- must be computed in application layer
+  NULL AS groupingId,
+  -- agg_grouping_description('majorLeagueId,seasonId,inning,gameType2,menOnBase,outs') -- must be computed in application layer
+  'MAJORLEAGUEID_SEASONID_INNING_GAMETYPE2_MENONBASE_OUTS' AS groupingDescription,
   majorLeagueId,
   seasonId,
   inning,
@@ -114,12 +112,5 @@ FROM pbp
 GROUP BY
   1, 2, 3, 4, 5, 6, 7, 8, 9;
 
-UPDATE
-  we_win_expectancy
-  SET winExpectancy = wins / games;
-
-COMMIT;
-
-END //
-
-DELIMITER ;
+UPDATE we_win_expectancy
+SET winExpectancy = wins * 1.0 / games;

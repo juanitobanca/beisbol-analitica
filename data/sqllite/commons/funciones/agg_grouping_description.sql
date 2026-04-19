@@ -1,16 +1,6 @@
-USE baseball;
-
-DROP FUNCTION agg_grouping_description;
-
-DELIMITER //
-
-CREATE FUNCTION agg_grouping_description( p_grouping_fields VARCHAR(255) )
-RETURNS VARCHAR(255)
-DETERMINISTIC
-BEGIN
-
-    RETURN UPPER(REPLACE(p_grouping_fields,',','_'));
-
-END //
-
-DELIMITER ;
+-- Function: agg_grouping_description (MySQL UDF - not supported in SQLite)
+-- Original logic: Takes a comma-separated grouping_fields string and returns
+--   UPPER(REPLACE(p_grouping_fields, ',', '_'))
+--   i.e., converts 'majorLeagueId,seasonId' to 'MAJORLEAGUEID_SEASONID'
+-- This function was used by dynamic SQL procedures.
+-- In SQLite, this logic must be implemented in the application layer.

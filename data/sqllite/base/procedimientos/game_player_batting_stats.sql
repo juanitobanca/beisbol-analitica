@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE game_player_batting_stats;
-
-DELIMITER //
-
-CREATE PROCEDURE game_player_batting_stats()
-BEGIN
-
+-- Procedure: game_player_batting_stats
 INSERT INTO game_player_batting_stats(
     gamePk,
     teamId,
@@ -44,39 +36,39 @@ SELECT DISTINCT
   teamId,
   teamType,
   playerId,
-  COALESCE(CAST(atBats AS UNSIGNED), 0) atBats,
-  COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) walks,
-  COALESCE(CAST(catchersInterference AS UNSIGNED), 0) catchersInterference,
-  COALESCE(CAST(caughtStealing AS UNSIGNED), 0) caughtStealing,
-  COALESCE(CAST(doubles AS UNSIGNED), 0) doubles,
-  COALESCE(CAST(flyOuts AS UNSIGNED), 0) flyOuts,
-  COALESCE(CAST(groundIntoDoublePlay AS UNSIGNED), 0) groundIntoDoublePlay,
-  COALESCE(CAST(groundIntoTriplePlay AS UNSIGNED), 0) groundIntoTriplePlay,
-  COALESCE(CAST(groundOuts AS UNSIGNED), 0) groundOuts,
-  COALESCE(CAST(hitByPitch AS UNSIGNED), 0) hitByPitch,
-  COALESCE(CAST(hits AS UNSIGNED), 0) hits,
-  COALESCE(CAST(homeRuns AS UNSIGNED), 0) homeRuns,
-  COALESCE(CAST(intentionalWalks AS UNSIGNED), 0) intentionalWalks,
-  COALESCE(CAST(leftOnBase AS UNSIGNED), 0) leftOnBase,
-  COALESCE(CAST(pickoffs AS UNSIGNED), 0) pickoffs,
-  COALESCE(CAST(rbi AS UNSIGNED), 0) rbi,
-  COALESCE(CAST(runs AS UNSIGNED), 0) runs,
-  COALESCE(CAST(sacBunts AS UNSIGNED), 0) sacBunts,
-  COALESCE(CAST(sacFlies AS UNSIGNED), 0) sacFlies,
-  COALESCE(CAST(stolenBases AS UNSIGNED), 0) stolenBases,
-  COALESCE(CAST(strikeOuts AS UNSIGNED), 0) strikeOuts,
-  COALESCE(CAST(totalBases AS UNSIGNED), 0) totalBases,
-  COALESCE(CAST(triples AS UNSIGNED), 0) triples,
-  COALESCE(CAST(hits AS UNSIGNED), 0) - COALESCE(CAST(homeRuns AS UNSIGNED), 0) - COALESCE(
-    CAST(doubles AS UNSIGNED),
+  COALESCE(CAST(atBats AS INTEGER), 0) atBats,
+  COALESCE(CAST(baseOnBalls AS INTEGER), 0) walks,
+  COALESCE(CAST(catchersInterference AS INTEGER), 0) catchersInterference,
+  COALESCE(CAST(caughtStealing AS INTEGER), 0) caughtStealing,
+  COALESCE(CAST(doubles AS INTEGER), 0) doubles,
+  COALESCE(CAST(flyOuts AS INTEGER), 0) flyOuts,
+  COALESCE(CAST(groundIntoDoublePlay AS INTEGER), 0) groundIntoDoublePlay,
+  COALESCE(CAST(groundIntoTriplePlay AS INTEGER), 0) groundIntoTriplePlay,
+  COALESCE(CAST(groundOuts AS INTEGER), 0) groundOuts,
+  COALESCE(CAST(hitByPitch AS INTEGER), 0) hitByPitch,
+  COALESCE(CAST(hits AS INTEGER), 0) hits,
+  COALESCE(CAST(homeRuns AS INTEGER), 0) homeRuns,
+  COALESCE(CAST(intentionalWalks AS INTEGER), 0) intentionalWalks,
+  COALESCE(CAST(leftOnBase AS INTEGER), 0) leftOnBase,
+  COALESCE(CAST(pickoffs AS INTEGER), 0) pickoffs,
+  COALESCE(CAST(rbi AS INTEGER), 0) rbi,
+  COALESCE(CAST(runs AS INTEGER), 0) runs,
+  COALESCE(CAST(sacBunts AS INTEGER), 0) sacBunts,
+  COALESCE(CAST(sacFlies AS INTEGER), 0) sacFlies,
+  COALESCE(CAST(stolenBases AS INTEGER), 0) stolenBases,
+  COALESCE(CAST(strikeOuts AS INTEGER), 0) strikeOuts,
+  COALESCE(CAST(totalBases AS INTEGER), 0) totalBases,
+  COALESCE(CAST(triples AS INTEGER), 0) triples,
+  COALESCE(CAST(hits AS INTEGER), 0) - COALESCE(CAST(homeRuns AS INTEGER), 0) - COALESCE(
+    CAST(doubles AS INTEGER),
     0
-  ) - COALESCE(CAST(triples AS UNSIGNED), 0) singles,
-  COALESCE(CAST(atBats AS UNSIGNED), 0) + COALESCE(CAST(sacBunts AS UNSIGNED), 0) + COALESCE(
-    CAST(sacFlies AS UNSIGNED),
+  ) - COALESCE(CAST(triples AS INTEGER), 0) singles,
+  COALESCE(CAST(atBats AS INTEGER), 0) + COALESCE(CAST(sacBunts AS INTEGER), 0) + COALESCE(
+    CAST(sacFlies AS INTEGER),
     0
-  ) + COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) + COALESCE(CAST(hitByPitch AS UNSIGNED), 0) plateAppearances,
-  COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) - COALESCE(
-    CAST(intentionalWalks AS UNSIGNED),
+  ) + COALESCE(CAST(baseOnBalls AS INTEGER), 0) + COALESCE(CAST(hitByPitch AS INTEGER), 0) plateAppearances,
+  COALESCE(CAST(baseOnBalls AS INTEGER), 0) - COALESCE(
+    CAST(intentionalWalks AS INTEGER),
     0
   ) unintentionalWalks
 FROM stg_box_player_batting
@@ -114,9 +106,3 @@ WHERE
       playerId
     FROM game_player_batting_stats
   );
-
-COMMIT;
-
-END //
-
-DELIMITER ;

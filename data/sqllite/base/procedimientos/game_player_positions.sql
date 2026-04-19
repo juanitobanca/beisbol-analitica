@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE game_player_positions;
-
-DELIMITER //
-
-CREATE PROCEDURE game_player_positions()
-BEGIN
-
+-- Procedure: game_player_positions
 INSERT INTO game_player_positions(
     gamePk,
     teamId,
@@ -30,9 +22,3 @@ WHERE
       playerId
     FROM game_player_positions
   );
-
-COMMIT;
-
-END //
-
-DELIMITER ;

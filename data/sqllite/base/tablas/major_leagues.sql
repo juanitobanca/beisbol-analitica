@@ -1,10 +1,8 @@
-USE baseball;
-
-DROP TABLE major_leagues;
+DROP TABLE IF EXISTS major_leagues;
 
 CREATE TABLE major_leagues (
   majorLeagueId INTEGER,
-  majorLeague VARCHAR(20)
-) ENGINE = INNODB;
+  majorLeague TEXT,
+  PRIMARY KEY(majorLeagueId)
+);
 
-ALTER TABLE major_leagues ADD PRIMARY KEY(majorLeagueId);

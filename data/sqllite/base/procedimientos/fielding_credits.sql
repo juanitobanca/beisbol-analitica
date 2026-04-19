@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE fielding_credits;
-
-DELIMITER //
-
-CREATE PROCEDURE fielding_credits()
-BEGIN
-
+-- Procedure: fielding_credits
 INSERT INTO fielding_credits(
     gamePk,
     atBatIndex,
@@ -29,9 +21,3 @@ WHERE
       atBatIndex
     FROM fielding_credits
   );
-
-COMMIT;
-
-END //
-
-DELIMITER ;

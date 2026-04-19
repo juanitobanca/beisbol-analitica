@@ -1,23 +1,9 @@
-USE baseball;
-
-DROP PROCEDURE agg_team_performance_stats_derived_metrics;
-
-DELIMITER //
-
-CREATE PROCEDURE agg_team_performance_stats_derived_metrics( )
-BEGIN
-
+-- Procedure: agg_team_performance_stats_derived_metrics
 
 UPDATE
   agg_team_performance_stats
   SET
     runDifferential = runs - runsAllowed,
-    winPercentage = IF( wins + losses > 0, ( wins ) / ( wins + losses ), NULL ),
+    winPercentage = CASE WHEN wins + losses > 0 THEN ( wins ) * 1.0 / ( wins + losses ) ELSE NULL END,
     -- https://beisbolanalitica.com/2019/12/21/simplificacion/
-    pythagoreanExpectation =IF( runsAllowed > 0, ( runs * runs ) / ( runsAllowed * runsAllowed), NULL ) ;
-
-  COMMIT;
-
-END //
-
-DELIMITER ;
+    pythagoreanExpectation = CASE WHEN runsAllowed > 0 THEN ( runs * runs ) * 1.0 / ( runsAllowed * runsAllowed) ELSE NULL END;

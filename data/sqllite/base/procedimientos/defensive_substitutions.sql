@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE defensive_substitutions;
-
-DELIMITER //
-
-CREATE PROCEDURE defensive_substitutions()
-BEGIN
-
+-- Procedure: defensive_substitutions
   INSERT INTO defensive_substitutions(
       gamePk,
       atBatIndex,
@@ -59,65 +51,25 @@ BEGIN
     atBatIndex,
     playIndex,
     CAST(
-      SUBSTR(substitutionIndexes, 1, Instr(substitutionIndexes, '.') - 1) AS UNSIGNED
+      SUBSTR(substitutionIndexes, 1, Instr(substitutionIndexes, '.') - 1) AS INTEGER
     ) substitutionAtBatIndex,
-    CAST(SUBSTR(substitutionIndexes, Instr(substitutionIndexes, '.') + 1) AS UNSIGNED) substitutionPlayIndex
+    CAST(SUBSTR(substitutionIndexes, Instr(substitutionIndexes, '.') + 1) AS INTEGER) substitutionPlayIndex
   FROM subs_indexes;
 
   /* Actualizar datos de la sustitucion */
-  UPDATE
-    defensive_substitutions ds
-  INNER JOIN (
-    SELECT
-      gamePk,
-      atBatIndex,
-      playIndex,
-      inning,
-      halfInning,
-      battingTeamId,
-      pitchingTeamId,
-      playerId,
-      positionAbbrev,
-      endOuts AS outs
-    FROM actions
-    WHERE
-      event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution')
-  ) a
-    ON ds.gamePk = a.gamePk
-    AND ds.atBatIndex = a.atBatIndex
-    AND ds.playIndex = a.playIndex
-    SET ds.inning = a.inning
-    ,   ds.halfInning = a.halfInning
-    ,   ds.battingTeamId = a.battingTeamId
-    ,   ds.pitchingTeamId = a.pitchingTeamId
-    ,   ds.playerId = a.playerId
-    ,   ds.positionAbbrev = a.positionAbbrev
-    ,   ds.outs = a.outs;
+  UPDATE defensive_substitutions
+  SET inning         = (SELECT a.inning FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.atBatIndex = a.atBatIndex AND defensive_substitutions.playIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution')),
+      halfInning     = (SELECT a.halfInning FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.atBatIndex = a.atBatIndex AND defensive_substitutions.playIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution')),
+      battingTeamId  = (SELECT a.battingTeamId FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.atBatIndex = a.atBatIndex AND defensive_substitutions.playIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution')),
+      pitchingTeamId = (SELECT a.pitchingTeamId FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.atBatIndex = a.atBatIndex AND defensive_substitutions.playIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution')),
+      playerId       = (SELECT a.playerId FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.atBatIndex = a.atBatIndex AND defensive_substitutions.playIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution')),
+      positionAbbrev = (SELECT a.positionAbbrev FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.atBatIndex = a.atBatIndex AND defensive_substitutions.playIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution')),
+      outs           = (SELECT a.endOuts FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.atBatIndex = a.atBatIndex AND defensive_substitutions.playIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution'))
+  WHERE EXISTS (SELECT 1 FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.atBatIndex = a.atBatIndex AND defensive_substitutions.playIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution'));
 
   /* Actualizar datos del jugador que sustituye */
-  UPDATE
-    defensive_substitutions ds
-  INNER JOIN (
-    SELECT
-      gamePk,
-      atBatIndex,
-      playIndex,
-      playerId,
-      inning,
-      endOuts AS outs
-    FROM actions
-    WHERE
-      event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution')
-  ) a
-    ON ds.gamePk = a.gamePk
-    AND ds.substitutionAtBatIndex = a.atBatIndex
-    AND ds.substitutionPlayIndex = a.playIndex
-    SET ds.substitutingPlayerId = a.playerId
-    ,   ds.substitutingInning = a.inning
-    ,   ds.substitutingOuts = a.outs;
-
-COMMIT;
-
-END //
-
-DELIMITER ;
+  UPDATE defensive_substitutions
+  SET substitutingPlayerId = (SELECT a.playerId FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.substitutionAtBatIndex = a.atBatIndex AND defensive_substitutions.substitutionPlayIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution')),
+      substitutingInning   = (SELECT a.inning FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.substitutionAtBatIndex = a.atBatIndex AND defensive_substitutions.substitutionPlayIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution')),
+      substitutingOuts     = (SELECT a.endOuts FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.substitutionAtBatIndex = a.atBatIndex AND defensive_substitutions.substitutionPlayIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution'))
+  WHERE EXISTS (SELECT 1 FROM actions a WHERE defensive_substitutions.gamePk = a.gamePk AND defensive_substitutions.substitutionAtBatIndex = a.atBatIndex AND defensive_substitutions.substitutionPlayIndex = a.playIndex AND a.event IN ('Defensive Sub', 'Defensive Switch', 'Pitching Substitution'));

@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE actions;
-
-DELIMITER //
-
-CREATE PROCEDURE actions()
-BEGIN
-
+-- Procedure: actions
 INSERT INTO actions(
     gamePk,
     atBatIndex,
@@ -29,7 +21,7 @@ INSERT INTO actions(
 SELECT DISTINCT
   gamePk,
   atBatIndex,
-  `index` playIndex,
+  "index" playIndex,
   playerId,
   outs AS endOuts,
   balls AS endBalls,
@@ -55,33 +47,10 @@ WHERE
   );
 
 -- actions
-UPDATE
-  actions p
-INNER JOIN (
-  SELECT
-    gamePk,
-    atBatIndex,
-    inning,
-    halfInning,
-    pitchingTeamId,
-    battingTeamId
-  FROM atbats
-  WHERE
-    1 = 1
-) q
-  ON (
-    p.gamePk = q.gamePk
-    AND p.atBatIndex = q.atBatIndex
-  )
-  SET p.pitchingTeamId = q.pitchingTeamId
-  ,   p.battingTeamId  = q.battingTeamId
-  ,   p.inning         = q.inning
-  ,   p.halfInning     = q.halfInning
-  Where 1 = 1
-  And   ( p.pitchingTeamId Is Null Or p.battingTeamId Is Null );
-
-COMMIT;
-
-END //
-
-DELIMITER ;
+UPDATE actions
+SET pitchingTeamId = (SELECT q.pitchingTeamId FROM atbats q WHERE actions.gamePk = q.gamePk AND actions.atBatIndex = q.atBatIndex),
+    battingTeamId  = (SELECT q.battingTeamId  FROM atbats q WHERE actions.gamePk = q.gamePk AND actions.atBatIndex = q.atBatIndex),
+    inning         = (SELECT q.inning         FROM atbats q WHERE actions.gamePk = q.gamePk AND actions.atBatIndex = q.atBatIndex),
+    halfInning     = (SELECT q.halfInning     FROM atbats q WHERE actions.gamePk = q.gamePk AND actions.atBatIndex = q.atBatIndex)
+WHERE (pitchingTeamId IS NULL OR battingTeamId IS NULL)
+AND EXISTS (SELECT 1 FROM atbats q WHERE actions.gamePk = q.gamePk AND actions.atBatIndex = q.atBatIndex);

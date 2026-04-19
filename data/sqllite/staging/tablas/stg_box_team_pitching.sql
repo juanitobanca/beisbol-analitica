@@ -1,6 +1,4 @@
-USE baseball;
-
-DROP TABLE stg_box_team_pitching;
+DROP TABLE IF EXISTS stg_box_team_pitching;
 
 CREATE TABLE IF NOT EXISTS stg_box_team_pitching (
   airOuts INTEGER,
@@ -33,5 +31,5 @@ CREATE TABLE IF NOT EXISTS stg_box_team_pitching (
   wildPitches INTEGER,
   gamePk INTEGER,
   teamId INTEGER,
-  teamType VARCHAR(20)
-) ENGINE = INNODB;
+  teamType TEXT
+);

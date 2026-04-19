@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE game_batting_orders;
-
-DELIMITER //
-
-CREATE PROCEDURE game_batting_orders()
-BEGIN
-
+-- Procedure: game_batting_orders
 INSERT INTO game_batting_orders(
     gamePk,
     teamId,
@@ -28,9 +20,3 @@ WHERE
   )
 AND battingOrder IS NOT NULL
 AND gamePk IS NOT NULL;
-
-COMMIT;
-
-END //
-
-DELIMITER ;

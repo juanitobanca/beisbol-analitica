@@ -1,355 +1,186 @@
-USE baseball;
+-- Procedure: agg_batting_stats
+-- NOTE: This procedure used dynamic SQL in MySQL. In SQLite, each grouping combination
+-- must be called as a separate static SQL statement from the application layer.
+-- The template query is preserved below as a reference.
 
-DROP PROCEDURE agg_batting_stats;
+-- Parameters were: p_grouping_fields VARCHAR(255), p_aggregation_type VARCHAR(255)
 
-DELIMITER //
-
-CREATE PROCEDURE agg_batting_stats( IN p_grouping_fields VARCHAR(255),
-                                    IN p_aggregation_type VARCHAR(255),
-                                    OUT insert_stmt VARCHAR(16000)
-                                  )
-BEGIN
-
-/* Para probar este procedimiento hacer: CALL agg_batting_stats( 'majorLeagueId', @insert_stmt);  */
-
-SET @insert_stmt = CONCAT('INSERT INTO agg_batting_stats(',
-                            IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),
-                            p_grouping_fields,',',
-                           'aggregationType,
-                            atBats,
-                            balks,
-                            batterInterferences,
-                            bunts,
-                            catcherInterferences,
-                            caughtStealing,
-                            doubles,
-                            fanInterferences,
-                            fieldErrors,
-                            fieldersChoice,
-                            flyOuts,
-                            forceOuts,
-                            games,
-                            groundedIntoDoublePlays,
-                            groundedIntoTriplePlays,
-                            groundOuts,
-                            hitByPitch,
-                            hits,
-                            homeRuns,
-                            intentionalWalks,
-                            leftOnBase,
-                            lineOuts,
-                            passedBalls,
-                            pickoffs,
-                            popOuts,
-                            runsBattedIn,
-                            runs,
-                            sacBunts,
-                            sacFlies,
-                            stolenBases,
-                            strikeOuts,
-                            triples,
-                            walks,
-                            wildPitches,
-                            -- Coming from the pitches tables
-                            balls,
-                            ballsPitchOut,
-                            ballsInDirt,
-                            intentBalls,
-                            fouls,
-                            foulBunts,
-                            foulTips,
-                            foulPitchOuts,
-                            hitIntoPlay,
-                            pitches,
-                            pitchOuts,
-                            strikes,
-                            strikesCalled,
-                            strikesPitchOuts,
-                            missedBunts,
-                            swingAndMissStrikes,
-                            swingsPitchOuts,
-                            swings,
-                            swingsZeroAndZero,
-                            swingsZeroAndOne,
-                            swingsZeroAndTwo,
-                            swingsOneAndZero,
-                            swingsOneAndOne,
-                            swingsOneAndTwo,
-                            swingsTwoAndZero,
-                            swingsTwoAndOne,
-                            swingsTwoAndTwo,
-                            swingsThreeAndZero,
-                            swingsThreeAndOne,
-                            swingsThreeAndTwo,
-                            flyBalls,
-                            groundBalls,
-                            lineDrives,
-                            popUps,
-                            groundBunts,
-                            popupBunts,
-                            lineDriveBunts,
-                            groupingId,
-                            groupingDescription
-                            )
-                            WITH game_split_stats AS
-                            (
-                            SELECT
-                                gamePk,
-                                batterId,
-                                pitchingTeamId AS opposingTeamId,
-                                SUM(balks) AS balks,
-                                SUM(batterInterferences) AS batterInterferences,
-                                SUM(bunts) AS bunts,
-                                SUM(fanInterferences) AS fanInterferences,
-                                SUM(fieldErrors) AS fieldErrors,
-                                SUM(fieldersChoice) AS fieldersChoice,
-                                SUM(forceOuts) AS forceOuts,
-                                SUM(lineOuts) AS lineOuts,
-                                SUM(passedBalls) AS passedBalls,
-                                SUM(popOuts) AS popOuts,
-                                SUM(wildPitches) AS wildPitches,
-                                -- These metrics come from the pitches table
-                                SUM(balls) AS balls,
-                                SUM(ballsPitchOut) AS ballsPitchOut,
-                                SUM(ballsInDirt) AS ballsInDirt,
-                                SUM(intentBalls) AS intentBalls,
-                                SUM(fouls) AS fouls,
-                                SUM(foulBunts) AS foulBunts,
-                                SUM(foulTips) AS foulTips,
-                                SUM(foulPitchOuts) AS foulPitchOuts,
-                                SUM(hitIntoPlay) AS hitIntoPlay,
-                                SUM(pitches) AS pitches,
-                                SUM(pitchOuts) AS pitchOuts,
-                                SUM(strikes) AS strikes,
-                                SUM(strikesCalled) AS strikesCalled,
-                                SUM(strikesPitchOuts) AS strikesPitchOuts,
-                                SUM(missedBunts) AS missedBunts,
-                                SUM(swingAndMissStrikes) AS swingAndMissStrikes,
-                                SUM(swingsPitchOuts) AS swingsPitchOuts,
-                                SUM(swings) AS swings,
-                                -- Swings Per Ball and Strikes
-                                -- 0 Ball(s)
-                                SUM(swingsZeroAndZero) AS swingsZeroAndZero,
-                                SUM(swingsZeroAndOne) AS swingsZeroAndOne,
-                                SUM(swingsZeroAndTwo) AS swingsZeroAndTwo,
-                                -- 1 Ball(s)
-                                SUM(swingsOneAndZero) AS swingsOneAndZero,
-                                SUM(swingsOneAndOne) AS swingsOneAndOne,
-                                SUM(swingsOneAndTwo) AS swingsOneAndTwo,
-                                -- 2 Ball(s)
-                                SUM(swingsTwoAndZero) AS swingsTwoAndZero,
-                                SUM(swingsTwoAndOne) AS swingsTwoAndOne,
-                                SUM(swingsTwoAndTwo) AS swingsTwoAndTwo,
-                                -- 3 Ball(s)
-                                SUM(swingsThreeAndZero) AS swingsThreeAndZero,
-                                SUM(swingsThreeAndOne) AS swingsThreeAndOne,
-                                SUM(swingsThreeAndTwo) AS swingsThreeAndTwo,
-                                -- Trajectories
-                                SUM(flyBalls) AS flyBalls,
-                                SUM(groundBalls) AS groundBalls,
-                                SUM(lineDrives) AS lineDrives,
-                                SUM(popUps) AS popUps,
-                                SUM(groundBunts) AS groundBunts,
-                                SUM(popupBunts) AS popupBunts,
-                                SUM(lineDriveBunts) AS lineDriveBunts
-                            FROM game_player_split_stats
-                            GROUP BY 1, 2, 3
-                            ), officials AS
-                            (
-                                SELECT gamePk, officialId
-                                FROM game_officials
-                                WHERE position  = "Home Plate"
-                            ),
-                            d AS
-                            (
-                            SELECT ',
-                                IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),
-                                p_grouping_fields, ',',
-                            '   SUM(atBats) AS atBats,
-                                SUM(balks) AS balks,
-                                SUM(batterInterferences) AS batterInterferences,
-                                SUM(bunts) AS bunts,
-                                SUM(catchersInterference) AS catcherInterferences,
-                                SUM(caughtStealing) AS caughtStealing,
-                                SUM(doubles) AS doubles,
-                                SUM(fanInterferences) AS fanInterferences,
-                                SUM(fieldErrors) AS fieldErrors,
-                                SUM(fieldersChoice) AS fieldersChoice,
-                                SUM(flyOuts) AS flyOuts,
-                                SUM(forceOuts) AS forceOuts,
-                                COUNT(DISTINCT g.gamePk) AS games,
-                                SUM(groundIntoDoublePlay) AS groundedIntoDoublePlays,
-                                SUM(groundIntoTriplePlay) AS groundedIntoTriplePlays,
-                                SUM(groundOuts) AS groundOuts,
-                                SUM(hitByPitch) AS hitByPitch,
-                                SUM(hits) AS hits,
-                                SUM(homeRuns) AS homeRuns,
-                                SUM(intentionalWalks) AS intentionalWalks,
-                                SUM(leftOnBase) AS leftOnBase,
-                                SUM(lineOuts) AS lineOuts,
-                                SUM(passedBalls) AS passedBalls,
-                                SUM(pickoffs) AS pickoffs,
-                                SUM(popOuts) AS popOuts,
-                                SUM(rbi) AS runsBattedIn,
-                                SUM(runs) AS runs,
-                                SUM(sacBunts) AS sacBunts,
-                                SUM(sacFlies) AS sacFlies,
-                                SUM(stolenBases) AS stolenBases,
-                                SUM(strikeOuts) AS strikeOuts,
-                                SUM(triples) AS triples,
-                                SUM(walks) AS walks,
-                                SUM(wildPitches) AS wildPitches,
-                                -- These metrics come from the pitches table
-                                SUM(balls) AS balls,
-                                SUM(ballsPitchOut) AS ballsPitchOut,
-                                SUM(ballsInDirt) AS ballsInDirt,
-                                SUM(intentBalls) AS intentBalls,
-                                SUM(fouls) AS fouls,
-                                SUM(foulBunts) AS foulBunts,
-                                SUM(foulTips) AS foulTips,
-                                SUM(foulPitchOuts) AS foulPitchOuts,
-                                SUM(hitIntoPlay) AS hitIntoPlay,
-                                SUM(pitches) AS pitches,
-                                SUM(pitchOuts) AS pitchOuts,
-                                SUM(strikes) AS strikes,
-                                SUM(strikesCalled) AS strikesCalled,
-                                SUM(strikesPitchOuts) AS strikesPitchOuts,
-                                SUM(missedBunts) AS missedBunts,
-                                SUM(swingAndMissStrikes) AS swingAndMissStrikes,
-                                SUM(swingsPitchOuts) AS swingsPitchOuts,
-                                SUM(swings) AS swings,
-                                -- Swings Per Ball and Strikes
-                                -- 0 Ball(s)
-                                SUM(swingsZeroAndZero) AS swingsZeroAndZero,
-                                SUM(swingsZeroAndOne) AS swingsZeroAndOne,
-                                SUM(swingsZeroAndTwo) AS swingsZeroAndTwo,
-                                -- 1 Ball(s)
-                                SUM(swingsOneAndZero) AS swingsOneAndZero,
-                                SUM(swingsOneAndOne) AS swingsOneAndOne,
-                                SUM(swingsOneAndTwo) AS swingsOneAndTwo,
-                                -- 2 Ball(s)
-                                SUM(swingsTwoAndZero) AS swingsTwoAndZero,
-                                SUM(swingsTwoAndOne) AS swingsTwoAndOne,
-                                SUM(swingsTwoAndTwo) AS swingsTwoAndTwo,
-                                -- 3 Ball(s)
-                                SUM(swingsThreeAndZero) AS swingsThreeAndZero,
-                                SUM(swingsThreeAndOne) AS swingsThreeAndOne,
-                                SUM(swingsThreeAndTwo) AS swingsThreeAndTwo,
-                                -- Trajectories
-                                SUM(flyBalls) AS flyBalls,
-                                SUM(groundBalls) AS groundBalls,
-                                SUM(lineDrives) AS lineDrives,
-                                SUM(popUps) AS popUps,
-                                SUM(groundBunts) AS groundBunts,
-                                SUM(popupBunts) AS popupBunts,
-                                SUM(lineDriveBunts) AS lineDriveBunts
-                            FROM games g
-                            INNER JOIN game_player_batting_stats bs
-                                ON g.gamePk = bs.gamePk
-                            INNER JOIN game_split_stats ss
-                                ON bs.gamePk = ss.gamePk
-                                AND bs.playerId = ss.batterId
-                            LEFT JOIN officials o
-                                ON g.gamePk = o.gamePk
-                            WHERE gameType2 IN ("PS","RS")
-                            GROUP BY ',
-                                IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),
-                                p_grouping_fields,
-                            ') ',
-                            'SELECT ',
-                                IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),
-                                p_grouping_fields, ',',
-                                IF( p_aggregation_type = 'CUMULATIVE', '"CUMULATIVE",','"AGGREGATED",'),
-                                AGG_OR_CUM_QUERIES('SUM(atBats)', p_grouping_fields, p_aggregation_type ),' AS atBats,',
-                                AGG_OR_CUM_QUERIES('SUM(balks)', p_grouping_fields, p_aggregation_type ),' AS balks,',
-                                AGG_OR_CUM_QUERIES('SUM(batterInterferences)', p_grouping_fields, p_aggregation_type ),' AS batterInterferences,',
-                                AGG_OR_CUM_QUERIES('SUM(bunts)', p_grouping_fields, p_aggregation_type ),' AS bunts,',
-                                AGG_OR_CUM_QUERIES('SUM(catcherInterferences)', p_grouping_fields, p_aggregation_type ),' AS catcherInterferences,',
-                                AGG_OR_CUM_QUERIES('SUM(caughtStealing)', p_grouping_fields, p_aggregation_type ),' AS caughtStealing,',
-                                AGG_OR_CUM_QUERIES('SUM(doubles)', p_grouping_fields, p_aggregation_type ),' AS doubles,',
-                                AGG_OR_CUM_QUERIES('SUM(fanInterferences)', p_grouping_fields, p_aggregation_type ),' AS fanInterferences,',
-                                AGG_OR_CUM_QUERIES('SUM(fieldErrors)', p_grouping_fields, p_aggregation_type ),' AS fieldErrors,',
-                                AGG_OR_CUM_QUERIES('SUM(fieldersChoice)', p_grouping_fields, p_aggregation_type ),' AS fieldersChoice,',
-                                AGG_OR_CUM_QUERIES('SUM(flyOuts)', p_grouping_fields, p_aggregation_type ),' AS flyOuts,',
-                                AGG_OR_CUM_QUERIES('SUM(forceOuts)', p_grouping_fields, p_aggregation_type ),' AS forceOuts,',
-                                AGG_OR_CUM_QUERIES('SUM(games)', p_grouping_fields, p_aggregation_type ),' AS games,',
-                                AGG_OR_CUM_QUERIES('SUM(groundedIntoDoublePlays)', p_grouping_fields, p_aggregation_type ),' AS groundedIntoDoublePlays,',
-                                AGG_OR_CUM_QUERIES('SUM(groundedIntoTriplePlays)', p_grouping_fields, p_aggregation_type ),' AS groundedIntoTriplePlays,',
-                                AGG_OR_CUM_QUERIES('SUM(groundOuts)', p_grouping_fields, p_aggregation_type ),' AS groundOuts,',
-                                AGG_OR_CUM_QUERIES('SUM(hitByPitch)', p_grouping_fields, p_aggregation_type ),' AS hitByPitch,',
-                                AGG_OR_CUM_QUERIES('SUM(hits)', p_grouping_fields, p_aggregation_type ),' AS hits,',
-                                AGG_OR_CUM_QUERIES('SUM(homeRuns)', p_grouping_fields, p_aggregation_type ),' AS homeRuns,',
-                                AGG_OR_CUM_QUERIES('SUM(intentionalWalks)', p_grouping_fields, p_aggregation_type ),' AS intentionalWalks,',
-                                AGG_OR_CUM_QUERIES('SUM(leftOnBase)', p_grouping_fields, p_aggregation_type ),' AS leftOnBase,',
-                                AGG_OR_CUM_QUERIES('SUM(lineOuts)', p_grouping_fields, p_aggregation_type ),' AS lineOuts,',
-                                AGG_OR_CUM_QUERIES('SUM(passedBalls)', p_grouping_fields, p_aggregation_type ),' AS passedBalls,',
-                                AGG_OR_CUM_QUERIES('SUM(pickoffs)', p_grouping_fields, p_aggregation_type ),' AS pickoffs,',
-                                AGG_OR_CUM_QUERIES('SUM(popOuts)', p_grouping_fields, p_aggregation_type ),' AS popOuts,',
-                                AGG_OR_CUM_QUERIES('SUM(runsBattedIn)', p_grouping_fields, p_aggregation_type ),' AS runsBattedIn,',
-                                AGG_OR_CUM_QUERIES('SUM(runs)', p_grouping_fields, p_aggregation_type ),' AS runs,',
-                                AGG_OR_CUM_QUERIES('SUM(sacBunts)', p_grouping_fields, p_aggregation_type ),' AS sacBunts,',
-                                AGG_OR_CUM_QUERIES('SUM(sacFlies)', p_grouping_fields, p_aggregation_type ),' AS sacFlies,',
-                                AGG_OR_CUM_QUERIES('SUM(stolenBases)', p_grouping_fields, p_aggregation_type ),' AS stolenBases,',
-                                AGG_OR_CUM_QUERIES('SUM(strikeOuts)', p_grouping_fields, p_aggregation_type ),' AS strikeOuts,',
-                                AGG_OR_CUM_QUERIES('SUM(triples)', p_grouping_fields, p_aggregation_type ),' AS triples,',
-                                AGG_OR_CUM_QUERIES('SUM(walks)', p_grouping_fields, p_aggregation_type ),' AS walks,',
-                                AGG_OR_CUM_QUERIES('SUM(wildPitches)', p_grouping_fields, p_aggregation_type ),' AS wildPitches,',
-                                -- These metrics come from the pitches table',
-                                AGG_OR_CUM_QUERIES('SUM(balls)', p_grouping_fields, p_aggregation_type ),' AS balls,',
-                                AGG_OR_CUM_QUERIES('SUM(ballsPitchOut)', p_grouping_fields, p_aggregation_type ),' AS ballsPitchOut,',
-                                AGG_OR_CUM_QUERIES('SUM(ballsInDirt)', p_grouping_fields, p_aggregation_type ),' AS ballsInDirt,',
-                                AGG_OR_CUM_QUERIES('SUM(intentBalls)', p_grouping_fields, p_aggregation_type ),' AS intentBalls,',
-                                AGG_OR_CUM_QUERIES('SUM(fouls)', p_grouping_fields, p_aggregation_type ),' AS fouls,',
-                                AGG_OR_CUM_QUERIES('SUM(foulBunts)', p_grouping_fields, p_aggregation_type ),' AS foulBunts,',
-                                AGG_OR_CUM_QUERIES('SUM(foulTips)', p_grouping_fields, p_aggregation_type ),' AS foulTips,',
-                                AGG_OR_CUM_QUERIES('SUM(foulPitchOuts)', p_grouping_fields, p_aggregation_type ),' AS foulPitchOuts,',
-                                AGG_OR_CUM_QUERIES('SUM(hitIntoPlay)', p_grouping_fields, p_aggregation_type ),' AS hitIntoPlay,',
-                                AGG_OR_CUM_QUERIES('SUM(pitches)', p_grouping_fields, p_aggregation_type ),' AS pitches,',
-                                AGG_OR_CUM_QUERIES('SUM(pitchOuts)', p_grouping_fields, p_aggregation_type ),' AS pitchOuts,',
-                                AGG_OR_CUM_QUERIES('SUM(strikes)', p_grouping_fields, p_aggregation_type ),' AS strikes,',
-                                AGG_OR_CUM_QUERIES('SUM(strikesCalled)', p_grouping_fields, p_aggregation_type ),' AS strikesCalled,',
-                                AGG_OR_CUM_QUERIES('SUM(strikesPitchOuts)', p_grouping_fields, p_aggregation_type ),' AS strikesPitchOuts,',
-                                AGG_OR_CUM_QUERIES('SUM(missedBunts)', p_grouping_fields, p_aggregation_type ),' AS missedBunts,',
-                                AGG_OR_CUM_QUERIES('SUM(swingAndMissStrikes)', p_grouping_fields, p_aggregation_type ),' AS swingAndMissStrikes,',
-                                AGG_OR_CUM_QUERIES('SUM(swingsPitchOuts)', p_grouping_fields, p_aggregation_type ),' AS swingsPitchOuts,',
-                                AGG_OR_CUM_QUERIES('SUM(swings)', p_grouping_fields, p_aggregation_type ),' AS swings,',
-                                -- Swings Per Ball and Strikes',
-                                -- 0 Ball(s)', p_grouping_fields, p_aggregation_type ),',
-                                AGG_OR_CUM_QUERIES('SUM(swingsZeroAndZero)', p_grouping_fields, p_aggregation_type ),' AS swingsZeroAndZero,',
-                                AGG_OR_CUM_QUERIES('SUM(swingsZeroAndOne)', p_grouping_fields, p_aggregation_type ),' AS swingsZeroAndOne,',
-                                AGG_OR_CUM_QUERIES('SUM(swingsZeroAndTwo)', p_grouping_fields, p_aggregation_type ),' AS swingsZeroAndTwo,',
-                                -- 1 Ball(s)', p_grouping_fields, p_aggregation_type ),',
-                                AGG_OR_CUM_QUERIES('SUM(swingsOneAndZero)', p_grouping_fields, p_aggregation_type ),' AS swingsOneAndZero,',
-                                AGG_OR_CUM_QUERIES('SUM(swingsOneAndOne)', p_grouping_fields, p_aggregation_type ),' AS swingsOneAndOne,',
-                                AGG_OR_CUM_QUERIES('SUM(swingsOneAndTwo)', p_grouping_fields, p_aggregation_type ),' AS swingsOneAndTwo,',
-                                -- 2 Ball(s)', p_grouping_fields, p_aggregation_type ),',
-                                AGG_OR_CUM_QUERIES('SUM(swingsTwoAndZero)', p_grouping_fields, p_aggregation_type ),' AS swingsTwoAndZero,',
-                                AGG_OR_CUM_QUERIES('SUM(swingsTwoAndOne)', p_grouping_fields, p_aggregation_type ),' AS swingsTwoAndOne,',
-                                AGG_OR_CUM_QUERIES('SUM(swingsTwoAndTwo)', p_grouping_fields, p_aggregation_type ),' AS swingsTwoAndTwo,',
-                                -- 3 Ball(s)', p_grouping_fields, p_aggregation_type ),',
-                                AGG_OR_CUM_QUERIES('SUM(swingsThreeAndZero)', p_grouping_fields, p_aggregation_type ),' AS swingsThreeAndZero,',
-                                AGG_OR_CUM_QUERIES('SUM(swingsThreeAndOne)', p_grouping_fields, p_aggregation_type ),' AS swingsThreeAndOne,',
-                                AGG_OR_CUM_QUERIES('SUM(swingsThreeAndTwo)', p_grouping_fields, p_aggregation_type ),' AS swingsThreeAndTwo,',
-                                -- Trajectories',
-                                AGG_OR_CUM_QUERIES('SUM(flyBalls)', p_grouping_fields, p_aggregation_type ),' AS flyBalls,',
-                                AGG_OR_CUM_QUERIES('SUM(groundBalls)', p_grouping_fields, p_aggregation_type ),' AS groundBalls,',
-                                AGG_OR_CUM_QUERIES('SUM(lineDrives)', p_grouping_fields, p_aggregation_type ),' AS lineDrives,',
-                                AGG_OR_CUM_QUERIES('SUM(popUps)', p_grouping_fields, p_aggregation_type ),' AS popUps,',
-                                AGG_OR_CUM_QUERIES('SUM(groundBunts)', p_grouping_fields, p_aggregation_type ),' AS groundBunts,',
-                                AGG_OR_CUM_QUERIES('SUM(popupBunts)', p_grouping_fields, p_aggregation_type ),' AS popupBunts,',
-                                AGG_OR_CUM_QUERIES('SUM(lineDriveBunts)', p_grouping_fields, p_aggregation_type ),' AS lineDriveBunts,',
-                                'agg_grouping_id("', p_grouping_fields, '") groupingId,
-                                agg_grouping_description("', p_grouping_fields, '") groupingDescription
-                                FROM d
-                                GROUP BY ',
-                                IF( p_aggregation_type = 'CUMULATIVE', 'gameDate,',''),
-                                p_grouping_fields
-                        );
-
-SELECT @insert_stmt;
-PREPARE insert_stmt_sql FROM @insert_stmt;
-EXECUTE insert_stmt_sql;
-
-END //
-
-DELIMITER ;
+/*
+INSERT INTO agg_batting_stats(
+    -- IF p_aggregation_type = 'CUMULATIVE': gameDate,
+    {p_grouping_fields},
+    aggregationType,
+    atBats, balks, batterInterferences, bunts, catcherInterferences,
+    caughtStealing, doubles, fanInterferences, fieldErrors, fieldersChoice,
+    flyOuts, forceOuts, games, groundedIntoDoublePlays, groundedIntoTriplePlays,
+    groundOuts, hitByPitch, hits, homeRuns, intentionalWalks, leftOnBase,
+    lineOuts, passedBalls, pickoffs, popOuts, runsBattedIn, runs,
+    sacBunts, sacFlies, stolenBases, strikeOuts, triples, walks, wildPitches,
+    -- Coming from the pitches tables
+    balls, ballsPitchOut, ballsInDirt, intentBalls, fouls, foulBunts,
+    foulTips, foulPitchOuts, hitIntoPlay, pitches, pitchOuts, strikes,
+    strikesCalled, strikesPitchOuts, missedBunts, swingAndMissStrikes,
+    swingsPitchOuts, swings,
+    swingsZeroAndZero, swingsZeroAndOne, swingsZeroAndTwo,
+    swingsOneAndZero, swingsOneAndOne, swingsOneAndTwo,
+    swingsTwoAndZero, swingsTwoAndOne, swingsTwoAndTwo,
+    swingsThreeAndZero, swingsThreeAndOne, swingsThreeAndTwo,
+    flyBalls, groundBalls, lineDrives, popUps, groundBunts, popupBunts, lineDriveBunts,
+    groupingId, groupingDescription
+)
+WITH game_split_stats AS
+(
+    SELECT
+        gamePk,
+        batterId,
+        pitchingTeamId AS opposingTeamId,
+        SUM(balks) AS balks,
+        SUM(batterInterferences) AS batterInterferences,
+        SUM(bunts) AS bunts,
+        SUM(fanInterferences) AS fanInterferences,
+        SUM(fieldErrors) AS fieldErrors,
+        SUM(fieldersChoice) AS fieldersChoice,
+        SUM(forceOuts) AS forceOuts,
+        SUM(lineOuts) AS lineOuts,
+        SUM(passedBalls) AS passedBalls,
+        SUM(popOuts) AS popOuts,
+        SUM(wildPitches) AS wildPitches,
+        -- These metrics come from the pitches table
+        SUM(balls) AS balls,
+        SUM(ballsPitchOut) AS ballsPitchOut,
+        SUM(ballsInDirt) AS ballsInDirt,
+        SUM(intentBalls) AS intentBalls,
+        SUM(fouls) AS fouls,
+        SUM(foulBunts) AS foulBunts,
+        SUM(foulTips) AS foulTips,
+        SUM(foulPitchOuts) AS foulPitchOuts,
+        SUM(hitIntoPlay) AS hitIntoPlay,
+        SUM(pitches) AS pitches,
+        SUM(pitchOuts) AS pitchOuts,
+        SUM(strikes) AS strikes,
+        SUM(strikesCalled) AS strikesCalled,
+        SUM(strikesPitchOuts) AS strikesPitchOuts,
+        SUM(missedBunts) AS missedBunts,
+        SUM(swingAndMissStrikes) AS swingAndMissStrikes,
+        SUM(swingsPitchOuts) AS swingsPitchOuts,
+        SUM(swings) AS swings,
+        SUM(swingsZeroAndZero) AS swingsZeroAndZero,
+        SUM(swingsZeroAndOne) AS swingsZeroAndOne,
+        SUM(swingsZeroAndTwo) AS swingsZeroAndTwo,
+        SUM(swingsOneAndZero) AS swingsOneAndZero,
+        SUM(swingsOneAndOne) AS swingsOneAndOne,
+        SUM(swingsOneAndTwo) AS swingsOneAndTwo,
+        SUM(swingsTwoAndZero) AS swingsTwoAndZero,
+        SUM(swingsTwoAndOne) AS swingsTwoAndOne,
+        SUM(swingsTwoAndTwo) AS swingsTwoAndTwo,
+        SUM(swingsThreeAndZero) AS swingsThreeAndZero,
+        SUM(swingsThreeAndOne) AS swingsThreeAndOne,
+        SUM(swingsThreeAndTwo) AS swingsThreeAndTwo,
+        SUM(flyBalls) AS flyBalls,
+        SUM(groundBalls) AS groundBalls,
+        SUM(lineDrives) AS lineDrives,
+        SUM(popUps) AS popUps,
+        SUM(groundBunts) AS groundBunts,
+        SUM(popupBunts) AS popupBunts,
+        SUM(lineDriveBunts) AS lineDriveBunts
+    FROM game_player_split_stats
+    GROUP BY 1, 2, 3
+), officials AS
+(
+    SELECT gamePk, officialId
+    FROM game_officials
+    WHERE position  = "Home Plate"
+),
+d AS
+(
+    SELECT
+        -- IF p_aggregation_type = 'CUMULATIVE': gameDate,
+        {p_grouping_fields},
+        SUM(atBats) AS atBats,
+        SUM(balks) AS balks,
+        SUM(batterInterferences) AS batterInterferences,
+        SUM(bunts) AS bunts,
+        SUM(catchersInterference) AS catcherInterferences,
+        SUM(caughtStealing) AS caughtStealing,
+        SUM(doubles) AS doubles,
+        SUM(fanInterferences) AS fanInterferences,
+        SUM(fieldErrors) AS fieldErrors,
+        SUM(fieldersChoice) AS fieldersChoice,
+        SUM(flyOuts) AS flyOuts,
+        SUM(forceOuts) AS forceOuts,
+        COUNT(DISTINCT g.gamePk) AS games,
+        SUM(groundIntoDoublePlay) AS groundedIntoDoublePlays,
+        SUM(groundIntoTriplePlay) AS groundedIntoTriplePlays,
+        SUM(groundOuts) AS groundOuts,
+        SUM(hitByPitch) AS hitByPitch,
+        SUM(hits) AS hits,
+        SUM(homeRuns) AS homeRuns,
+        SUM(intentionalWalks) AS intentionalWalks,
+        SUM(leftOnBase) AS leftOnBase,
+        SUM(lineOuts) AS lineOuts,
+        SUM(passedBalls) AS passedBalls,
+        SUM(pickoffs) AS pickoffs,
+        SUM(popOuts) AS popOuts,
+        SUM(rbi) AS runsBattedIn,
+        SUM(runs) AS runs,
+        SUM(sacBunts) AS sacBunts,
+        SUM(sacFlies) AS sacFlies,
+        SUM(stolenBases) AS stolenBases,
+        SUM(strikeOuts) AS strikeOuts,
+        SUM(triples) AS triples,
+        SUM(walks) AS walks,
+        SUM(wildPitches) AS wildPitches,
+        -- These metrics come from the pitches table
+        SUM(balls) AS balls, SUM(ballsPitchOut) AS ballsPitchOut,
+        SUM(ballsInDirt) AS ballsInDirt, SUM(intentBalls) AS intentBalls,
+        SUM(fouls) AS fouls, SUM(foulBunts) AS foulBunts,
+        SUM(foulTips) AS foulTips, SUM(foulPitchOuts) AS foulPitchOuts,
+        SUM(hitIntoPlay) AS hitIntoPlay, SUM(pitches) AS pitches,
+        SUM(pitchOuts) AS pitchOuts, SUM(strikes) AS strikes,
+        SUM(strikesCalled) AS strikesCalled, SUM(strikesPitchOuts) AS strikesPitchOuts,
+        SUM(missedBunts) AS missedBunts, SUM(swingAndMissStrikes) AS swingAndMissStrikes,
+        SUM(swingsPitchOuts) AS swingsPitchOuts, SUM(swings) AS swings,
+        SUM(swingsZeroAndZero) AS swingsZeroAndZero, SUM(swingsZeroAndOne) AS swingsZeroAndOne,
+        SUM(swingsZeroAndTwo) AS swingsZeroAndTwo,
+        SUM(swingsOneAndZero) AS swingsOneAndZero, SUM(swingsOneAndOne) AS swingsOneAndOne,
+        SUM(swingsOneAndTwo) AS swingsOneAndTwo,
+        SUM(swingsTwoAndZero) AS swingsTwoAndZero, SUM(swingsTwoAndOne) AS swingsTwoAndOne,
+        SUM(swingsTwoAndTwo) AS swingsTwoAndTwo,
+        SUM(swingsThreeAndZero) AS swingsThreeAndZero, SUM(swingsThreeAndOne) AS swingsThreeAndOne,
+        SUM(swingsThreeAndTwo) AS swingsThreeAndTwo,
+        SUM(flyBalls) AS flyBalls, SUM(groundBalls) AS groundBalls,
+        SUM(lineDrives) AS lineDrives, SUM(popUps) AS popUps,
+        SUM(groundBunts) AS groundBunts, SUM(popupBunts) AS popupBunts,
+        SUM(lineDriveBunts) AS lineDriveBunts
+    FROM games g
+    INNER JOIN game_player_batting_stats bs
+        ON g.gamePk = bs.gamePk
+    INNER JOIN game_split_stats ss
+        ON bs.gamePk = ss.gamePk
+        AND bs.playerId = ss.batterId
+    LEFT JOIN officials o
+        ON g.gamePk = o.gamePk
+    WHERE gameType2 IN ("PS","RS")
+    GROUP BY
+        -- IF p_aggregation_type = 'CUMULATIVE': gameDate,
+        {p_grouping_fields}
+)
+SELECT
+    -- IF p_aggregation_type = 'CUMULATIVE': gameDate,
+    {p_grouping_fields},
+    -- IF p_aggregation_type = 'CUMULATIVE': "CUMULATIVE", ELSE: "AGGREGATED",
+    -- NOTE: AGG_OR_CUM_QUERIES() was a MySQL UDF that generated SUM() or cumulative SUM() OVER() expressions
+    -- For AGGREGATED: use SUM(col) directly
+    -- For CUMULATIVE: use SUM(SUM(col)) OVER (PARTITION BY {p_grouping_fields} ORDER BY gameDate)
+    SUM(atBats) AS atBats,
+    -- ... (all other SUM columns follow the same pattern) ...
+    SUM(lineDriveBunts) AS lineDriveBunts,
+    -- NOTE: agg_grouping_id() was a MySQL UDF - replace with appropriate grouping id value
+    -- NOTE: agg_grouping_description() was a MySQL UDF - replace with appropriate grouping description value
+    {groupingId} AS groupingId,
+    {groupingDescription} AS groupingDescription
+FROM d
+GROUP BY
+    -- IF p_aggregation_type = 'CUMULATIVE': gameDate,
+    {p_grouping_fields}
+*/

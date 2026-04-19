@@ -1,6 +1,4 @@
-USE baseball;
-
-DROP TABLE pickoffs;
+DROP TABLE IF EXISTS pickoffs;
 
 CREATE TABLE pickoffs (
   gamePk INTEGER,
@@ -9,9 +7,9 @@ CREATE TABLE pickoffs (
   outs INTEGER,
   balls INTEGER,
   strikes INTEGER,
-  fromCatcher TINYINT,
-  hasReview TINYINT,
+  fromCatcher INTEGER,
+  hasReview INTEGER,
   baseCode INTEGER
-) ENGINE = INNODB;
+);
 
-ALTER TABLE pickoffs ADD INDEX(gamePk, atBatIndex);
+CREATE INDEX IF NOT EXISTS idx_pickoffs_gamePk_atBatIndex ON pickoffs(gamePk, atBatIndex);

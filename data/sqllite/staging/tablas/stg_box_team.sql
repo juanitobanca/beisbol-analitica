@@ -1,33 +1,31 @@
-USE baseball;
-
-DROP TABLE stg_box_team;
+DROP TABLE IF EXISTS stg_box_team;
 
 CREATE TABLE IF NOT EXISTS stg_box_team (
-  abbreviation VARCHAR(100),
-  active TINYINT,
-  allStarStatus VARCHAR(100),
-  fileCode VARCHAR(100),
-  firstYearOfPlay VARCHAR(100),
-  locationName VARCHAR(100),
+  abbreviation TEXT,
+  active INTEGER,
+  allStarStatus TEXT,
+  fileCode TEXT,
+  firstYearOfPlay TEXT,
+  locationName TEXT,
   parentOrgId INTEGER,
-  parentOrgName VARCHAR(100),
+  parentOrgName TEXT,
   season INTEGER,
-  shortName VARCHAR(100),
-  teamCode VARCHAR(100),
-  teamName VARCHAR(100),
+  shortName TEXT,
+  teamCode TEXT,
+  teamName TEXT,
   id INTEGER,
-  name VARCHAR(100),
-  link VARCHAR(100),
+  name TEXT,
+  link TEXT,
   leagueId INTEGER,
-  leagueName VARCHAR(100),
-  leagueLink VARCHAR(100),
+  leagueName TEXT,
+  leagueLink TEXT,
   venueId INTEGER,
-  venueName VARCHAR(100),
-  venueLink VARCHAR(100),
+  venueName TEXT,
+  venueLink TEXT,
   divisionId INTEGER,
-  divisionName VARCHAR(100),
-  divisionLink VARCHAR(100),
+  divisionName TEXT,
+  divisionLink TEXT,
   gamePk INTEGER,
   teamId INTEGER,
-  teamType VARCHAR(20)
-) ENGINE = INNODB;
+  teamType TEXT
+);

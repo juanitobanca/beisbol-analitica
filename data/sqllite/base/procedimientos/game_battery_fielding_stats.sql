@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE game_battery_fielding_stats;
-
-DELIMITER //
-
-CREATE PROCEDURE game_battery_fielding_stats()
-BEGIN
-
+-- Procedure: game_battery_fielding_stats
 INSERT INTO game_battery_fielding_stats(
     gamePk,
     teamId,
@@ -125,8 +117,8 @@ INSERT INTO game_battery_fielding_stats(
       act.atBatPlayIndex,
       act.teamId,
       act.eventType,
-      MAX(IF(sns.positionAbbrev = 'P', sns.atBatPlayIndex, 0)) pitcherAtBatPlayIndex,
-      MAX(IF(sns.positionAbbrev = 'C', sns.atBatPlayIndex, 0)) catcherAtBatPlayIndex
+      MAX(CASE WHEN sns.positionAbbrev = 'P' THEN sns.atBatPlayIndex ELSE 0 END) pitcherAtBatPlayIndex,
+      MAX(CASE WHEN sns.positionAbbrev = 'C' THEN sns.atBatPlayIndex ELSE 0 END) catcherAtBatPlayIndex
     FROM act
     INNER JOIN sns
       ON act.gamePk = sns.gamePk
@@ -140,28 +132,28 @@ SELECT
   pci.teamId,
   p.playerId AS pitcherId,
   c.playerId AS catcherId,
-  IF(eventType = 'caught_stealing_2b', 1, 0) caughtStealingSecondBase,
-  IF(eventType = 'caught_stealing_3b', 1, 0) caughtStealingThirdBase,
-  IF(eventType = 'caught_stealing_home', 1, 0) caughtStealingHome,
-  IF(eventType IN ('caught_stealing_2b', 'caught_stealing_3b', 'caught_stealing_home'), 1, 0) caughtStealing,
-  IF(eventType = 'passed_ball', 1, 0) passedBalls,
-  IF(eventType = 'pickoff_1b', 1, 0) pickoffFirstBase,
-  IF(eventType = 'pickoff_2b', 1, 0) pickoffSecondBase,
-  IF(eventType = 'pickoff_3b', 1, 0) pickoffThirdBase,
-  IF(eventType IN ('pickoff_1b', 'pickoff_2b', 'pickoff_3b'), 1, 0) pickOffs,
-  IF(eventType = 'pickoff_caught_stealing_2b', 1, 0) pickoffCaughtStealingFirstBase,
-  IF(eventType = 'pickoff_caught_stealing_3b', 1, 0) pickoffCaughtStealingSecondBase,
-  IF(eventType = 'pickoff_caught_stealing_home', 1, 0) pickoffCaughtStealingThirdBase,
-  IF(eventType IN ('pickoff_caught_stealing_2b', 'pickoff_caught_stealing_3b', 'pickoff_caught_stealing_home'), 1, 0) pickoffCaughtStealing,
-  IF(eventType = 'pickoff_error_1b', 1, 0) pickoffErrorFirstBase,
-  IF(eventType = 'pickoff_error_2b', 1, 0) pickoffErrorSecondBase,
-  IF(eventType = 'pickoff_error_3b', 1, 0) pickoffErrorThirdBase,
-  IF(eventType IN ('pickoff_error_1b', 'pickoff_error_2b', 'pickoff_error_3b'), 1, 0) pickoffErrors,
-  IF(eventType = 'stolen_base_2b', 1, 0) stolenSecondBase,
-  IF(eventType = 'stolen_base_3b', 1, 0) stolenThirdBase,
-  IF(eventType = 'stolen_base_home', 1, 0) stolenHome,
-  IF(eventType IN ('stolen_base_2b', 'stolen_base_3b', 'stolen_base_home'), 1, 0) stolenBases,
-  IF(eventType = 'wild_pitch', 1, 0) wildPitches
+  CASE WHEN eventType = 'caught_stealing_2b' THEN 1 ELSE 0 END caughtStealingSecondBase,
+  CASE WHEN eventType = 'caught_stealing_3b' THEN 1 ELSE 0 END caughtStealingThirdBase,
+  CASE WHEN eventType = 'caught_stealing_home' THEN 1 ELSE 0 END caughtStealingHome,
+  CASE WHEN eventType IN ('caught_stealing_2b', 'caught_stealing_3b', 'caught_stealing_home') THEN 1 ELSE 0 END caughtStealing,
+  CASE WHEN eventType = 'passed_ball' THEN 1 ELSE 0 END passedBalls,
+  CASE WHEN eventType = 'pickoff_1b' THEN 1 ELSE 0 END pickoffFirstBase,
+  CASE WHEN eventType = 'pickoff_2b' THEN 1 ELSE 0 END pickoffSecondBase,
+  CASE WHEN eventType = 'pickoff_3b' THEN 1 ELSE 0 END pickoffThirdBase,
+  CASE WHEN eventType IN ('pickoff_1b', 'pickoff_2b', 'pickoff_3b') THEN 1 ELSE 0 END pickOffs,
+  CASE WHEN eventType = 'pickoff_caught_stealing_2b' THEN 1 ELSE 0 END pickoffCaughtStealingFirstBase,
+  CASE WHEN eventType = 'pickoff_caught_stealing_3b' THEN 1 ELSE 0 END pickoffCaughtStealingSecondBase,
+  CASE WHEN eventType = 'pickoff_caught_stealing_home' THEN 1 ELSE 0 END pickoffCaughtStealingThirdBase,
+  CASE WHEN eventType IN ('pickoff_caught_stealing_2b', 'pickoff_caught_stealing_3b', 'pickoff_caught_stealing_home') THEN 1 ELSE 0 END pickoffCaughtStealing,
+  CASE WHEN eventType = 'pickoff_error_1b' THEN 1 ELSE 0 END pickoffErrorFirstBase,
+  CASE WHEN eventType = 'pickoff_error_2b' THEN 1 ELSE 0 END pickoffErrorSecondBase,
+  CASE WHEN eventType = 'pickoff_error_3b' THEN 1 ELSE 0 END pickoffErrorThirdBase,
+  CASE WHEN eventType IN ('pickoff_error_1b', 'pickoff_error_2b', 'pickoff_error_3b') THEN 1 ELSE 0 END pickoffErrors,
+  CASE WHEN eventType = 'stolen_base_2b' THEN 1 ELSE 0 END stolenSecondBase,
+  CASE WHEN eventType = 'stolen_base_3b' THEN 1 ELSE 0 END stolenThirdBase,
+  CASE WHEN eventType = 'stolen_base_home' THEN 1 ELSE 0 END stolenHome,
+  CASE WHEN eventType IN ('stolen_base_2b', 'stolen_base_3b', 'stolen_base_home') THEN 1 ELSE 0 END stolenBases,
+  CASE WHEN eventType = 'wild_pitch' THEN 1 ELSE 0 END wildPitches
 FROM pitcher_catcher_idx pci
 INNER JOIN sns p
   ON pci.gamePk = p.gamePk
@@ -176,9 +168,3 @@ INNER JOIN sns c
 WHERE pci.gamePk NOT IN ( SELECT gamePk
                           FROM game_battery_fielding_stats
                         );
-
-COMMIT;
-
-END //
-
-DELIMITER ;

@@ -1,35 +1,23 @@
-USE baseball;
+-- Procedure: clean_staging_tables
 
-DROP PROCEDURE clean_staging_tables;
-
-DELIMITER //
-
-CREATE PROCEDURE clean_staging_tables()
-BEGIN
-
-TRUNCATE TABLE stg_players;
-TRUNCATE TABLE stg_officials;
-TRUNCATE TABLE stg_box_team_batting;
-TRUNCATE TABLE stg_box_team_pitching;
-TRUNCATE TABLE stg_box_team_fielding;
-TRUNCATE TABLE stg_box_player_batting;
-TRUNCATE TABLE stg_box_player_pitching;
-TRUNCATE TABLE stg_box_player_fielding;
-TRUNCATE TABLE stg_box_team_batting_order;
-TRUNCATE TABLE stg_box_team;
-TRUNCATE TABLE stg_box_player_game_positions;
-TRUNCATE TABLE stg_box_player_game_info;
-TRUNCATE TABLE stg_play_credit;
-TRUNCATE TABLE stg_play_atbat;
-TRUNCATE TABLE stg_play_action;
-TRUNCATE TABLE stg_play_runner;
-TRUNCATE TABLE stg_play_pitch;
-TRUNCATE TABLE stg_play_pickoff;
-TRUNCATE TABLE stg_game_context;
-TRUNCATE TABLE stg_box_info;
-TRUNCATE TABLE stg_box_officials;
-
-
-END //
-
-DELIMITER ;
+DELETE FROM stg_players;
+DELETE FROM stg_officials;
+DELETE FROM stg_box_team_batting;
+DELETE FROM stg_box_team_pitching;
+DELETE FROM stg_box_team_fielding;
+DELETE FROM stg_box_player_batting;
+DELETE FROM stg_box_player_pitching;
+DELETE FROM stg_box_player_fielding;
+DELETE FROM stg_box_team_batting_order;
+DELETE FROM stg_box_team;
+DELETE FROM stg_box_player_game_positions;
+DELETE FROM stg_box_player_game_info;
+DELETE FROM stg_play_credit;
+DELETE FROM stg_play_atbat;
+DELETE FROM stg_play_action;
+DELETE FROM stg_play_runner;
+DELETE FROM stg_play_pitch;
+DELETE FROM stg_play_pickoff;
+DELETE FROM stg_game_context;
+DELETE FROM stg_box_info;
+DELETE FROM stg_box_officials;

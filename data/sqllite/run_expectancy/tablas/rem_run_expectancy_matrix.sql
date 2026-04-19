@@ -1,32 +1,30 @@
-USE baseball;
-
-DROP TABLE rem_run_expectancy_matrix;
+DROP TABLE IF EXISTS rem_run_expectancy_matrix;
 
 CREATE TABLE IF NOT EXISTS rem_run_expectancy_matrix (
-  groupingId INTEGER UNSIGNED,
-  groupingDescription VARCHAR(255),
+  groupingId INTEGER,
+  groupingDescription TEXT,
   majorLeagueId INTEGER,
-  seasonId DOUBLE,
+  seasonId REAL,
   venueId INTEGER,
-  runnersBeforePlay VARCHAR(3),
+  runnersBeforePlay TEXT,
   zeroOutsRunsScoredEndInning INTEGER,
   zeroOutsRunsScoredBeforePlay INTEGER,
   zeroOutsEvents INTEGER,
-  zeroOutsRunExpectancy DOUBLE,
+  zeroOutsRunExpectancy REAL,
   oneOutsRunsScoredEndInning INTEGER,
   oneOutsRunsScoredBeforePlay INTEGER,
   oneOutsEvents INTEGER,
-  oneOutsRunExpectancy DOUBLE,
+  oneOutsRunExpectancy REAL,
   twoOutsRunsScoredEndInning INTEGER,
   twoOutsRunsScoredBeforePlay INTEGER,
   twoOutsEvents INTEGER,
-  twoOutsRunExpectancy DOUBLE,
+  twoOutsRunExpectancy REAL,
   sortingOrder INTEGER,
-  majorLeague VARCHAR(10),
-  venueName VARCHAR(100)
+  majorLeague TEXT,
+  venueName TEXT
 );
 
-ALTER TABLE rem_run_expectancy_matrix ADD INDEX(groupingId);
-ALTER TABLE rem_run_expectancy_matrix ADD INDEX(majorLeagueId);
-ALTER TABLE rem_run_expectancy_matrix ADD INDEX(seasonId);
-ALTER TABLE rem_run_expectancy_matrix ADD INDEX(venueId);
+CREATE INDEX IF NOT EXISTS idx_rem_run_expectancy_matrix_groupingId ON rem_run_expectancy_matrix(groupingId);
+CREATE INDEX IF NOT EXISTS idx_rem_run_expectancy_matrix_majorLeagueId ON rem_run_expectancy_matrix(majorLeagueId);
+CREATE INDEX IF NOT EXISTS idx_rem_run_expectancy_matrix_seasonId ON rem_run_expectancy_matrix(seasonId);
+CREATE INDEX IF NOT EXISTS idx_rem_run_expectancy_matrix_venueId ON rem_run_expectancy_matrix(venueId);

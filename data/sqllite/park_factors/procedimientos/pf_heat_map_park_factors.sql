@@ -1,11 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE pf_heat_map_park_factors;
-
-DELIMITER //
-
-CREATE PROCEDURE pf_heat_map_park_factors()
-BEGIN
+-- Procedure: pf_heat_map_park_factors
 
 INSERT INTO pf_heat_map_park_factors(
     groupingId,
@@ -429,33 +422,33 @@ HM8_RF3_HR_AA,
 HM8_RF3_H_AA,
 HM8_RF4_HR_AA,
 HM8_RF4_H_AA,
-IF( homeGames > 0 AND awayGames > 0 AND HM4_FHP_SA + HM4_FHP_AA > 0,        ( ( HM4_FHP_SH + HM4_FHP_AH ) / ( homeGames ) ) / (( HM4_FHP_SA + HM4_FHP_AA ) / ( awayGames ) ), NULL )  HM4_FHP_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM4_FLF_SA + HM4_FLF_AA > 0,        ( ( HM4_FLF_SH + HM4_FLF_AH ) / ( homeGames ) ) / (( HM4_FLF_SA + HM4_FLF_AA ) / ( awayGames ) ), NULL )  HM4_FLF_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM4_FRF_SA + HM4_FRF_AA > 0,        ( ( HM4_FRF_SH + HM4_FRF_AH ) / ( homeGames ) ) / (( HM4_FRF_SA + HM4_FRF_AA ) / ( awayGames ) ), NULL )  HM4_FRF_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM4_LF1_HR_SA + HM4_LF1_HR_AA  > 0, ( ( HM4_LF1_HR_SH + HM4_LF1_HR_AH ) / ( homeGames ) ) / (( HM4_LF1_HR_SA + HM4_LF1_HR_AA ) / ( awayGames ) ), NULL )  HM4_LF1_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM4_LF1_H_SA + HM4_LF1_H_AA > 0,    ( ( HM4_LF1_H_SH + HM4_LF1_H_AH ) / ( homeGames ) ) / (( HM4_LF1_H_SA + HM4_LF1_H_AA ) / ( awayGames ) ), NULL )  HM4_LF1_H_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM4_LF2_HR_SA + HM4_LF2_HR_AA > 0,  ( ( HM4_LF2_HR_SH + HM4_LF2_HR_AH ) / ( homeGames ) ) / (( HM4_LF2_HR_SA + HM4_LF2_HR_AA ) / ( awayGames ) ), NULL )  HM4_LF2_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM4_LF2_H_SA + HM4_LF2_H_AA > 0,    ( ( HM4_LF2_H_SH + HM4_LF2_H_AH ) / ( homeGames ) ) / (( HM4_LF2_H_SA + HM4_LF2_H_AA ) / ( awayGames ) ), NULL )  HM4_LF2_H_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM4_RF1_HR_SA + HM4_RF1_HR_AA > 0,  ( ( HM4_RF1_HR_SH + HM4_RF1_HR_AH ) / ( homeGames ) ) / (( HM4_RF1_HR_SA + HM4_RF1_HR_AA ) / ( awayGames ) ), NULL )  HM4_RF1_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM4_RF1_H_SA + HM4_RF1_H_AA > 0,    ( ( HM4_RF1_H_SH + HM4_RF1_H_AH ) / ( homeGames ) ) / (( HM4_RF1_H_SA + HM4_RF1_H_AA ) / ( awayGames ) ), NULL )  HM4_RF1_H_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM4_RF2_HR_SA + HM4_RF2_HR_AA > 0,  ( ( HM4_RF2_HR_SH + HM4_RF2_HR_AH ) / ( homeGames ) ) / (( HM4_RF2_HR_SA + HM4_RF2_HR_AA ) / ( awayGames ) ), NULL )  HM4_RF2_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM4_RF2_H_SA + HM4_RF2_H_AA  > 0,   ( ( HM4_RF2_H_SH + HM4_RF2_H_AH ) / ( homeGames ) ) / (( HM4_RF2_H_SA + HM4_RF2_H_AA ) / ( awayGames ) ), NULL )  HM4_RF2_H_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_LF1_HR_SA + HM8_LF1_HR_AA > 0,  ( ( HM8_LF1_HR_SH + HM8_LF1_HR_AH ) / ( homeGames ) ) / (( HM8_LF1_HR_SA + HM8_LF1_HR_AA ) / ( awayGames ) ), NULL )  HM8_LF1_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_LF1_H_SA + HM8_LF1_H_AA > 0,    ( ( HM8_LF1_H_SH + HM8_LF1_H_AH ) / ( homeGames ) ) / (( HM8_LF1_H_SA + HM8_LF1_H_AA ) / ( awayGames ) ), NULL )  HM8_LF1_H_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_LF2_HR_SA + HM8_LF2_HR_AA > 0,  ( ( HM8_LF2_HR_SH + HM8_LF2_HR_AH ) / ( homeGames ) ) / (( HM8_LF2_HR_SA + HM8_LF2_HR_AA ) / ( awayGames ) ), NULL )  HM8_LF2_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_LF2_H_SA + HM8_LF2_H_AA > 0,    ( ( HM8_LF2_H_SH + HM8_LF2_H_AH ) / ( homeGames ) ) / (( HM8_LF2_H_SA + HM8_LF2_H_AA ) / ( awayGames ) ), NULL )  HM8_LF2_H_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_LF3_HR_SA + HM8_LF3_HR_AA > 0,  ( ( HM8_LF3_HR_SH + HM8_LF3_HR_AH ) / ( homeGames ) ) / (( HM8_LF3_HR_SA + HM8_LF3_HR_AA ) / ( awayGames ) ), NULL )  HM8_LF3_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_LF3_H_SA + HM8_LF3_H_AA > 0,    ( ( HM8_LF3_H_SH + HM8_LF3_H_AH ) / ( homeGames ) ) / (( HM8_LF3_H_SA + HM8_LF3_H_AA ) / ( awayGames ) ), NULL )  HM8_LF3_H_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_LF4_HR_SA + HM8_LF4_HR_AA > 0,  ( ( HM8_LF4_HR_SH + HM8_LF4_HR_AH ) / ( homeGames ) ) / (( HM8_LF4_HR_SA + HM8_LF4_HR_AA ) / ( awayGames ) ), NULL )  HM8_LF4_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_LF4_H_SA + HM8_LF4_H_AA  > 0,   ( ( HM8_LF4_H_SH + HM8_LF4_H_AH ) / ( homeGames ) ) / (( HM8_LF4_H_SA + HM8_LF4_H_AA ) / ( awayGames ) ), NULL )  HM8_LF4_H_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_RF1_HR_SA + HM8_RF1_HR_AA > 0,  ( ( HM8_RF1_HR_SH + HM8_RF1_HR_AH ) / ( homeGames ) ) / (( HM8_RF1_HR_SA + HM8_RF1_HR_AA ) / ( awayGames ) ), NULL )  HM8_RF1_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_RF1_H_SA + HM8_RF1_H_AA > 0,    ( ( HM8_RF1_H_SH + HM8_RF1_H_AH ) / ( homeGames ) ) / (( HM8_RF1_H_SA + HM8_RF1_H_AA ) / ( awayGames ) ), NULL )  HM8_RF1_H_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_RF2_HR_SA + HM8_RF2_HR_AA > 0,  ( ( HM8_RF2_HR_SH + HM8_RF2_HR_AH ) / ( homeGames ) ) / (( HM8_RF2_HR_SA + HM8_RF2_HR_AA ) / ( awayGames ) ), NULL )  HM8_RF2_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_RF2_H_SA + HM8_RF2_H_AA > 0,    ( ( HM8_RF2_H_SH + HM8_RF2_H_AH ) / ( homeGames ) ) / (( HM8_RF2_H_SA + HM8_RF2_H_AA ) / ( awayGames ) ), NULL )  HM8_RF2_H_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_RF3_HR_SA + HM8_RF3_HR_AA > 0,  ( ( HM8_RF3_HR_SH + HM8_RF3_HR_AH ) / ( homeGames ) ) / (( HM8_RF3_HR_SA + HM8_RF3_HR_AA ) / ( awayGames ) ), NULL )  HM8_RF3_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_RF3_H_SA + HM8_RF3_H_AA > 0,    ( ( HM8_RF3_H_SH + HM8_RF3_H_AH ) / ( homeGames ) ) / (( HM8_RF3_H_SA + HM8_RF3_H_AA ) / ( awayGames ) ), NULL )  HM8_RF3_H_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_RF4_HR_SA + HM8_RF4_HR_AA > 0,  ( ( HM8_RF4_HR_SH + HM8_RF4_HR_AH ) / ( homeGames ) ) / (( HM8_RF4_HR_SA + HM8_RF4_HR_AA ) / ( awayGames ) ), NULL )  HM8_RF4_HR_PF,
-IF( homeGames > 0 AND awayGames > 0 AND HM8_RF4_H_SA + HM8_RF4_H_AA > 0,    ( ( HM8_RF4_H_SH + HM8_RF4_H_AH ) / ( homeGames ) ) / (( HM8_RF4_H_SA + HM8_RF4_H_AA ) / ( awayGames ) ), NULL )  HM8_RF4_H_PF
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM4_FHP_SA + HM4_FHP_AA > 0 THEN ( ( HM4_FHP_SH + HM4_FHP_AH ) / ( homeGames ) ) / (( HM4_FHP_SA + HM4_FHP_AA ) / ( awayGames ) ) ELSE NULL END AS HM4_FHP_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM4_FLF_SA + HM4_FLF_AA > 0 THEN ( ( HM4_FLF_SH + HM4_FLF_AH ) / ( homeGames ) ) / (( HM4_FLF_SA + HM4_FLF_AA ) / ( awayGames ) ) ELSE NULL END AS HM4_FLF_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM4_FRF_SA + HM4_FRF_AA > 0 THEN ( ( HM4_FRF_SH + HM4_FRF_AH ) / ( homeGames ) ) / (( HM4_FRF_SA + HM4_FRF_AA ) / ( awayGames ) ) ELSE NULL END AS HM4_FRF_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM4_LF1_HR_SA + HM4_LF1_HR_AA  > 0 THEN ( ( HM4_LF1_HR_SH + HM4_LF1_HR_AH ) / ( homeGames ) ) / (( HM4_LF1_HR_SA + HM4_LF1_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM4_LF1_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM4_LF1_H_SA + HM4_LF1_H_AA > 0 THEN ( ( HM4_LF1_H_SH + HM4_LF1_H_AH ) / ( homeGames ) ) / (( HM4_LF1_H_SA + HM4_LF1_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM4_LF1_H_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM4_LF2_HR_SA + HM4_LF2_HR_AA > 0 THEN ( ( HM4_LF2_HR_SH + HM4_LF2_HR_AH ) / ( homeGames ) ) / (( HM4_LF2_HR_SA + HM4_LF2_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM4_LF2_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM4_LF2_H_SA + HM4_LF2_H_AA > 0 THEN ( ( HM4_LF2_H_SH + HM4_LF2_H_AH ) / ( homeGames ) ) / (( HM4_LF2_H_SA + HM4_LF2_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM4_LF2_H_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM4_RF1_HR_SA + HM4_RF1_HR_AA > 0 THEN ( ( HM4_RF1_HR_SH + HM4_RF1_HR_AH ) / ( homeGames ) ) / (( HM4_RF1_HR_SA + HM4_RF1_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM4_RF1_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM4_RF1_H_SA + HM4_RF1_H_AA > 0 THEN ( ( HM4_RF1_H_SH + HM4_RF1_H_AH ) / ( homeGames ) ) / (( HM4_RF1_H_SA + HM4_RF1_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM4_RF1_H_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM4_RF2_HR_SA + HM4_RF2_HR_AA > 0 THEN ( ( HM4_RF2_HR_SH + HM4_RF2_HR_AH ) / ( homeGames ) ) / (( HM4_RF2_HR_SA + HM4_RF2_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM4_RF2_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM4_RF2_H_SA + HM4_RF2_H_AA  > 0 THEN ( ( HM4_RF2_H_SH + HM4_RF2_H_AH ) / ( homeGames ) ) / (( HM4_RF2_H_SA + HM4_RF2_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM4_RF2_H_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_LF1_HR_SA + HM8_LF1_HR_AA > 0 THEN ( ( HM8_LF1_HR_SH + HM8_LF1_HR_AH ) / ( homeGames ) ) / (( HM8_LF1_HR_SA + HM8_LF1_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_LF1_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_LF1_H_SA + HM8_LF1_H_AA > 0 THEN ( ( HM8_LF1_H_SH + HM8_LF1_H_AH ) / ( homeGames ) ) / (( HM8_LF1_H_SA + HM8_LF1_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_LF1_H_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_LF2_HR_SA + HM8_LF2_HR_AA > 0 THEN ( ( HM8_LF2_HR_SH + HM8_LF2_HR_AH ) / ( homeGames ) ) / (( HM8_LF2_HR_SA + HM8_LF2_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_LF2_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_LF2_H_SA + HM8_LF2_H_AA > 0 THEN ( ( HM8_LF2_H_SH + HM8_LF2_H_AH ) / ( homeGames ) ) / (( HM8_LF2_H_SA + HM8_LF2_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_LF2_H_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_LF3_HR_SA + HM8_LF3_HR_AA > 0 THEN ( ( HM8_LF3_HR_SH + HM8_LF3_HR_AH ) / ( homeGames ) ) / (( HM8_LF3_HR_SA + HM8_LF3_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_LF3_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_LF3_H_SA + HM8_LF3_H_AA > 0 THEN ( ( HM8_LF3_H_SH + HM8_LF3_H_AH ) / ( homeGames ) ) / (( HM8_LF3_H_SA + HM8_LF3_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_LF3_H_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_LF4_HR_SA + HM8_LF4_HR_AA > 0 THEN ( ( HM8_LF4_HR_SH + HM8_LF4_HR_AH ) / ( homeGames ) ) / (( HM8_LF4_HR_SA + HM8_LF4_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_LF4_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_LF4_H_SA + HM8_LF4_H_AA  > 0 THEN ( ( HM8_LF4_H_SH + HM8_LF4_H_AH ) / ( homeGames ) ) / (( HM8_LF4_H_SA + HM8_LF4_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_LF4_H_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_RF1_HR_SA + HM8_RF1_HR_AA > 0 THEN ( ( HM8_RF1_HR_SH + HM8_RF1_HR_AH ) / ( homeGames ) ) / (( HM8_RF1_HR_SA + HM8_RF1_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_RF1_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_RF1_H_SA + HM8_RF1_H_AA > 0 THEN ( ( HM8_RF1_H_SH + HM8_RF1_H_AH ) / ( homeGames ) ) / (( HM8_RF1_H_SA + HM8_RF1_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_RF1_H_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_RF2_HR_SA + HM8_RF2_HR_AA > 0 THEN ( ( HM8_RF2_HR_SH + HM8_RF2_HR_AH ) / ( homeGames ) ) / (( HM8_RF2_HR_SA + HM8_RF2_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_RF2_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_RF2_H_SA + HM8_RF2_H_AA > 0 THEN ( ( HM8_RF2_H_SH + HM8_RF2_H_AH ) / ( homeGames ) ) / (( HM8_RF2_H_SA + HM8_RF2_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_RF2_H_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_RF3_HR_SA + HM8_RF3_HR_AA > 0 THEN ( ( HM8_RF3_HR_SH + HM8_RF3_HR_AH ) / ( homeGames ) ) / (( HM8_RF3_HR_SA + HM8_RF3_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_RF3_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_RF3_H_SA + HM8_RF3_H_AA > 0 THEN ( ( HM8_RF3_H_SH + HM8_RF3_H_AH ) / ( homeGames ) ) / (( HM8_RF3_H_SA + HM8_RF3_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_RF3_H_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_RF4_HR_SA + HM8_RF4_HR_AA > 0 THEN ( ( HM8_RF4_HR_SH + HM8_RF4_HR_AH ) / ( homeGames ) ) / (( HM8_RF4_HR_SA + HM8_RF4_HR_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_RF4_HR_PF,
+CASE WHEN homeGames > 0 AND awayGames > 0 AND HM8_RF4_H_SA + HM8_RF4_H_AA > 0 THEN ( ( HM8_RF4_H_SH + HM8_RF4_H_AH ) / ( homeGames ) ) / (( HM8_RF4_H_SA + HM8_RF4_H_AA ) / ( awayGames ) ) ELSE NULL END AS HM8_RF4_H_PF
 FROM home_scored hs
 INNER JOIN away_scored aws
   ON hs.seasonId = aws.seasonId
@@ -470,9 +463,3 @@ INNER JOIN away_allowed aa
   ON ha.seasonId = aa.seasonId
   AND ha.majorLeagueId = aa.majorLeagueId
   AND ha.teamId = aa.teamId;
-
-COMMIT;
-
-END //
-
-DELIMITER ;

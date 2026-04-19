@@ -1,34 +1,32 @@
-USE baseball;
-
-DROP TABLE stg_play_atbat;
+DROP TABLE IF EXISTS stg_play_atbat;
 
 CREATE TABLE IF NOT EXISTS stg_play_atbat (
   atBatIndex INTEGER,
   captivatingIndex INTEGER,
-  endTime VARCHAR(100),
-  halfInning VARCHAR(100),
-  hasOut TINYINT,
-  hasReview TINYINT,
+  endTime TEXT,
+  halfInning TEXT,
+  hasOut INTEGER,
+  hasReview INTEGER,
   inning INTEGER,
-  isComplete TINYINT,
-  isScoringPlay TINYINT,
-  startTime VARCHAR(100),
+  isComplete INTEGER,
+  isScoringPlay INTEGER,
+  startTime TEXT,
   awayScore INTEGER,
-  description VARCHAR(700),
-  event VARCHAR(100),
-  eventType VARCHAR(100),
+  description TEXT,
+  event TEXT,
+  eventType TEXT,
   homeScore INTEGER,
   rbi INTEGER,
-  type VARCHAR(100),
+  type TEXT,
   balls INTEGER,
   outs INTEGER,
   strikes INTEGER,
-  batterSideCode VARCHAR(100),
-  batterSideDescription VARCHAR(100),
-  pitcherHandCode VARCHAR(100),
-  pitcherHandDescription VARCHAR(100),
+  batterSideCode TEXT,
+  batterSideDescription TEXT,
+  pitcherHandCode TEXT,
+  pitcherHandDescription TEXT,
   pitcherId INTEGER,
   batterId INTEGER,
-  menOnBase VARCHAR(100),
+  menOnBase TEXT,
   gamePk INTEGER
-) ENGINE = INNODB;
+);

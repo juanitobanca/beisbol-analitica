@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE pitches;
-
-DELIMITER //
-
-CREATE PROCEDURE pitches()
-BEGIN
-
+-- Procedure: pitches
 INSERT INTO pitches(
     gamePk,
     atBatIndex,
@@ -40,7 +32,7 @@ INSERT INTO pitches(
 SELECT DISTINCT
   gamePk,
   atBatIndex,
-  `index` playIndex,
+  "index" playIndex,
   pitchNumber,
   balls AS endBalls,
   strikes AS endStrikes,
@@ -77,63 +69,24 @@ WHERE
   );
 
 -- Update batting/pitching ids
-UPDATE
-  pitches p
-INNER JOIN (
-  SELECT
-    gamePk,
-    atBatIndex,
-    inning,
-    halfInning,
-    pitchingTeamId,
-    battingTeamId,
-    batterId,
-    pitcherId,
-    batSide,
-    pitchHand,
-    menOnBase
-  FROM atbats
-  WHERE
-    1 = 1
-) q
-  ON (
-    p.gamePk = q.gamePk
-    AND p.atBatIndex = q.atBatIndex
-  )
-  SET p.pitchingTeamId = q.pitchingTeamId
-  ,   p.battingTeamId  = q.battingTeamId
-  ,   p.inning         = q.inning
-  ,   p.halfInning     = q.halfInning
-  ,   p.batterId       = q.batterId
-  ,   p.pitcherId      = q.pitcherId
-  ,   p.pitchHand      = q.pitchHand
-  ,   p.batSide        = q.batSide
-  ,   p.menOnBase      = q.menOnBase
-  Where 1 = 1
-  And   ( p.pitchingTeamId Is Null Or p.battingTeamId Is Null );
+UPDATE pitches
+SET pitchingTeamId = (SELECT q.pitchingTeamId FROM atbats q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex),
+    battingTeamId  = (SELECT q.battingTeamId  FROM atbats q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex),
+    inning         = (SELECT q.inning         FROM atbats q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex),
+    halfInning     = (SELECT q.halfInning     FROM atbats q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex),
+    batterId       = (SELECT q.batterId       FROM atbats q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex),
+    pitcherId      = (SELECT q.pitcherId      FROM atbats q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex),
+    pitchHand      = (SELECT q.pitchHand      FROM atbats q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex),
+    batSide        = (SELECT q.batSide        FROM atbats q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex),
+    menOnBase      = (SELECT q.menOnBase      FROM atbats q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex)
+WHERE (pitchingTeamId IS NULL OR battingTeamId IS NULL)
+AND EXISTS (SELECT 1 FROM atbats q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex);
 
-UPDATE
-  pitches p
-LEFT JOIN (
-  SELECT
-    gamePk,
-    atBatIndex,
-    pitchNumber,
-    endBalls,
-    endStrikes
-  FROM pitches
-  WHERE
-    1 = 1
-) q
-  ON (
-    p.gamePk = q.gamePk
-    AND p.atBatIndex = q.atBatIndex
-    AND p.pitchNumber - 1 = q.pitchNumber
-  )
-  SET  p.startBalls   = Coalesce( q.endBalls, 0 )
-  ,    p.startStrikes = Coalesce( q.endStrikes, 0 )
-  Where 1 = 1
-  And   ( p.startBalls Is Null Or p.startStrikes Is Null );
+-- LEFT JOIN: set startBalls/startStrikes from previous pitch, defaulting to 0
+UPDATE pitches
+SET startBalls   = COALESCE((SELECT q.endBalls FROM pitches q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex AND pitches.pitchNumber - 1 = q.pitchNumber), 0),
+    startStrikes = COALESCE((SELECT q.endStrikes FROM pitches q WHERE pitches.gamePk = q.gamePk AND pitches.atBatIndex = q.atBatIndex AND pitches.pitchNumber - 1 = q.pitchNumber), 0)
+WHERE (startBalls IS NULL OR startStrikes IS NULL);
 
 UPDATE pitches
 SET
@@ -159,9 +112,3 @@ HM8 = CASE
     WHEN CoordX <= 125 AND CoordY >= -CoordX + 169  THEN 'LF4'
     WHEN CoordX <= 125 THEN 'FLF'
   END;
-
-COMMIT;
-
-END //
-
-DELIMITER ;

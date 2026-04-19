@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE game_player_fielding_outs;
-
-DELIMITER //
-
-CREATE PROCEDURE game_player_fielding_outs()
-BEGIN
-
+-- Procedure: game_player_fielding_outs
 INSERT INTO game_player_fielding_outs(gamePk, teamId, playerId, positionAbbrev, outs)
   WITH ab AS (
     /* Obtener numero de outs en el partido */
@@ -23,7 +15,7 @@ INSERT INTO game_player_fielding_outs(gamePk, teamId, playerId, positionAbbrev, 
     SELECT
       gamePk,
       teamId,
-      IF(teamType = 'away', 'bottom', 'top') halfInning,
+      CASE WHEN teamType = 'away' THEN 'bottom' ELSE 'top' END halfInning,
       positionAbbrev,
       playerId
     FROM game_player_positions
@@ -93,10 +85,10 @@ INSERT INTO game_player_fielding_outs(gamePk, teamId, playerId, positionAbbrev, 
     SELECT
       sns.*,
       CAST(
-        SUBSTR(ab.gameInningOuts, 1, Instr(ab.gameInningOuts, '.') - 1) AS UNSIGNED
+        SUBSTR(ab.gameInningOuts, 1, Instr(ab.gameInningOuts, '.') - 1) AS INTEGER
       ) gameInnings,
       CAST(
-        SUBSTR(ab.gameInningOuts, Instr(ab.gameInningOuts, '.') + 1) AS UNSIGNED
+        SUBSTR(ab.gameInningOuts, Instr(ab.gameInningOuts, '.') + 1) AS INTEGER
       ) gameOuts
     FROM sns
     INNER JOIN ab
@@ -131,9 +123,3 @@ GROUP BY
   1, 2, 3, 4
 HAVING
   SUM(outs) > 0;
-
-COMMIT;
-
-END //
-
-DELIMITER ;

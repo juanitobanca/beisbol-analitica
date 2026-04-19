@@ -1,23 +1,21 @@
-USE baseball;
-
-DROP TABLE rem_event_run_value;
+DROP TABLE IF EXISTS rem_event_run_value;
 
 CREATE TABLE IF NOT EXISTS rem_event_run_value (
   majorLeagueId INTEGER,
-  seasonId DOUBLE,
+  seasonId REAL,
   venueId INTEGER,
-  event VARCHAR(100),
-  startRunExpectancy DOUBLE,
-  runsScoredInPlay DOUBLE,
-  endRunExpectancy DOUBLE,
+  event TEXT,
+  startRunExpectancy REAL,
+  runsScoredInPlay REAL,
+  endRunExpectancy REAL,
   events INTEGER,
-  runValue DOUBLE,
+  runValue REAL,
   groupingId INTEGER,
-  groupingDescription VARCHAR(100),
-  majorLeague VARCHAR(10),
-  venueName VARCHAR(100)
+  groupingDescription TEXT,
+  majorLeague TEXT,
+  venueName TEXT
 );
 
-ALTER TABLE rem_event_run_value ADD INDEX(groupingId);
-ALTER TABLE rem_event_run_value ADD INDEX(majorLeagueId);
-ALTER TABLE rem_event_run_value ADD INDEX(venueId);
+CREATE INDEX IF NOT EXISTS idx_rem_event_run_value_groupingId ON rem_event_run_value(groupingId);
+CREATE INDEX IF NOT EXISTS idx_rem_event_run_value_majorLeagueId ON rem_event_run_value(majorLeagueId);
+CREATE INDEX IF NOT EXISTS idx_rem_event_run_value_venueId ON rem_event_run_value(venueId);

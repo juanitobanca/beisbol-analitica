@@ -1,10 +1,10 @@
-DROP TABLE pf_park_factors;
+DROP TABLE IF EXISTS pf_park_factors;
 
 CREATE TABLE pf_park_factors (
   groupingId INTEGER,
-  groupingDescription VARCHAR(255),
+  groupingDescription TEXT,
   majorLeagueId INTEGER,
-  seasonId DOUBLE,
+  seasonId REAL,
   venueId INTEGER,
   teamId INTEGER,
   homeGames INTEGER,
@@ -49,23 +49,23 @@ CREATE TABLE pf_park_factors (
   lineDrivesAllowedHome INTEGER,
   lineDrivesScoredAway INTEGER,
   lineDrivesAllowedAway INTEGER,
-  runsParkFactor DOUBLE,
-  singlesParkFactor DOUBLE,
-  doublesParkFactor DOUBLE,
-  triplesParkFactor DOUBLE,
-  homeRunsParkFactor DOUBLE,
-  strikeOutsParkFactor DOUBLE,
-  unintentionalWalksParkFactor DOUBLE,
-  flyBallsParkFactor DOUBLE,
-  groundBallsParkFactor DOUBLE,
-  lineDrivesParkFactor DOUBLE,
+  runsParkFactor REAL,
+  singlesParkFactor REAL,
+  doublesParkFactor REAL,
+  triplesParkFactor REAL,
+  homeRunsParkFactor REAL,
+  strikeOutsParkFactor REAL,
+  unintentionalWalksParkFactor REAL,
+  flyBallsParkFactor REAL,
+  groundBallsParkFactor REAL,
+  lineDrivesParkFactor REAL,
   -- Atributos
-  majorLeague VARCHAR(10),
-  venueName VARCHAR(100)
+  majorLeague TEXT,
+  venueName TEXT
 );
 
-ALTER TABLE pf_park_factors ADD INDEX(groupingId);
-ALTER TABLE pf_park_factors ADD INDEX(groupingDescription);
-ALTER TABLE pf_park_factors ADD INDEX(majorLeagueId);
-ALTER TABLE pf_park_factors ADD INDEX(seasonId);
-ALTER TABLE pf_park_factors ADD INDEX(venueId);
+CREATE INDEX IF NOT EXISTS idx_pf_park_factors_groupingId ON pf_park_factors(groupingId);
+CREATE INDEX IF NOT EXISTS idx_pf_park_factors_groupingDescription ON pf_park_factors(groupingDescription);
+CREATE INDEX IF NOT EXISTS idx_pf_park_factors_majorLeagueId ON pf_park_factors(majorLeagueId);
+CREATE INDEX IF NOT EXISTS idx_pf_park_factors_seasonId ON pf_park_factors(seasonId);
+CREATE INDEX IF NOT EXISTS idx_pf_park_factors_venueId ON pf_park_factors(venueId);

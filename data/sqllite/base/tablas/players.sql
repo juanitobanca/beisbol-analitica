@@ -1,21 +1,19 @@
-USE baseball;
-
-DROP TABLE players;
+DROP TABLE IF EXISTS players;
 
 CREATE TABLE players (
   playerId INTEGER,
-  firstName VARCHAR(100),
-  lastName VARCHAR(100),
-  fullName VARCHAR(200),
-  birthDate VARCHAR(100),
-  birthCity VARCHAR(100),
-  birthStateProvince VARCHAR(100),
-  birthCountry VARCHAR(100),
-  strikeZoneTop DOUBLE,
-  strikeZoneBottom DOUBLE,
-  positionAbbrev VARCHAR(10),
-  batSide VARCHAR(10),
-  pitchHand VARCHAR(10)
-) ENGINE = INNODB;
+  firstName TEXT,
+  lastName TEXT,
+  fullName TEXT,
+  birthDate TEXT,
+  birthCity TEXT,
+  birthStateProvince TEXT,
+  birthCountry TEXT,
+  strikeZoneTop REAL,
+  strikeZoneBottom REAL,
+  positionAbbrev TEXT,
+  batSide TEXT,
+  pitchHand TEXT,
+  PRIMARY KEY(playerId)
+);
 
-ALTER TABLE players ADD PRIMARY KEY(playerId);

@@ -1,11 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE pf_park_factors;
-
-DELIMITER //
-
-CREATE PROCEDURE pf_park_factors()
-BEGIN
+-- Procedure: pf_park_factors
 
 INSERT INTO pf_park_factors(
     groupingId,
@@ -212,56 +205,56 @@ SELECT
   lineDrivesAllowedHome,
   lineDrivesScoredAway,
   lineDrivesAllowedAway,
-  IF( runsScoredAway + runsAllowedAway > 0,
+  CASE WHEN runsScoredAway + runsAllowedAway > 0 THEN
     ((runsScoredHome + runsAllowedHome) / homeGames) /
-    ((runsScoredAway + runsAllowedAway) / awayGames),
-    NULL
-    ) AS runsParkFactor,
-  IF( singlesScoredAway + singlesAllowedAway > 0,
+    ((runsScoredAway + runsAllowedAway) / awayGames)
+    ELSE NULL
+    END AS runsParkFactor,
+  CASE WHEN singlesScoredAway + singlesAllowedAway > 0 THEN
     ((singlesScoredHome + singlesAllowedHome) / homeGames) /
-    ((singlesScoredAway + singlesAllowedAway) / awayGames),
-    NULL
-    ) AS singlesParkFactor,
-  IF( doublesScoredAway + doublesAllowedAway > 0,
+    ((singlesScoredAway + singlesAllowedAway) / awayGames)
+    ELSE NULL
+    END AS singlesParkFactor,
+  CASE WHEN doublesScoredAway + doublesAllowedAway > 0 THEN
     ((doublesScoredHome + doublesAllowedHome) / homeGames) /
-    ((doublesScoredAway + doublesAllowedAway) / awayGames),
-    NULL
-    ) AS doublesParkFactor,
-  IF( triplesScoredAway + triplesAllowedAway > 0,
+    ((doublesScoredAway + doublesAllowedAway) / awayGames)
+    ELSE NULL
+    END AS doublesParkFactor,
+  CASE WHEN triplesScoredAway + triplesAllowedAway > 0 THEN
     ((triplesScoredHome + triplesAllowedHome) / homeGames) /
-    ((triplesScoredAway + triplesAllowedAway) / awayGames),
-    NULL
-   ) AS triplesParkFactor,
-  IF( homeRunsScoredAway + homeRunsAllowedAway > 0,
+    ((triplesScoredAway + triplesAllowedAway) / awayGames)
+    ELSE NULL
+   END AS triplesParkFactor,
+  CASE WHEN homeRunsScoredAway + homeRunsAllowedAway > 0 THEN
     ((homeRunsScoredHome + homeRunsAllowedHome) / homeGames) /
-    ((homeRunsScoredAway + homeRunsAllowedAway) / awayGames),
-    NULL
-   ) AS homeRunsParkFactor,
-  IF( strikeOutsScoredAway + strikeOutsAllowedAway > 0,
+    ((homeRunsScoredAway + homeRunsAllowedAway) / awayGames)
+    ELSE NULL
+   END AS homeRunsParkFactor,
+  CASE WHEN strikeOutsScoredAway + strikeOutsAllowedAway > 0 THEN
     ((strikeOutsScoredHome + strikeOutsAllowedHome) / homeGames) /
-    ((strikeOutsScoredAway + strikeOutsAllowedAway) / awayGames),
-    NULL
-   ) AS strikeOutsParkFactor,
-  IF( unintentionalWalksScoredAway + unintentionalWalksAllowedAway > 0,
+    ((strikeOutsScoredAway + strikeOutsAllowedAway) / awayGames)
+    ELSE NULL
+   END AS strikeOutsParkFactor,
+  CASE WHEN unintentionalWalksScoredAway + unintentionalWalksAllowedAway > 0 THEN
     ((unintentionalWalksScoredHome + unintentionalWalksAllowedHome) / homeGames) /
-    ((unintentionalWalksScoredAway + unintentionalWalksAllowedAway) / awayGames),
-    NULL
-   ) AS unintentionalWalksParkFactor,
-  IF( flyBallsScoredAway + flyBallsAllowedAway > 0,
+    ((unintentionalWalksScoredAway + unintentionalWalksAllowedAway) / awayGames)
+    ELSE NULL
+   END AS unintentionalWalksParkFactor,
+  CASE WHEN flyBallsScoredAway + flyBallsAllowedAway > 0 THEN
     ((flyBallsScoredHome + flyBallsAllowedHome) / homeGames) /
-    ((flyBallsScoredAway + flyBallsAllowedAway) / awayGames),
-    NULL
-   ) AS flyBallsParkFactor,
-  IF( groundBallsScoredAway + groundBallsAllowedAway > 0,
+    ((flyBallsScoredAway + flyBallsAllowedAway) / awayGames)
+    ELSE NULL
+   END AS flyBallsParkFactor,
+  CASE WHEN groundBallsScoredAway + groundBallsAllowedAway > 0 THEN
     ((groundBallsScoredHome + groundBallsAllowedHome) / homeGames) /
-    ((groundBallsScoredAway + groundBallsAllowedAway) / awayGames),
-    NULL
-   ) AS groundBallsParkFactor,
-  IF( lineDrivesScoredAway + lineDrivesAllowedAway > 0,
+    ((groundBallsScoredAway + groundBallsAllowedAway) / awayGames)
+    ELSE NULL
+   END AS groundBallsParkFactor,
+  CASE WHEN lineDrivesScoredAway + lineDrivesAllowedAway > 0 THEN
     ((lineDrivesScoredHome + lineDrivesAllowedHome) / homeGames) /
-    ((lineDrivesScoredAway + lineDrivesAllowedAway) / awayGames),
-    NULL
-   ) AS lineDrivesParkFactor
+    ((lineDrivesScoredAway + lineDrivesAllowedAway) / awayGames)
+    ELSE NULL
+   END AS lineDrivesParkFactor
 FROM home_scored hs
 INNER JOIN away_scored aws
   ON hs.seasonId = aws.seasonId
@@ -276,9 +269,3 @@ INNER JOIN away_allowed aa
   ON ha.seasonId = aa.seasonId
   AND ha.majorLeagueId = aa.majorLeagueId
   AND ha.teamId = aa.teamId;
-
-COMMIT;
-
-END //
-
-DELIMITER ;

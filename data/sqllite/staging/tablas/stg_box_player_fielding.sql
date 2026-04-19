@@ -1,18 +1,16 @@
-USE baseball;
-
-DROP TABLE stg_box_player_fielding;
+DROP TABLE IF EXISTS stg_box_player_fielding;
 
 CREATE TABLE IF NOT EXISTS stg_box_player_fielding (
-  assists DOUBLE,
-  caughtStealing DOUBLE,
-  chances DOUBLE,
-  errors DOUBLE,
-  passedBall DOUBLE,
-  pickoffs DOUBLE,
-  putOuts DOUBLE,
-  stolenBases DOUBLE,
+  assists REAL,
+  caughtStealing REAL,
+  chances REAL,
+  errors REAL,
+  passedBall REAL,
+  pickoffs REAL,
+  putOuts REAL,
+  stolenBases REAL,
   gamePk INTEGER,
   teamId INTEGER,
-  teamType VARCHAR(20),
+  teamType TEXT,
   playerId INTEGER
-) ENGINE = INNODB;
+);

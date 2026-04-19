@@ -1,24 +1,22 @@
-USE baseball;
-
-DROP TABLE agg_batting_stats;
+DROP TABLE IF EXISTS agg_batting_stats;
 
 CREATE TABLE agg_batting_stats (
-  groupingId INTEGER UNSIGNED,
-  groupingDescription VARCHAR(255),
-  aggregationType VARCHAR(20),
+  groupingId INTEGER,
+  groupingDescription TEXT,
+  aggregationType TEXT,
   majorLeagueId INTEGER,
-  seasonId DOUBLE,
-  gameDate DATE,
-  gameType2 VARCHAR(10),
-  teamType VARCHAR(10),
+  seasonId REAL,
+  gameDate TEXT,
+  gameType2 TEXT,
+  teamType TEXT,
   venueId INTEGER,
   teamId INTEGER,
   opposingTeamId INTEGER,
   officialId INTEGER,
   playerId INTEGER,
-  batSide VARCHAR(1),
-  pitchHand VARCHAR(1),
-  menOnBase VARCHAR(10),
+  batSide TEXT,
+  pitchHand TEXT,
+  menOnBase TEXT,
   games INTEGER,
   atBats INTEGER,
   balks INTEGER,
@@ -59,57 +57,57 @@ CREATE TABLE agg_batting_stats (
   walks INTEGER,
   wildPitches INTEGER,
   -- Derived Metrics
-  battingAverage DOUBLE,
-  isolatedPower DOUBLE,
-  secondBattingAverage DOUBLE,
-  extraBaseHitPercentage DOUBLE,
-  sluggingPercentage DOUBLE,
-  stolenBasePercentage DOUBLE,
-  atBatsPerHomeRunsPercentage DOUBLE,
-  walksPerStrikeOutsPercentage DOUBLE,
-  onBasePercentage DOUBLE,
-  onBasePlusSluggingPercentage DOUBLE,
-  walksPerPlateAppearancesPercentage DOUBLE,
-  strikeOutsPerPlateAppearancesPercentage DOUBLE,
-  homeRunsPerPlateAppearancesPercentage DOUBLE,
-  onFirstBasePercentage DOUBLE,
-  singlesPercentage DOUBLE,
-  doublesPercentage DOUBLE,
-  triplesPercentage DOUBLE,
-  homeRunsPercentage DOUBLE,
-  walksPercentage DOUBLE,
-  hitsPercentage DOUBLE,
-  strikeOutsPercentage DOUBLE,
-  extraBasePercentage DOUBLE,
-  inPlayPercentage DOUBLE,
-  runsCreated DOUBLE,
-  powerSpeed DOUBLE,
-  runScoredPercentage DOUBLE,
-  battingAverageOnBallsInPlay DOUBLE,
-  strikeOutsOverBaseOnBallsPercentage DOUBLE,
-  homeRunPercentage DOUBLE,
+  battingAverage REAL,
+  isolatedPower REAL,
+  secondBattingAverage REAL,
+  extraBaseHitPercentage REAL,
+  sluggingPercentage REAL,
+  stolenBasePercentage REAL,
+  atBatsPerHomeRunsPercentage REAL,
+  walksPerStrikeOutsPercentage REAL,
+  onBasePercentage REAL,
+  onBasePlusSluggingPercentage REAL,
+  walksPerPlateAppearancesPercentage REAL,
+  strikeOutsPerPlateAppearancesPercentage REAL,
+  homeRunsPerPlateAppearancesPercentage REAL,
+  onFirstBasePercentage REAL,
+  singlesPercentage REAL,
+  doublesPercentage REAL,
+  triplesPercentage REAL,
+  homeRunsPercentage REAL,
+  walksPercentage REAL,
+  hitsPercentage REAL,
+  strikeOutsPercentage REAL,
+  extraBasePercentage REAL,
+  inPlayPercentage REAL,
+  runsCreated REAL,
+  powerSpeed REAL,
+  runScoredPercentage REAL,
+  battingAverageOnBallsInPlay REAL,
+  strikeOutsOverBaseOnBallsPercentage REAL,
+  homeRunPercentage REAL,
   -- wOBA
-  weightedOnBaseAverage DOUBLE,
-  weightedOnBaseAverageRelativeToOuts DOUBLE,
-  weightUnintentionalWalk DOUBLE,
-  weightHitByPitch DOUBLE,
-  weightSingle DOUBLE,
-  weightDouble DOUBLE,
-  weightTriple DOUBLE,
-  weightHomeRun DOUBLE,
-  weightOut DOUBLE,
+  weightedOnBaseAverage REAL,
+  weightedOnBaseAverageRelativeToOuts REAL,
+  weightUnintentionalWalk REAL,
+  weightHitByPitch REAL,
+  weightSingle REAL,
+  weightDouble REAL,
+  weightTriple REAL,
+  weightHomeRun REAL,
+  weightOut REAL,
   -- wRAA
-  weightedOnBaseAverageScale DOUBLE,
-  leagueWeightedOnBaseAverageRelativeToOuts DOUBLE,
-  weightedRunsAboveAverage DOUBLE,
+  weightedOnBaseAverageScale REAL,
+  leagueWeightedOnBaseAverageRelativeToOuts REAL,
+  weightedRunsAboveAverage REAL,
   -- wRC
   leagueRuns INTEGER,
   leaguePlateAppearances INTEGER,
-  weightedRunsCreated DOUBLE,
+  weightedRunsCreated REAL,
   -- OPS +
-  leagueOnBasePercentage DOUBLE,
-  leagueSluggingPercentage DOUBLE,
-  onBasePlusSluggingPercentagePlus DOUBLE,
+  leagueOnBasePercentage REAL,
+  leagueSluggingPercentage REAL,
+  onBasePlusSluggingPercentagePlus REAL,
   -- These come from the pitches table
   -- These metrics come from the pitches table
   balls INTEGER,
@@ -156,36 +154,36 @@ CREATE TABLE agg_batting_stats (
   popupBunts INTEGER,
   lineDriveBunts INTEGER,
   -- 0 Ball(s)
-  zeroAndZeroSwingPercentage DOUBLE,
-  zeroAndOneSwingPercentage DOUBLE,
-  zeroAndTwoSwingPercentage DOUBLE,
+  zeroAndZeroSwingPercentage REAL,
+  zeroAndOneSwingPercentage REAL,
+  zeroAndTwoSwingPercentage REAL,
   -- 1 Ball(s)
-  oneAndZeroSwingPercentage DOUBLE,
-  oneAndOneSwingPercentage DOUBLE,
-  oneAndTwoSwingPercentage DOUBLE,
+  oneAndZeroSwingPercentage REAL,
+  oneAndOneSwingPercentage REAL,
+  oneAndTwoSwingPercentage REAL,
   -- 2 Ball(s)
-  twoAndZeroSwingPercentage DOUBLE,
-  twoAndOneSwingPercentage DOUBLE,
-  twoAndTwoSwingPercentage DOUBLE,
+  twoAndZeroSwingPercentage REAL,
+  twoAndOneSwingPercentage REAL,
+  twoAndTwoSwingPercentage REAL,
   -- 3 Ball(s)
-  threeAndZeroSwingPercentage DOUBLE,
-  threeAndOneSwingPercentage DOUBLE,
-  threeAndTwoSwingPercentage DOUBLE,
+  threeAndZeroSwingPercentage REAL,
+  threeAndOneSwingPercentage REAL,
+  threeAndTwoSwingPercentage REAL,
   -- Atributos
-  majorLeague VARCHAR(10),
-  playerName VARCHAR(100),
-  teamName VARCHAR(100),
-  venueName VARCHAR(100),
-  officialName VARCHAR(100),
-  opposingTeamName VARCHAR(100)
-) ENGINE = INNODB;
+  majorLeague TEXT,
+  playerName TEXT,
+  teamName TEXT,
+  venueName TEXT,
+  officialName TEXT,
+  opposingTeamName TEXT
+);
 
-ALTER TABLE agg_batting_stats ADD INDEX(groupingId);
-ALTER TABLE agg_batting_stats ADD INDEX(groupingDescription(255));
-ALTER TABLE agg_batting_stats ADD INDEX(majorLeagueId);
-ALTER TABLE agg_batting_stats ADD INDEX(seasonId);
-ALTER TABLE agg_batting_stats ADD INDEX(venueId);
-ALTER TABLE agg_batting_stats ADD INDEX(teamId);
-ALTER TABLE agg_batting_stats ADD INDEX(playerId);
-ALTER TABLE agg_batting_stats ADD INDEX(opposingTeamId);
-ALTER TABLE agg_batting_stats ADD INDEX(officialId);
+CREATE INDEX IF NOT EXISTS idx_agg_batting_stats_groupingId ON agg_batting_stats(groupingId);
+CREATE INDEX IF NOT EXISTS idx_agg_batting_stats_groupingDescription ON agg_batting_stats(groupingDescription);
+CREATE INDEX IF NOT EXISTS idx_agg_batting_stats_majorLeagueId ON agg_batting_stats(majorLeagueId);
+CREATE INDEX IF NOT EXISTS idx_agg_batting_stats_seasonId ON agg_batting_stats(seasonId);
+CREATE INDEX IF NOT EXISTS idx_agg_batting_stats_venueId ON agg_batting_stats(venueId);
+CREATE INDEX IF NOT EXISTS idx_agg_batting_stats_teamId ON agg_batting_stats(teamId);
+CREATE INDEX IF NOT EXISTS idx_agg_batting_stats_playerId ON agg_batting_stats(playerId);
+CREATE INDEX IF NOT EXISTS idx_agg_batting_stats_opposingTeamId ON agg_batting_stats(opposingTeamId);
+CREATE INDEX IF NOT EXISTS idx_agg_batting_stats_officialId ON agg_batting_stats(officialId);

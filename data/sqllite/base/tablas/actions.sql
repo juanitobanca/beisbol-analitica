@@ -1,11 +1,9 @@
-USE baseball;
-
-DROP TABLE actions;
+DROP TABLE IF EXISTS actions;
 
 CREATE TABLE actions (
   gamePk INTEGER,
   inning INTEGER,
-  halfInning VARCHAR(15),
+  halfInning TEXT,
   pitchingTeamId INTEGER,
   battingTeamId INTEGER,
   atBatIndex INTEGER,
@@ -14,16 +12,16 @@ CREATE TABLE actions (
   endOuts INTEGER,
   endBalls INTEGER,
   endStrikes INTEGER,
-  hasReview TINYINT,
-  isScoringPlay TINYINT,
+  hasReview INTEGER,
+  isScoringPlay INTEGER,
   awayScore INTEGER,
   homeScore INTEGER,
-  event VARCHAR(50),
-  eventType VARCHAR(50),
+  event TEXT,
+  eventType TEXT,
   battingOrder INTEGER,
-  positionAbbrev VARCHAR(10),
-  injuryType VARCHAR(50),
-  description VARCHAR(700)
-) ENGINE = INNODB;
+  positionAbbrev TEXT,
+  injuryType TEXT,
+  description TEXT
+);
 
-ALTER TABLE actions ADD INDEX(gamePk, atBatIndex);
+CREATE INDEX IF NOT EXISTS idx_actions_gamePk_atBatIndex ON actions(gamePk, atBatIndex);

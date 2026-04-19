@@ -1,21 +1,19 @@
-USE baseball;
-
-DROP TABLE agg_pitching_balls_in_play_heatmaps;
+DROP TABLE IF EXISTS agg_pitching_balls_in_play_heatmaps;
 
 CREATE TABLE agg_pitching_balls_in_play_heatmaps (
-  groupingId INTEGER UNSIGNED,
-  groupingDescription VARCHAR(255),
+  groupingId INTEGER,
+  groupingDescription TEXT,
   majorLeagueId INTEGER,
-  seasonId DOUBLE,
-  gameDate DATE,
-  gameType2 VARCHAR(10),
-  teamType VARCHAR(10),
+  seasonId REAL,
+  gameDate TEXT,
+  gameType2 TEXT,
+  teamType TEXT,
   venueId INTEGER,
   teamId INTEGER,
   playerId INTEGER,
-  batSide VARCHAR(1),
-  pitchHand VARCHAR(1),
-  menOnBase VARCHAR(10),
+  batSide TEXT,
+  pitchHand TEXT,
+  menOnBase TEXT,
   games INTEGER,
   HM4_RF1 INTEGER,
   HM4_RF2 INTEGER,
@@ -181,16 +179,16 @@ CREATE TABLE agg_pitching_balls_in_play_heatmaps (
   HM8_LF4_PUB INTEGER,
   HM8_LF4_LDB INTEGER,
   -- Atributos
-  majorLeague VARCHAR(10),
-  playerName VARCHAR(100),
-  teamName VARCHAR(100),
-  venueName VARCHAR(100)
-) ENGINE = INNODB;
+  majorLeague TEXT,
+  playerName TEXT,
+  teamName TEXT,
+  venueName TEXT
+);
 
-ALTER TABLE agg_pitching_stats ADD INDEX(groupingId);
-ALTER TABLE agg_pitching_stats ADD INDEX(groupingDescription(255));
-ALTER TABLE agg_pitching_stats ADD INDEX(majorLeagueId);
-ALTER TABLE agg_pitching_stats ADD INDEX(seasonId);
-ALTER TABLE agg_pitching_stats ADD INDEX(venueId);
-ALTER TABLE agg_pitching_stats ADD INDEX(teamId);
-ALTER TABLE agg_pitching_stats ADD INDEX(playerId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_balls_in_play_heatmaps_groupingId ON agg_pitching_balls_in_play_heatmaps(groupingId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_balls_in_play_heatmaps_groupingDescription ON agg_pitching_balls_in_play_heatmaps(groupingDescription);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_balls_in_play_heatmaps_majorLeagueId ON agg_pitching_balls_in_play_heatmaps(majorLeagueId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_balls_in_play_heatmaps_seasonId ON agg_pitching_balls_in_play_heatmaps(seasonId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_balls_in_play_heatmaps_venueId ON agg_pitching_balls_in_play_heatmaps(venueId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_balls_in_play_heatmaps_teamId ON agg_pitching_balls_in_play_heatmaps(teamId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_balls_in_play_heatmaps_playerId ON agg_pitching_balls_in_play_heatmaps(playerId);

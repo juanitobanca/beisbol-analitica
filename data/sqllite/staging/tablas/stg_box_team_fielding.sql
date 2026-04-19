@@ -1,6 +1,4 @@
-USE baseball;
-
-DROP TABLE stg_box_team_fielding;
+DROP TABLE IF EXISTS stg_box_team_fielding;
 
 CREATE TABLE IF NOT EXISTS stg_box_team_fielding (
   assists INTEGER,
@@ -13,5 +11,5 @@ CREATE TABLE IF NOT EXISTS stg_box_team_fielding (
   stolenBases INTEGER,
   gamePk INTEGER,
   teamId INTEGER,
-  teamType VARCHAR(20)
-) ENGINE = INNODB;
+  teamType TEXT
+);

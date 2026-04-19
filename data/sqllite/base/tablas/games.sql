@@ -1,47 +1,45 @@
-USE baseball;
-
-DROP TABLE games;
+DROP TABLE IF EXISTS games;
 
 CREATE TABLE games (
   gamePk INTEGER,
-  gameType VARCHAR(10),
-  gameType2 VARCHAR(10),
-  seasonId VARCHAR(20),
-  gameDate DATE,
-  isTie TINYINT,
+  gameType TEXT,
+  gameType2 TEXT,
+  seasonId TEXT,
+  gameDate TEXT,
+  isTie INTEGER,
   gameNumber INTEGER,
-  majorLeague VARCHAR(20),
+  majorLeague TEXT,
   majorLeagueId INTEGER,
-  doubleHeader VARCHAR(10),
-  dayNight VARCHAR(10),
+  doubleHeader TEXT,
+  dayNight TEXT,
   scheduledInnings INTEGER,
   gamesInSeries INTEGER,
-  seriesDescription VARCHAR(30),
-  ifNecessaryDescription VARCHAR(30),
-  gameId VARCHAR(30),
-  abstractGameState VARCHAR(30),
-  codedGameState VARCHAR(30),
-  detailedState VARCHAR(30),
+  seriesDescription TEXT,
+  ifNecessaryDescription TEXT,
+  gameId TEXT,
+  abstractGameState TEXT,
+  codedGameState TEXT,
+  detailedState TEXT,
   awayWins INTEGER,
   awayLosses INTEGER,
-  awayPct DOUBLE,
+  awayPct REAL,
   awayScore INTEGER,
   awayTeamId INTEGER,
-  awayIsWinner TINYINT,
+  awayIsWinner INTEGER,
   homeWins INTEGER,
   homeLosses INTEGER,
-  homePct DOUBLE,
+  homePct REAL,
   homeScore INTEGER,
   homeTeamId INTEGER,
-  homeIsWinner TINYINT,
+  homeIsWinner INTEGER,
   venueId INTEGER,
-  homeTeamName VARCHAR(100),
-  awayTeamName VARCHAR(100),
-  venueName VARCHAR(100),
-  weather VARCHAR(100),
-  wind VARCHAR(100),
+  homeTeamName TEXT,
+  awayTeamName TEXT,
+  venueName TEXT,
+  weather TEXT,
+  wind TEXT,
   attendance INTEGER
-) ENGINE = INNODB;
+);
 
-ALTER TABLE games ADD INDEX(gamePk);
+CREATE INDEX IF NOT EXISTS idx_games_gamePk ON games(gamePk);
 -- ALTER TABLE games ADD PRIMARY KEY(gamePk); There's games that appear in more than one league. Hence, removing PK.

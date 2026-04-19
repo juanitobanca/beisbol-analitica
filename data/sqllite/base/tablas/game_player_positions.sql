@@ -1,13 +1,11 @@
-USE baseball;
-
-DROP TABLE game_player_positions;
+DROP TABLE IF EXISTS game_player_positions;
 
 CREATE TABLE game_player_positions (
   gamePk INTEGER,
   teamId INTEGER,
-  teamType VARCHAR(10),
+  teamType TEXT,
   playerId INTEGER,
-  positionAbbrev VARCHAR(10)
-) ENGINE = INNODB;
+  positionAbbrev TEXT
+);
 
-ALTER TABLE game_player_positions ADD INDEX(gamePk, teamId, playerId);
+CREATE INDEX IF NOT EXISTS idx_game_player_positions_gamePk_teamId_playerId ON game_player_positions(gamePk, teamId, playerId);

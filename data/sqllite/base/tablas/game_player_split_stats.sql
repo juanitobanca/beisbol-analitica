@@ -1,17 +1,15 @@
-USE baseball;
-
-DROP TABLE game_player_split_stats;
+DROP TABLE IF EXISTS game_player_split_stats;
 
 CREATE TABLE game_player_split_stats (
   gamePk INTEGER,
   atBatIndex INTEGER,
   battingTeamId INTEGER,
   batterId INTEGER,
-  batSide VARCHAR(1),
+  batSide TEXT,
   pitchingTeamId INTEGER,
   pitcherId INTEGER,
-  pitchHand VARCHAR(1),
-  menOnBase VARCHAR(10),
+  pitchHand TEXT,
+  menOnBase TEXT,
   -- These metrics come from atbats
   balks INTEGER,
   batterInterferences INTEGER,
@@ -86,4 +84,4 @@ CREATE TABLE game_player_split_stats (
   lineDriveBunts INTEGER
 );
 
-ALTER TABLE game_player_split_stats ADD INDEX(gamePk, atBatIndex);
+CREATE INDEX IF NOT EXISTS idx_game_player_split_stats_gamePk_atBatIndex ON game_player_split_stats(gamePk, atBatIndex);

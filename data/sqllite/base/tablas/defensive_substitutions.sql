@@ -1,11 +1,9 @@
-USE baseball;
-
-DROP TABLE defensive_substitutions;
+DROP TABLE IF EXISTS defensive_substitutions;
 
 CREATE TABLE defensive_substitutions (
   gamePk INTEGER,
   inning INTEGER,
-  halfInning VARCHAR(15),
+  halfInning TEXT,
   atBatIndex INTEGER,
   playIndex INTEGER,
   substitutionAtBatIndex INTEGER,
@@ -14,11 +12,11 @@ CREATE TABLE defensive_substitutions (
   pitchingTeamId INTEGER,
   outs INTEGER,
   playerId INTEGER,
-  positionAbbrev VARCHAR(10),
+  positionAbbrev TEXT,
   substitutingPlayerId INTEGER,
   substitutingInning INTEGER,
-  substitutingOuts INTEGER
-) ENGINE = INNODB;
+  substitutingOuts INTEGER,
+  PRIMARY KEY(gamePk, atBatIndex, playIndex)
+);
 
-ALTER TABLE defensive_substitutions ADD PRIMARY KEY(gamePk, atBatIndex, playIndex);
-ALTER TABLE defensive_substitutions ADD INDEX(gamePk, substitutionAtBatIndex, substitutionPlayIndex);
+CREATE INDEX IF NOT EXISTS idx_defensive_substitutions_gamePk_substitutionAtBatIndex_substitutionPlayIndex ON defensive_substitutions(gamePk, substitutionAtBatIndex, substitutionPlayIndex);

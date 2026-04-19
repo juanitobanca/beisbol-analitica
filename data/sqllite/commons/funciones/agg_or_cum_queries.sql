@@ -1,20 +1,8 @@
-USE baseball;
-
-DROP FUNCTION agg_or_cum_queries;
-
-DELIMITER //
-
-CREATE FUNCTION agg_or_cum_queries( aggregation_clause VARCHAR(255), p_grouping_fields VARCHAR(255), p_aggregation_type VARCHAR(255) )
-RETURNS VARCHAR(255)
-DETERMINISTIC
-BEGIN
-
-    IF p_aggregation_type = 'CUMULATIVE' THEN
-        RETURN CONCAT( aggregation_clause, ' OVER ( PARTITION BY ', p_grouping_fields, ' ORDER BY gameDate )');
-    END IF;
-
-    RETURN aggregation_clause;
-
-END //
-
-DELIMITER ;
+-- Function: agg_or_cum_queries (MySQL UDF - not supported in SQLite)
+-- Original logic: Takes an aggregation_clause, p_grouping_fields, and p_aggregation_type.
+--   If p_aggregation_type = 'CUMULATIVE', returns:
+--     aggregation_clause || ' OVER ( PARTITION BY ' || p_grouping_fields || ' ORDER BY gameDate )'
+--   Otherwise (AGGREGATED), returns the aggregation_clause unchanged.
+--   This converts a plain aggregate expression into a window function for cumulative stats.
+-- This function was used by dynamic SQL procedures.
+-- In SQLite, this logic must be implemented in the application layer.

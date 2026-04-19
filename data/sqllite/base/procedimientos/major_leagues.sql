@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE major_leagues;
-
-DELIMITER //
-
-CREATE PROCEDURE major_leagues()
-BEGIN
-
+-- Procedure: major_leagues
 INSERT INTO major_leagues(
     majorLeagueId,
     majorLeague
@@ -17,9 +9,3 @@ WHERE majorLeagueId NOT IN (
     SELECT majorLeagueId
     FROM major_leagues
 );
-
-COMMIT;
-
-END //
-
-DELIMITER ;

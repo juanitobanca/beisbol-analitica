@@ -1,11 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE fip;
-
-DELIMITER //
-
-CREATE PROCEDURE fip( )
-BEGIN
+-- Procedure: fip
 
 /* Based on
    https://web.wpi.edu/Pubs/E-project/Available/E-project-050614-141701/unrestricted/COPYforDesktopJoeMQP.pdf
@@ -13,205 +6,155 @@ BEGIN
 */
 
 /* Actualizar valores de los pesos en la tabla */
-UPDATE
-  agg_pitching_stats aps
-INNER JOIN (
-  SELECT
-    majorLeagueId,
-    seasonId,
-    SUM(IF(event = 'Strikeout', runValue, 0)) weightStrikeout,
-    SUM(IF(event = 'Hit By Pitch', runValue, 0)) weightHitByPitch,
-    SUM(IF(event = 'Walk', runValue, 0)) weightUnintentionalWalk,
-    SUM(IF(event = 'Single', runValue, 0)) weightSingle,
-    SUM(IF(event = 'Double', runValue, 0)) weightDouble,
-    SUM(IF(event = 'Triple', runValue, 0)) weightTriple,
-    SUM(IF(event = 'Home Run', runValue, 0)) weightHomeRun,
-    SUM(IF(event = 'Out', runValue, 0)) weightOut
-  FROM rem_event_run_value
-  WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2'
-  GROUP BY
-    1, 2
-) w
-  ON aps.majorLeagueId = w.majorLeagueId
-  AND aps.seasonId = w.seasonId
-  SET aps.weightStrikeout = w.weightStrikeout
-  ,   aps.weightHitByPitch = w.weightHitByPitch
-  ,   aps.weightUnintentionalWalk = w.weightUnintentionalWalk
-  ,   aps.weightSingle = w.weightSingle
-  ,   aps.weightDouble = w.weightDouble
-  ,   aps.weightTriple = w.weightTriple
-  ,   aps.weightHomeRun = w.weightHomeRun
-  ,   aps.weightStrikeout = w.weightStrikeout
-  ,   aps.weightOut = w.weightOut
-  WHERE groupingDescription IN( 'MAJORLEAGUEID_SEASONID_GAMETYPE2',
-                                'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'
-                              )
-  AND aggregationType = 'AGGREGATED';
+UPDATE agg_pitching_stats
+SET weightStrikeout = (SELECT SUM(CASE WHEN event = 'Strikeout' THEN runValue ELSE 0 END) FROM rem_event_run_value WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND rem_event_run_value.majorLeagueId = agg_pitching_stats.majorLeagueId AND rem_event_run_value.seasonId = agg_pitching_stats.seasonId),
+    weightHitByPitch = (SELECT SUM(CASE WHEN event = 'Hit By Pitch' THEN runValue ELSE 0 END) FROM rem_event_run_value WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND rem_event_run_value.majorLeagueId = agg_pitching_stats.majorLeagueId AND rem_event_run_value.seasonId = agg_pitching_stats.seasonId),
+    weightUnintentionalWalk = (SELECT SUM(CASE WHEN event = 'Walk' THEN runValue ELSE 0 END) FROM rem_event_run_value WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND rem_event_run_value.majorLeagueId = agg_pitching_stats.majorLeagueId AND rem_event_run_value.seasonId = agg_pitching_stats.seasonId),
+    weightSingle = (SELECT SUM(CASE WHEN event = 'Single' THEN runValue ELSE 0 END) FROM rem_event_run_value WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND rem_event_run_value.majorLeagueId = agg_pitching_stats.majorLeagueId AND rem_event_run_value.seasonId = agg_pitching_stats.seasonId),
+    weightDouble = (SELECT SUM(CASE WHEN event = 'Double' THEN runValue ELSE 0 END) FROM rem_event_run_value WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND rem_event_run_value.majorLeagueId = agg_pitching_stats.majorLeagueId AND rem_event_run_value.seasonId = agg_pitching_stats.seasonId),
+    weightTriple = (SELECT SUM(CASE WHEN event = 'Triple' THEN runValue ELSE 0 END) FROM rem_event_run_value WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND rem_event_run_value.majorLeagueId = agg_pitching_stats.majorLeagueId AND rem_event_run_value.seasonId = agg_pitching_stats.seasonId),
+    weightHomeRun = (SELECT SUM(CASE WHEN event = 'Home Run' THEN runValue ELSE 0 END) FROM rem_event_run_value WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND rem_event_run_value.majorLeagueId = agg_pitching_stats.majorLeagueId AND rem_event_run_value.seasonId = agg_pitching_stats.seasonId),
+    weightOut = (SELECT SUM(CASE WHEN event = 'Out' THEN runValue ELSE 0 END) FROM rem_event_run_value WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND rem_event_run_value.majorLeagueId = agg_pitching_stats.majorLeagueId AND rem_event_run_value.seasonId = agg_pitching_stats.seasonId)
+WHERE groupingDescription IN( 'MAJORLEAGUEID_SEASONID_GAMETYPE2',
+                               'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'
+                             )
+AND aggregationType = 'AGGREGATED'
+AND EXISTS (SELECT 1 FROM rem_event_run_value WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND rem_event_run_value.majorLeagueId = agg_pitching_stats.majorLeagueId AND rem_event_run_value.seasonId = agg_pitching_stats.seasonId);
 
 /* Update league stats, to get value for BIP */
-UPDATE
-  agg_pitching_stats aps
-INNER JOIN (
-  SELECT
-    seasonId,
-    majorLeagueId,
-    hitBatsmen AS leagueHitBatsmen,
-    strikeOuts AS leagueStrikeOuts,
-    unintentionalWalks AS leagueUnintentionalWalks,
-    singles AS leagueSingles,
-    doubles AS leagueDoubles,
-    triples AS leagueTriples,
-    homeRuns AS leagueHomeRuns,
-    atbats AS leagueAtbats,
-    earnedRunsPerNineInnings AS leagueEarnedRunsPerNineInnings,
-    inningsPitched AS leagueInningsPitched
-  FROM agg_pitching_stats
-  WHERE
-    groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2'
-  AND aggregationType = 'AGGREGATED'
-
-) l
-  ON aps.majorLeagueId = l.majorLeagueId
-  AND aps.seasonId = l.seasonId
-  SET aps.leagueHitBatsmen = l.leagueHitBatsmen
-  ,   aps.leagueStrikeOuts = l.leagueStrikeOuts
-  ,   aps.leagueUnintentionalWalks = l.leagueUnintentionalWalks
-  ,   aps.leagueSingles = l.leagueSingles
-  ,   aps.leagueDoubles = l.leagueDoubles
-  ,   aps.leagueTriples = l.leagueTriples
-  ,   aps.leagueHomeRuns = l.leagueHomeRuns
-  ,   aps.leagueAtbats = l.leagueAtbats
-  ,   aps.leagueOuts =  l.leagueAtbats - l.leagueSingles - l.leagueDoubles - l.leagueTriples - l.leagueHomeRuns
-  ,   aps.leagueEarnedRunsPerNineInnings = l.leagueEarnedRunsPerNineInnings
-  ,   aps.leagueInningsPitched = l.leagueInningsPitched
-  WHERE groupingDescription IN( 'MAJORLEAGUEID_SEASONID_GAMETYPE2',
-                                'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'
-                              )
-  AND aggregationType = 'AGGREGATED';
+UPDATE agg_pitching_stats
+SET leagueHitBatsmen = (SELECT hitBatsmen FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId),
+    leagueStrikeOuts = (SELECT strikeOuts FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId),
+    leagueUnintentionalWalks = (SELECT unintentionalWalks FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId),
+    leagueSingles = (SELECT singles FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId),
+    leagueDoubles = (SELECT doubles FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId),
+    leagueTriples = (SELECT triples FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId),
+    leagueHomeRuns = (SELECT homeRuns FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId),
+    leagueAtBats = (SELECT atbats FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId),
+    leagueOuts = (SELECT atbats - singles - doubles - triples - homeRuns FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId),
+    leagueEarnedRunsPerNineInnings = (SELECT earnedRunsPerNineInnings FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId),
+    leagueInningsPitched = (SELECT inningsPitched FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId)
+WHERE groupingDescription IN( 'MAJORLEAGUEID_SEASONID_GAMETYPE2',
+                               'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'
+                             )
+AND aggregationType = 'AGGREGATED'
+AND EXISTS (SELECT 1 FROM agg_pitching_stats l WHERE l.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2' AND l.aggregationType = 'AGGREGATED' AND l.majorLeagueId = agg_pitching_stats.majorLeagueId AND l.seasonId = agg_pitching_stats.seasonId);
 
 /* Weight Ball In Play */
 UPDATE
-  agg_pitching_stats aps
-  SET aps.weightBallInPlay = ( leagueSingles * weightSingle +
+  agg_pitching_stats
+  SET weightBallInPlay = ( leagueSingles * weightSingle +
                                leagueDoubles * weightDouble +
                                leagueTriples * weightTriple +
                                leagueHomeRuns * weightHomeRun +
                                leagueOuts * weightOut
-                              ) / leagueAtbats
+                              ) * 1.0 / leagueAtbats
   WHERE groupingDescription IN( 'MAJORLEAGUEID_SEASONID_GAMETYPE2',
                                 'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'
                               )
   AND aggregationType = 'AGGREGATED';
 
 /* Runs per Plate Appearance */
-UPDATE
-  agg_pitching_stats aps
-INNER JOIN (
-  SELECT
-    majorLeagueId,
-    seasonId,
-    SUM(runsScoredInPlay) / COUNT(DISTINCT gamePk) / 2 AS leagueRunsPerTeamPerGame,
-    SUM(isPlateAppearance) / COUNT(DISTINCT gamePk) / 2 AS leaguePlateAppearancesPerTeamPerGame
-  FROM rem_play_by_play
-  WHERE
-    gameType2 = 'RS'
-    AND (
-      scheduledInnings > inning
-      OR (
-        scheduledInnings = inning
-        AND halfInning = 'top'
-      )
+UPDATE agg_pitching_stats
+SET leagueRunsPerTeamPerGame = (
+      SELECT SUM(runsScoredInPlay) * 1.0 / COUNT(DISTINCT gamePk) / 2
+      FROM rem_play_by_play
+      WHERE gameType2 = 'RS'
+        AND (scheduledInnings > inning OR (scheduledInnings = inning AND halfInning = 'top'))
+        AND rem_play_by_play.majorLeagueId = agg_pitching_stats.majorLeagueId
+        AND rem_play_by_play.seasonId = agg_pitching_stats.seasonId
+    ),
+    leaguePlateAppearancesPerTeamPerGame = (
+      SELECT SUM(isPlateAppearance) * 1.0 / COUNT(DISTINCT gamePk) / 2
+      FROM rem_play_by_play
+      WHERE gameType2 = 'RS'
+        AND (scheduledInnings > inning OR (scheduledInnings = inning AND halfInning = 'top'))
+        AND rem_play_by_play.majorLeagueId = agg_pitching_stats.majorLeagueId
+        AND rem_play_by_play.seasonId = agg_pitching_stats.seasonId
+    ),
+    leagueRunsPerPlateAppearancePerTeamPerGame = (
+      SELECT (SUM(runsScoredInPlay) * 1.0 / COUNT(DISTINCT gamePk) / 2) / (SUM(isPlateAppearance) * 1.0 / COUNT(DISTINCT gamePk) / 2)
+      FROM rem_play_by_play
+      WHERE gameType2 = 'RS'
+        AND (scheduledInnings > inning OR (scheduledInnings = inning AND halfInning = 'top'))
+        AND rem_play_by_play.majorLeagueId = agg_pitching_stats.majorLeagueId
+        AND rem_play_by_play.seasonId = agg_pitching_stats.seasonId
     )
-  GROUP BY
-    1, 2
-) rpa
-  ON aps.majorLeagueId = rpa.majorLeagueId
-  AND aps.seasonId = rpa.seasonId
-  SET aps.leagueRunsPerTeamPerGame = rpa.leagueRunsPerTeamPerGame
-  ,   aps.leaguePlateAppearancesPerTeamPerGame = rpa.leaguePlateAppearancesPerTeamPerGame
-  ,   aps.leagueRunsPerPlateAppearancePerTeamPerGame = rpa.leagueRunsPerTeamPerGame / rpa.leaguePlateAppearancesPerTeamPerGame
-  WHERE groupingDescription IN( 'MAJORLEAGUEID_SEASONID_GAMETYPE2',
-                                'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'
-                              )
-  AND aggregationType = 'AGGREGATED';
+WHERE groupingDescription IN( 'MAJORLEAGUEID_SEASONID_GAMETYPE2',
+                               'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'
+                             )
+AND aggregationType = 'AGGREGATED'
+AND EXISTS (
+  SELECT 1 FROM rem_play_by_play
+  WHERE gameType2 = 'RS'
+    AND (scheduledInnings > inning OR (scheduledInnings = inning AND halfInning = 'top'))
+    AND rem_play_by_play.majorLeagueId = agg_pitching_stats.majorLeagueId
+    AND rem_play_by_play.seasonId = agg_pitching_stats.seasonId
+);
 
 /* Get FIP Weights: Add League Runs Per Plate Appearance, then substract the weight of balls in play */
-UPDATE
-  agg_pitching_stats aps
-INNER JOIN (
-    WITH woba_weights AS (
-      SELECT
-        seasonId,
-        majorLeagueId,
-        weightStrikeOut + leagueRunsPerPlateAppearancePerTeamPerGame AS weightStrikeOut,
-        weightBallInPlay + leagueRunsPerPlateAppearancePerTeamPerGame AS weightBallInPlay,
-        weightUnintentionalWalk + leagueRunsPerPlateAppearancePerTeamPerGame
-          AS weightUnintentionalWalk,
-        weightHomeRun + leagueRunsPerPlateAppearancePerTeamPerGame AS weightHomeRun,
-        leagueEarnedRunsPerNineInnings,
-        leagueInningsPitched,
-        leagueHomeRuns,
-        leagueUnintentionalWalks,
-        leagueStrikeOuts,
-        leagueHitBatsmen
-      FROM agg_pitching_stats
-      WHERE
-        groupingDescription IN('MAJORLEAGUEID_SEASONID_GAMETYPE2')
-        AND gameType2 = 'RS'
-        AND aggregationType = 'AGGREGATED'
+UPDATE agg_pitching_stats
+SET fipWeightStrikeOut = (
+      SELECT (weightStrikeOut + leagueRunsPerPlateAppearancePerTeamPerGame - (weightBallInPlay + leagueRunsPerPlateAppearancePerTeamPerGame)) * 9
+      FROM agg_pitching_stats fp
+      WHERE fp.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2'
+        AND fp.gameType2 = 'RS'
+        AND fp.aggregationType = 'AGGREGATED'
+        AND fp.majorLeagueId = agg_pitching_stats.majorLeagueId
+        AND fp.seasonId = agg_pitching_stats.seasonId
     ),
-      fip_weights AS (
-      SELECT
-        seasonId,
-        majorLeagueId,
-        (weightStrikeOut - weightBallInPlay) * 9 fipWeightStrikeOut,
-        (weightUnintentionalWalk - weightBallInPlay) * 9 fipWeightUnintentionalWalk,
-        (weightHomeRun - weightBallInPlay) * 9 fipWeightHomeRun,
-        leagueEarnedRunsPerNineInnings,
-        leagueHomeRuns,
-        leagueUnintentionalWalks,
-        leagueHitBatsmen,
-        leagueStrikeOuts,
-        leagueInningsPitched
-      FROM woba_weights
+    fipWeightUnintentionalWalk = (
+      SELECT (weightUnintentionalWalk + leagueRunsPerPlateAppearancePerTeamPerGame - (weightBallInPlay + leagueRunsPerPlateAppearancePerTeamPerGame)) * 9
+      FROM agg_pitching_stats fp
+      WHERE fp.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2'
+        AND fp.gameType2 = 'RS'
+        AND fp.aggregationType = 'AGGREGATED'
+        AND fp.majorLeagueId = agg_pitching_stats.majorLeagueId
+        AND fp.seasonId = agg_pitching_stats.seasonId
+    ),
+    fipWeightHomeRun = (
+      SELECT (weightHomeRun + leagueRunsPerPlateAppearancePerTeamPerGame - (weightBallInPlay + leagueRunsPerPlateAppearancePerTeamPerGame)) * 9
+      FROM agg_pitching_stats fp
+      WHERE fp.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2'
+        AND fp.gameType2 = 'RS'
+        AND fp.aggregationType = 'AGGREGATED'
+        AND fp.majorLeagueId = agg_pitching_stats.majorLeagueId
+        AND fp.seasonId = agg_pitching_stats.seasonId
+    ),
+    fipConstant = (
+      SELECT leagueEarnedRunsPerNineInnings - (
+        (weightHomeRun + leagueRunsPerPlateAppearancePerTeamPerGame - (weightBallInPlay + leagueRunsPerPlateAppearancePerTeamPerGame)) * 9 * leagueHomeRuns +
+        (weightUnintentionalWalk + leagueRunsPerPlateAppearancePerTeamPerGame - (weightBallInPlay + leagueRunsPerPlateAppearancePerTeamPerGame)) * 9 * ( leagueUnintentionalWalks + leagueHitBatsmen) +
+        (weightStrikeOut + leagueRunsPerPlateAppearancePerTeamPerGame - (weightBallInPlay + leagueRunsPerPlateAppearancePerTeamPerGame)) * 9 * leagueStrikeOuts
+      ) * 1.0 / leagueInningsPitched
+      FROM agg_pitching_stats fp
+      WHERE fp.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2'
+        AND fp.gameType2 = 'RS'
+        AND fp.aggregationType = 'AGGREGATED'
+        AND fp.majorLeagueId = agg_pitching_stats.majorLeagueId
+        AND fp.seasonId = agg_pitching_stats.seasonId
     )
-    SELECT
-      seasonId,
-      majorLeagueId,
-      fipWeightStrikeOut,
-      fipWeightUnintentionalWalk,
-      fipWeightHomeRun,
-      leagueEarnedRunsPerNineInnings - ( fipWeightHomeRun * leagueHomeRuns +
-                                         fipWeightUnintentionalWalk * ( leagueUnintentionalWalks + leagueHitBatsmen) +
-                                        fipWeightStrikeOut * leagueStrikeOuts
-                                       ) / leagueInningsPitched fipConstant
-    FROM fip_weights
-  ) AS fp
-  ON aps.majorLeagueId = fp.majorLeagueId
-  AND aps.seasonId = fp.seasonId
-  SET aps.fipWeightStrikeOut = fp.fipWeightStrikeOut
-  ,   aps.fipWeightUnintentionalWalk = fp.fipWeightUnintentionalWalk
-  ,   aps.fipWeightHomeRun = fp.fipWeightHomeRun
-  ,   aps.fipConstant = fp.fipConstant
-  WHERE groupingDescription IN( 'MAJORLEAGUEID_SEASONID_GAMETYPE2',
-                                'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'
-                              )
-  AND aggregationType = 'AGGREGATED';
+WHERE groupingDescription IN( 'MAJORLEAGUEID_SEASONID_GAMETYPE2',
+                               'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'
+                             )
+AND aggregationType = 'AGGREGATED'
+AND EXISTS (
+  SELECT 1 FROM agg_pitching_stats fp
+  WHERE fp.groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2'
+    AND fp.gameType2 = 'RS'
+    AND fp.aggregationType = 'AGGREGATED'
+    AND fp.majorLeagueId = agg_pitching_stats.majorLeagueId
+    AND fp.seasonId = agg_pitching_stats.seasonId
+);
 
 /* FIP */
 UPDATE
   agg_pitching_stats
-  SET fieldIndepedentPitching = IF( inningsPitched > 0, ( fipWeightHomeRun * homeRuns +
+  SET fieldIndepedentPitching = CASE WHEN inningsPitched > 0 THEN ( fipWeightHomeRun * homeRuns +
                                                           fipWeightUnintentionalWalk * ( walks + hitBatsmen ) +
                                                           fipWeightStrikeOut * strikeOuts
-                                                        ) / inningsPitched  + fipConstant
-                                  , NULL
-                                  )
+                                                        ) * 1.0 / inningsPitched  + fipConstant
+                                  ELSE NULL
+                                  END
   WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'
   AND aggregationType = 'AGGREGATED';
-
-COMMIT;
-
-END //
-
-DELIMITER ;

@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE pickoffs;
-
-DELIMITER //
-
-CREATE PROCEDURE pickoffs()
-BEGIN
-
+-- Procedure: pickoffs
 INSERT INTO pickoffs(
     gamePk,
     atBatIndex,
@@ -21,7 +13,7 @@ INSERT INTO pickoffs(
 SELECT DISTINCT
   gamePk,
   atBatIndex,
-  `index` playIndex,
+  "index" playIndex,
   outs,
   balls,
   strikes,
@@ -37,9 +29,3 @@ WHERE
       atBatIndex
     FROM pickoffs
   );
-
-COMMIT;
-
-END //
-
-DELIMITER ;

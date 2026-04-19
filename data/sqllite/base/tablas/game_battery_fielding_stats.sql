@@ -1,6 +1,4 @@
-USE baseball;
-
-DROP TABLE game_battery_fielding_stats;
+DROP TABLE IF EXISTS game_battery_fielding_stats;
 
 CREATE TABLE game_battery_fielding_stats (
   gamePk INTEGER,
@@ -29,6 +27,6 @@ CREATE TABLE game_battery_fielding_stats (
   stolenHome INTEGER,
   stolenBases INTEGER,
   wildPitches INTEGER
-) ENGINE = INNODB;
+);
 
-ALTER TABLE game_battery_fielding_stats ADD INDEX(gamePk);
+CREATE INDEX IF NOT EXISTS idx_game_battery_fielding_stats_gamePk ON game_battery_fielding_stats(gamePk);

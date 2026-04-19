@@ -1,23 +1,21 @@
-USE baseball;
-
-DROP TABLE we_win_expectancy;
+DROP TABLE IF EXISTS we_win_expectancy;
 
 CREATE TABLE IF NOT EXISTS we_win_expectancy (
-  groupingId INTEGER UNSIGNED,
-  groupingDescription VARCHAR(255),
+  groupingId INTEGER,
+  groupingDescription TEXT,
   majorLeagueId INTEGER,
-  seasonId DOUBLE,
-  gameType2 VARCHAR(10),
+  seasonId REAL,
+  gameType2 TEXT,
   inning INTEGER,
-  menOnBase VARCHAR(10),
+  menOnBase TEXT,
   outs INTEGER,
-  score VARCHAR(10),
+  score TEXT,
   games INTEGER,
   wins INTEGER,
   losses INTEGER,
-  winExpectancy DOUBLE
+  winExpectancy REAL
 );
 
-ALTER TABLE we_win_expectancy ADD INDEX( groupingId );
-ALTER TABLE we_win_expectancy ADD INDEX( majorLeagueId );
-ALTER TABLE we_win_expectancy ADD INDEX( seasonId );
+CREATE INDEX IF NOT EXISTS idx_we_win_expectancy_groupingId ON we_win_expectancy(groupingId);
+CREATE INDEX IF NOT EXISTS idx_we_win_expectancy_majorLeagueId ON we_win_expectancy(majorLeagueId);
+CREATE INDEX IF NOT EXISTS idx_we_win_expectancy_seasonId ON we_win_expectancy(seasonId);

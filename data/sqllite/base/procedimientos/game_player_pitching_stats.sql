@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE game_player_pitching_stats;
-
-DELIMITER //
-
-CREATE PROCEDURE game_player_pitching_stats()
-BEGIN
-
+-- Procedure: game_player_pitching_stats
 INSERT INTO game_player_pitching_stats(
     gamePk,
     teamId,
@@ -62,57 +54,57 @@ SELECT DISTINCT
   teamId,
   teamType,
   playerId,
-  COALESCE(CAST(airOuts AS UNSIGNED), 0) airOuts,
-  COALESCE(CAST(atBats AS UNSIGNED), 0) atBats,
-  COALESCE(CAST(balls AS UNSIGNED), 0) balls,
-  COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) walks,
-  COALESCE(CAST(battersFaced AS UNSIGNED), 0) battersFaced,
-  COALESCE(CAST(blownSaves AS UNSIGNED), 0) blownSaves,
-  COALESCE(CAST(catchersInterference AS UNSIGNED), 0) catchersInterference,
-  COALESCE(CAST(caughtStealing AS UNSIGNED), 0) caughtStealing,
-  COALESCE(CAST(completeGames AS UNSIGNED), 0) completeGames,
-  COALESCE(CAST(doubles AS UNSIGNED), 0) doubles,
-  COALESCE(CAST(earnedRuns AS UNSIGNED), 0) earnedRuns,
-  COALESCE(CAST(gamesFinished AS UNSIGNED), 0) gamesFinished,
-  COALESCE(CAST(gamesPitched AS UNSIGNED), 0) gamesPitched,
-  COALESCE(CAST(gamesPlayed AS UNSIGNED), 0) gamesPlayed,
-  COALESCE(CAST(gamesStarted AS UNSIGNED), 0) gamesStarted,
-  COALESCE(CAST(groundOuts AS UNSIGNED), 0) groundOuts,
-  COALESCE(CAST(hitBatsmen AS UNSIGNED), 0) hitBatsmen,
-  COALESCE(CAST(hits AS UNSIGNED), 0) hits,
-  COALESCE(CAST(holds AS UNSIGNED), 0) holds,
-  COALESCE(CAST(homeRuns AS UNSIGNED), 0) homeRuns,
-  COALESCE(CAST(inheritedRunners AS UNSIGNED), 0) inheritedRunners,
-  COALESCE(CAST(inheritedRunnersScored AS UNSIGNED), 0) inheritedRunnersScored,
-  COALESCE(CAST(intentionalWalks AS UNSIGNED), 0) intentionalWalks,
-  COALESCE(CAST(losses AS UNSIGNED), 0) losses,
-  COALESCE(CAST(numberOfPitches AS UNSIGNED), 0) numberOfPitches,
-  COALESCE(CAST(outs AS UNSIGNED), 0) outs,
-  COALESCE(CAST(pickoffs AS UNSIGNED), 0) pickoffs,
-  COALESCE(CAST(pitchesThrown AS UNSIGNED), 0) pitchesThrown,
-  COALESCE(CAST(rbi AS UNSIGNED), 0) rbi,
-  COALESCE(CAST(runs AS UNSIGNED), 0) runs,
-  COALESCE(CAST(sacBunts AS UNSIGNED), 0) sacBunts,
-  COALESCE(CAST(sacFlies AS UNSIGNED), 0) sacFlies,
-  COALESCE(CAST(saveOpportunities AS UNSIGNED), 0) saveOpportunities,
-  COALESCE(CAST(saves AS UNSIGNED), 0) saves,
-  COALESCE(CAST(shutouts AS UNSIGNED), 0) shutouts,
-  COALESCE(CAST(stolenBases AS UNSIGNED), 0) stolenBases,
-  COALESCE(CAST(strikeOuts AS UNSIGNED), 0) strikeOuts,
-  COALESCE(CAST(strikes AS UNSIGNED), 0) strikes,
-  COALESCE(CAST(triples AS UNSIGNED), 0) triples,
-  COALESCE(CAST(wildPitches AS UNSIGNED), 0) wildPitches,
-  COALESCE(CAST(wins AS UNSIGNED), 0) wins,
-  COALESCE(CAST(hits AS UNSIGNED), 0) - COALESCE(CAST(homeRuns AS UNSIGNED), 0) - COALESCE(
-    CAST(doubles AS UNSIGNED),
+  COALESCE(CAST(airOuts AS INTEGER), 0) airOuts,
+  COALESCE(CAST(atBats AS INTEGER), 0) atBats,
+  COALESCE(CAST(balls AS INTEGER), 0) balls,
+  COALESCE(CAST(baseOnBalls AS INTEGER), 0) walks,
+  COALESCE(CAST(battersFaced AS INTEGER), 0) battersFaced,
+  COALESCE(CAST(blownSaves AS INTEGER), 0) blownSaves,
+  COALESCE(CAST(catchersInterference AS INTEGER), 0) catchersInterference,
+  COALESCE(CAST(caughtStealing AS INTEGER), 0) caughtStealing,
+  COALESCE(CAST(completeGames AS INTEGER), 0) completeGames,
+  COALESCE(CAST(doubles AS INTEGER), 0) doubles,
+  COALESCE(CAST(earnedRuns AS INTEGER), 0) earnedRuns,
+  COALESCE(CAST(gamesFinished AS INTEGER), 0) gamesFinished,
+  COALESCE(CAST(gamesPitched AS INTEGER), 0) gamesPitched,
+  COALESCE(CAST(gamesPlayed AS INTEGER), 0) gamesPlayed,
+  COALESCE(CAST(gamesStarted AS INTEGER), 0) gamesStarted,
+  COALESCE(CAST(groundOuts AS INTEGER), 0) groundOuts,
+  COALESCE(CAST(hitBatsmen AS INTEGER), 0) hitBatsmen,
+  COALESCE(CAST(hits AS INTEGER), 0) hits,
+  COALESCE(CAST(holds AS INTEGER), 0) holds,
+  COALESCE(CAST(homeRuns AS INTEGER), 0) homeRuns,
+  COALESCE(CAST(inheritedRunners AS INTEGER), 0) inheritedRunners,
+  COALESCE(CAST(inheritedRunnersScored AS INTEGER), 0) inheritedRunnersScored,
+  COALESCE(CAST(intentionalWalks AS INTEGER), 0) intentionalWalks,
+  COALESCE(CAST(losses AS INTEGER), 0) losses,
+  COALESCE(CAST(numberOfPitches AS INTEGER), 0) numberOfPitches,
+  COALESCE(CAST(outs AS INTEGER), 0) outs,
+  COALESCE(CAST(pickoffs AS INTEGER), 0) pickoffs,
+  COALESCE(CAST(pitchesThrown AS INTEGER), 0) pitchesThrown,
+  COALESCE(CAST(rbi AS INTEGER), 0) rbi,
+  COALESCE(CAST(runs AS INTEGER), 0) runs,
+  COALESCE(CAST(sacBunts AS INTEGER), 0) sacBunts,
+  COALESCE(CAST(sacFlies AS INTEGER), 0) sacFlies,
+  COALESCE(CAST(saveOpportunities AS INTEGER), 0) saveOpportunities,
+  COALESCE(CAST(saves AS INTEGER), 0) saves,
+  COALESCE(CAST(shutouts AS INTEGER), 0) shutouts,
+  COALESCE(CAST(stolenBases AS INTEGER), 0) stolenBases,
+  COALESCE(CAST(strikeOuts AS INTEGER), 0) strikeOuts,
+  COALESCE(CAST(strikes AS INTEGER), 0) strikes,
+  COALESCE(CAST(triples AS INTEGER), 0) triples,
+  COALESCE(CAST(wildPitches AS INTEGER), 0) wildPitches,
+  COALESCE(CAST(wins AS INTEGER), 0) wins,
+  COALESCE(CAST(hits AS INTEGER), 0) - COALESCE(CAST(homeRuns AS INTEGER), 0) - COALESCE(
+    CAST(doubles AS INTEGER),
     0
-  ) - COALESCE(CAST(triples AS UNSIGNED), 0) singles,
-  COALESCE(CAST(atBats AS UNSIGNED), 0) + COALESCE(CAST(sacBunts AS UNSIGNED), 0) + COALESCE(
-    CAST(sacFlies AS UNSIGNED),
+  ) - COALESCE(CAST(triples AS INTEGER), 0) singles,
+  COALESCE(CAST(atBats AS INTEGER), 0) + COALESCE(CAST(sacBunts AS INTEGER), 0) + COALESCE(
+    CAST(sacFlies AS INTEGER),
     0
-  ) + COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) + COALESCE(CAST(hitBatsmen AS UNSIGNED), 0) plateAppearances,
-  COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) - COALESCE(
-    CAST(intentionalWalks AS UNSIGNED),
+  ) + COALESCE(CAST(baseOnBalls AS INTEGER), 0) + COALESCE(CAST(hitBatsmen AS INTEGER), 0) plateAppearances,
+  COALESCE(CAST(baseOnBalls AS INTEGER), 0) - COALESCE(
+    CAST(intentionalWalks AS INTEGER),
     0
   ) unintentionalWalks
 FROM stg_box_player_pitching
@@ -168,9 +160,3 @@ WHERE
       playerId
     FROM game_player_pitching_stats
   );
-
-COMMIT;
-
-END //
-
-DELIMITER ;

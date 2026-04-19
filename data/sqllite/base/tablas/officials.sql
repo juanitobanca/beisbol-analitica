@@ -1,15 +1,13 @@
-USE baseball;
-
-DROP TABLE officials;
+DROP TABLE IF EXISTS officials;
 
 CREATE TABLE officials (
   officialId INTEGER,
-  firstName VARCHAR(100),
-  lastName VARCHAR(100),
-  birthDate VARCHAR(100),
-  birthCity VARCHAR(100),
-  birthStateProvince VARCHAR(100),
-  birthCountry VARCHAR(100)
-) ENGINE = INNODB;
+  firstName TEXT,
+  lastName TEXT,
+  birthDate TEXT,
+  birthCity TEXT,
+  birthStateProvince TEXT,
+  birthCountry TEXT,
+  PRIMARY KEY(officialId)
+);
 
-ALTER TABLE officials ADD PRIMARY KEY(officialId);

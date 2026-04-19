@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE transactions;
-
-DELIMITER //
-
-CREATE PROCEDURE transactions()
-BEGIN
-
+-- Procedure: transactions
 INSERT INTO transactions(
     transactionId,
     personId,
@@ -38,9 +30,3 @@ WHERE
       transactionId
     FROM transactions
   );
-
-COMMIT;
-
-END //
-
-DELIMITER ;

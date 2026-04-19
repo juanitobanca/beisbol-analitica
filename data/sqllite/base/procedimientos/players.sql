@@ -1,12 +1,4 @@
-USE baseball;
-
-DROP PROCEDURE players;
-
-DELIMITER //
-
-CREATE PROCEDURE players()
-BEGIN
-
+-- Procedure: players
 INSERT INTO players(
     playerId,
     firstName,
@@ -26,7 +18,7 @@ SELECT DISTINCT
   id playerId,
   firstName,
   lastName,
-  CONCAT( firstName, ' ', lastName ) AS fullName,
+  (firstName || ' ' || lastName) AS fullName,
   birthDate,
   birthCity,
   birthStateProvince,
@@ -45,9 +37,3 @@ WHERE
       playerId
     FROM players
   );
-
-COMMIT;
-
-END //
-
-DELIMITER ;
