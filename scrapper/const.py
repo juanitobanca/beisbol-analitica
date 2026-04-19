@@ -1,6 +1,7 @@
 import requests as r
 import logging
 import datetime
+import time 
 
 def writeToCSV( d, file_name):
     print('Writing to CSV...')
@@ -34,20 +35,19 @@ def parseJson( parsing_arg, file ):
 
     if file == people_file:
         url = 'http://statsapi.mlb.com/api/v1/people/' + str(int(parsing_arg))
-        print('Player: '+str(int(parsing_arg))+'. Parsing '+file+'.')
+        print('Player: '+str(int(parsing_arg))+'. Parsing '+file+'. url: '+url)
 
     elif file == transactions_file:
         url = 'http://statsapi.mlb.com/api/v1/transactions?' + parsing_arg
-        print('Team: '+parsing_arg+'. Parsing '+file+'.')
+        print('Team: '+parsing_arg+'. Parsing '+file+'. url: '+url)
 
     elif file == schedule_file:
         url = 'http://statsapi.mlb.com/api/v1/schedule?'+ parsing_arg
-        print('Schedule: '+parsing_arg+'. Parsing '+file+'.')
+        print('Schedule: '+parsing_arg+'. Parsing '+file+'. url: '+url)
     else:
         url = 'http://statsapi.mlb.com/api/v1/game/' + str(int(parsing_arg)) + '/' + file
-        print('Game: '+str(int(parsing_arg))+'. Parsing '+file+'.')
+        print('Game: '+str(int(parsing_arg))+'. Parsing '+file+'. url: '+url)
 
-    print(url)
 
     while True:
 
@@ -55,7 +55,8 @@ def parseJson( parsing_arg, file ):
             req = r.get(url)
             return req.json()
         except Exception as e:
-            print(f"Error parsing game {str(int(parsing_arg))}, file {file}: {e}")
+            print(f"Error parsing game {parsing_arg}, file {file}: {e}")
+            time.sleep(20)
             continue
 
 def jsonIsValid( json ):
