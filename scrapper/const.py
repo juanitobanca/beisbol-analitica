@@ -54,8 +54,8 @@ def parseJson( parsing_arg, file ):
         try:
             req = r.get(url)
             return req.json()
-        except:
-            print('Error. Parsing again.')
+        except Exception as e:
+            print(f"Error parsing game {str(int(parsing_arg))}, file {file}: {e}")
             continue
 
 def jsonIsValid( json ):
