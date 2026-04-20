@@ -195,9 +195,11 @@ SET
     HM4_LF2_PUB  = (SELECT SUM(CASE WHEN trajectory = 'bunt_popup' AND HM4 = 'LF2' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_balls_in_play_heatmaps.gamePk = p.gamePk AND game_player_balls_in_play_heatmaps.atBatIndex = p.atBatIndex),
     HM4_LF2_LDB  = (SELECT SUM(CASE WHEN trajectory = 'bunt_line_drive' AND HM4 = 'LF2' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_balls_in_play_heatmaps.gamePk = p.gamePk AND game_player_balls_in_play_heatmaps.atBatIndex = p.atBatIndex),
     -- HM8 zone counts
-    HM8_FHP      = (SELECT SUM(CASE WHEN HM4 = 'FHP' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_balls_in_play_heatmaps.gamePk = p.gamePk AND game_player_balls_in_play_heatmaps.atBatIndex = p.atBatIndex),
-    HM8_FLF      = (SELECT SUM(CASE WHEN HM4 = 'FLF' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_balls_in_play_heatmaps.gamePk = p.gamePk AND game_player_balls_in_play_heatmaps.atBatIndex = p.atBatIndex),
-    HM8_FRF      = (SELECT SUM(CASE WHEN HM4 = 'FRF' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_balls_in_play_heatmaps.gamePk = p.gamePk AND game_player_balls_in_play_heatmaps.atBatIndex = p.atBatIndex),
+    -- FIX [CRÍTICO]: las tres líneas siguientes usaban HM4 en vez de HM8,
+    --   mezclando los dos sistemas de zonas y dando conteos incorrectos.
+    HM8_FHP      = (SELECT SUM(CASE WHEN HM8 = 'FHP' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_balls_in_play_heatmaps.gamePk = p.gamePk AND game_player_balls_in_play_heatmaps.atBatIndex = p.atBatIndex),
+    HM8_FLF      = (SELECT SUM(CASE WHEN HM8 = 'FLF' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_balls_in_play_heatmaps.gamePk = p.gamePk AND game_player_balls_in_play_heatmaps.atBatIndex = p.atBatIndex),
+    HM8_FRF      = (SELECT SUM(CASE WHEN HM8 = 'FRF' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_balls_in_play_heatmaps.gamePk = p.gamePk AND game_player_balls_in_play_heatmaps.atBatIndex = p.atBatIndex),
     HM8_RF1      = (SELECT SUM(CASE WHEN HM8 = 'RF1' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_balls_in_play_heatmaps.gamePk = p.gamePk AND game_player_balls_in_play_heatmaps.atBatIndex = p.atBatIndex),
     HM8_RF2      = (SELECT SUM(CASE WHEN HM8 = 'RF2' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_balls_in_play_heatmaps.gamePk = p.gamePk AND game_player_balls_in_play_heatmaps.atBatIndex = p.atBatIndex),
     HM8_RF3      = (SELECT SUM(CASE WHEN HM8 = 'RF3' THEN 1 ELSE 0 END) FROM pitches p WHERE game_player_balls_in_play_heatmaps.gamePk = p.gamePk AND game_player_balls_in_play_heatmaps.atBatIndex = p.atBatIndex),
