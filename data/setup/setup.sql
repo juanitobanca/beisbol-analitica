@@ -65,10 +65,11 @@
 .read ./data/agregados/pitching/tablas/agg_pitching_balls_in_play_heatmaps.sql
 .read ./data/agregados/batting/tablas/agg_batting_balls_in_play_heatmaps.sql
 .read ./data/agregados/batting/tablas/agg_batting_stats.sql
+.read ./data/agregados/batting/tablas/agg_batting_split_stats.sql
 .read ./data/agregados/team_performance/tablas/agg_team_performance_stats.sql
 .read ./data/agregados/fielding/tablas/agg_fielding_stats.sql
 
--- Procs
+--Procs
 -- Stg to Base
 .read ./data/staging/procedimientos/clean_staging_tables.sql
 
@@ -96,10 +97,6 @@
 .read ./data/base/procedimientos/game_player_positions.sql
 .read ./data/base/procedimientos/major_leagues.sql
 
--- Park Factors
-.read ./data/park_factors/procedimientos/pf_heat_map_park_factors.sql
-.read ./data/park_factors/procedimientos/pf_park_factors.sql
-
 -- Run Expectancy
 .read ./data/run_expectancy/procedimientos/rem_event_run_value.sql
 .read ./data/run_expectancy/procedimientos/rem_play_by_play.sql
@@ -109,13 +106,15 @@
 .read ./data/win_expectancy/procedimientos/we_win_probability_added.sql
 .read ./data/win_expectancy/procedimientos/we_win_expectancy.sql
 
--- Aggs
+-- Aggs Pitching
 .read ./data/agregados/pitching/procedimientos/agg_pitching_stats.sql
 .read ./data/agregados/pitching/procedimientos/agg_pitching_derived_metrics.sql
 .read ./data/agregados/pitching/procedimientos/fip.sql
 .read ./data/agregados/pitching/procedimientos/agg_pitching_split_stats.sql
 .read ./data/agregados/pitching/procedimientos/agg_pitching_balls_in_play_heatmaps.sql
 .read ./data/agregados/batting/procedimientos/wraa.sql
+
+-- Aggs Batting
 .read ./data/agregados/batting/procedimientos/agg_batting_stats.sql
 .read ./data/agregados/batting/procedimientos/agg_batting_split_stats.sql
 .read ./data/agregados/batting/procedimientos/agg_batting_balls_in_play_heatmaps.sql
@@ -124,7 +123,14 @@
 .read ./data/agregados/batting/procedimientos/woba.sql
 .read ./data/agregados/batting/procedimientos/wrc.sql
 
-.read ./data/agregados/team_performance/procedimientos/agg_team_performance_derived_metrics.sql
-.read ./data/agregados/team_performance/procedimientos/agg_team_performance_stats.sql
+-- Aggs Fielding
 .read ./data/agregados/fielding/procedimientos/agg_fielding_stats.sql
 .read ./data/agregados/fielding/procedimientos/agg_fielding_derived_metrics.sql
+
+-- Aggs Team Performance
+.read ./data/agregados/team_performance/procedimientos/agg_team_performance_derived_metrics.sql
+.read ./data/agregados/team_performance/procedimientos/agg_team_performance_stats.sql
+
+-- Park Factors
+.read ./data/park_factors/procedimientos/pf_heat_map_park_factors.sql
+.read ./data/park_factors/procedimientos/pf_park_factors.sql
