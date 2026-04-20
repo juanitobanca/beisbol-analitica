@@ -314,14 +314,14 @@ SET strikesBeforePlay = COALESCE((
       FROM pitches p
       WHERE rem_play_by_play.gamePk = p.gamePk
         AND rem_play_by_play.atBatIndex = p.atBatIndex
-        AND rem_play_by_play.playIndex >= rem_play_by_play.playIndex
+        AND rem_play_by_play.playIndex >= p.playIndex
     ), 0),
     ballsBeforePlay = COALESCE((
       SELECT MAX(p.startBalls)
       FROM pitches p
       WHERE rem_play_by_play.gamePk = p.gamePk
         AND rem_play_by_play.atBatIndex = p.atBatIndex
-        AND rem_play_by_play.playIndex >= rem_play_by_play.playIndex
+        AND rem_play_by_play.playIndex >= p.playIndex
     ), 0);
 
 /* Actualizar corredor a cargo de la jugada y pitcher responsable de corredor. */
