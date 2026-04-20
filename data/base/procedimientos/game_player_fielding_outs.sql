@@ -1,7 +1,6 @@
 -- Procedure: game_player_fielding_outs
 INSERT INTO game_player_fielding_outs(gamePk, teamId, playerId, positionAbbrev, outs)
   WITH ab AS (
-    /* Obtener numero de outs en el partido */
     SELECT
       gamePk,
       halfInning,
@@ -38,19 +37,19 @@ INSERT INTO game_player_fielding_outs(gamePk, teamId, playerId, positionAbbrev, 
     FROM defensive_substitutions
   ),
   ns AS (
-    /* Obtener jugadores que no fueron sustituidos */
+    /* Jugadores que no aparecen en ds en ningún rol */
     SELECT
       gps.*
     FROM gps
-    LEFT JOIN ds
-      ON gps.gamePk = ds.gamePk
-      AND (
-        gps.playerId = ds.playerId
-        OR gps.playerId = ds.substitutingPlayerId
-      )
-    WHERE
-      ds.playerId IS NULL
-      AND ds.substitutingPlayerId IS NULL
+    WHERE NOT EXISTS (
+      SELECT 1
+      FROM ds
+      WHERE ds.gamePk = gps.gamePk
+        AND (
+          ds.playerId           = gps.playerId
+          OR ds.substitutingPlayerId = gps.playerId
+        )
+    )
   ),
   sns AS (
     /* Unir jugadores sustituidos con no sustituidos*/
@@ -81,7 +80,7 @@ INSERT INTO game_player_fielding_outs(gamePk, teamId, playerId, positionAbbrev, 
     FROM ns
   ),
   ab_sns AS (
-    /* Obtener start inning y end inning the cada sustitucion*/
+    /* Obtener start inning y end inning de cada sustitucion.*/
     SELECT
       sns.*,
       CAST(
