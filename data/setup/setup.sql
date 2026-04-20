@@ -79,7 +79,6 @@
 .read ./data/base/procedimientos/game_player_batting_stats.sql
 .read ./data/base/procedimientos/game_player_fielding_stats.sql
 .read ./data/base/procedimientos/game_player_pitching_stats.sql
-.read ./data/base/procedimientos/teams.sql
 .read ./data/base/procedimientos/game_player_positions.sql
 .read ./data/base/procedimientos/atbats.sql
 .read ./data/base/procedimientos/pitches.sql
