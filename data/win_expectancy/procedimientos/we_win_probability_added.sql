@@ -1,100 +1,702 @@
--- Procedure: we_win_probability_added
--- This procedure uses dynamic SQL (CONCAT + PREPARE/EXECUTE) with parameterized grouping fields.
--- It CANNOT be directly converted to SQLite. It must be handled at the application layer.
---
--- Original MySQL signature:
---   CREATE PROCEDURE we_win_probability_added(
---     IN p_fields VARCHAR(255),
---     IN p_grouping_fields VARCHAR(255),
---     OUT insert_stmt VARCHAR(16000)
---   )
---
--- The procedure dynamically builds and executes an INSERT...SELECT statement that:
--- 1. Computes win expectancy from we_win_expectancy table (aggregated across all seasons)
--- 2. Joins with rem_play_by_play to get play-by-play data
--- 3. Calculates offensive and defensive win probability added per play
--- 4. Groups by the fields specified in p_fields
--- 5. Inserts results into we_win_probability_added table
---
--- Called with these parameter combinations from master_procedure:
---   p_fields='majorLeagueId,seasonId,gameType2,runnerId',    p_grouping_fields='majorLeagueId,seasonId,gameType2,playerId'
---   p_fields='majorLeagueId,seasonId,gameType2,batterId',    p_grouping_fields='majorLeagueId,seasonId,gameType2,playerId'
---   p_fields='majorLeagueId,seasonId,gameType2,pitcherId',   p_grouping_fields='majorLeagueId,seasonId,gameType2,playerId'
---   p_fields='majorLeagueId,seasonId,gameType2,battingTeamId',  p_grouping_fields='majorLeagueId,seasonId,gameType2,teamId'
---   p_fields='majorLeagueId,seasonId,gameType2,pitchingTeamId', p_grouping_fields='majorLeagueId,seasonId,gameType2,teamId'
---   p_fields='majorLeagueId,seasonId,gameType2,battingTeamId,runnerId',  p_grouping_fields='majorLeagueId,seasonId,gameType2,teamId,playerId'
---   p_fields='majorLeagueId,seasonId,gameType2,battingTeamId,batterId',  p_grouping_fields='majorLeagueId,seasonId,gameType2,teamId,playerId'
---   p_fields='majorLeagueId,seasonId,gameType2,pitchingTeamId,pitcherId', p_grouping_fields='majorLeagueId,seasonId,gameType2,teamId,playerId'
---
--- Key logic:
---   - When p_fields contains 'batterId', filter WHERE runnerId IS NULL
---   - When p_fields contains 'runnerId', filter WHERE runnerId IS NOT NULL
---   - Win expectancy is computed from the home team perspective
---   - offensiveWPA = winExpectancy_after - winExpectancy_before
---   - defensiveWPA = -1 * offensiveWPA
---   - Inning > 9 is treated as inning 10 (limited extra innings data)
---   - Score is categorized as 'LOSING', 'WINNING', or 'TIE'
---   - menOnBaseAfterPlay is always 'Empty' when outsAfterPlay >= 3
---
--- Template for one specific invocation (batterId grouping):
--- INSERT INTO we_win_probability_added (
---   majorLeagueId, seasonId, gameType2, playerId,
---   offensiveWinProbabilityAdded, defensiveWinProbabilityAdded,
---   groupingId, groupingDescription, groupingFields
--- )
--- WITH we AS (
---   SELECT
---     majorLeagueId,
---     CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
---     menOnBase, outs, score,
---     SUM(wins) * 1.0 / SUM(games) AS winExpectancy
---   FROM we_win_expectancy
---   WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_INNING_GAMETYPE2_MENONBASE_OUTS'
---     AND gameType2 = 'RS'
---   GROUP BY 1, 2, 3, 4, 5
--- ),
--- pbp AS (
---   SELECT
---     majorLeagueId, seasonId, gameType2,
---     battingTeamId, pitchingTeamId, batterId, batSide,
---     runnerId, pitcherId, pitchHand,
---     menOnBaseBeforePlay, outsBeforePlay,
---     CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
---     CASE
---       WHEN battingTeamScore - pitchingTeamScore < 0 THEN 'LOSING'
---       WHEN battingTeamScore - pitchingTeamScore > 0 THEN 'WINNING'
---       ELSE 'TIE'
---     END AS scoreBeforePlay,
---     CASE WHEN outsAfterPlay >= 3 THEN 3 ELSE outsAfterPlay END AS outsAfterPlay,
---     CASE
---       WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore < 0 THEN 'LOSING'
---       WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore > 0 THEN 'WINNING'
---       ELSE 'TIE'
---     END AS scoreAfterPlay,
---     'Empty' AS menOnBaseAfterPlay
---   FROM rem_play_by_play
--- ),
--- data AS (
---   SELECT
---     pbp.majorLeagueId, pbp.seasonId, pbp.gameType2,
---     pbp.batterId,
---     a.winExpectancy - b.winExpectancy AS offensiveWinProbabilityAdded,
---     -1 * (a.winExpectancy - b.winExpectancy) AS defensiveWinProbabilityAdded
---   FROM pbp
---   INNER JOIN we b ON pbp.majorLeagueId = b.majorLeagueId
---     AND pbp.inning = b.inning AND pbp.menOnBaseBeforePlay = b.menOnBase
---     AND pbp.outsBeforePlay = b.outs AND pbp.scoreBeforePlay = b.score
---   INNER JOIN we a ON pbp.majorLeagueId = a.majorLeagueId
---     AND pbp.inning = a.inning AND pbp.menOnBaseAfterPlay = a.menOnBase
---     AND pbp.outsAfterPlay = a.outs AND pbp.scoreAfterPlay = a.score
--- )
--- SELECT
---   majorLeagueId, seasonId, gameType2, batterId,
---   SUM(offensiveWinProbabilityAdded),
---   SUM(defensiveWinProbabilityAdded),
---   NULL AS groupingId,  -- compute in application layer
---   'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID' AS groupingDescription,
---   'MAJORLEAGUEID_SEASONID_GAMETYPE2_BATTERID' AS groupingFields
--- FROM data
--- WHERE runnerId IS NULL
--- GROUP BY majorLeagueId, seasonId, gameType2, batterId;
+-- ============================================================
+-- we_win_probability_added cube — SQLite3 static equivalent
+-- Generated by we_win_probability_added_sqlite.py
+-- Run with:  sqlite3 your_base.db < we_win_probability_added.sql
+-- ============================================================
+
+BEGIN;
+
+-- ── MAJORLEAGUEID_SEASONID_GAMETYPE2_RUNNERID → MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID ──────────────────────────────────────────────
+INSERT INTO we_win_probability_added (
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        playerId,
+        offensiveWinProbabilityAdded,
+        defensiveWinProbabilityAdded,
+        groupingId,
+        groupingDescription,
+        groupingFields
+)
+WITH we AS (
+    -- Win expectancy aggregated across all seasons for the given game type
+    SELECT
+        majorLeagueId,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        menOnBase, outs, score,
+        SUM(wins) * 1.0 / SUM(games) AS winExpectancy
+    FROM we_win_expectancy
+    WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_INNING_GAMETYPE2_MENONBASE_OUTS'
+      AND gameType2 = 'RS'
+    GROUP BY majorLeagueId, inning, menOnBase, outs, score
+),
+pbp AS (
+    SELECT
+        majorLeagueId, seasonId, gameType2,
+        battingTeamId, pitchingTeamId, batterId, batSide,
+        runnerId, pitcherId, pitchHand,
+        menOnBaseBeforePlay,
+        outsBeforePlay,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        CASE
+            WHEN battingTeamScore - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN battingTeamScore - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreBeforePlay,
+        CASE WHEN outsAfterPlay >= 3 THEN 3 ELSE outsAfterPlay END AS outsAfterPlay,
+        CASE
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreAfterPlay,
+        -- menOnBaseAfterPlay is always 'Empty' when outsAfterPlay >= 3
+        'Empty' AS menOnBaseAfterPlay
+    FROM rem_play_by_play
+),
+data AS (
+    SELECT
+        pbp.majorLeagueId,
+        pbp.seasonId,
+        pbp.gameType2,
+        pbp.runnerId AS playerId,
+        a.winExpectancy - b.winExpectancy              AS offensiveWinProbabilityAdded,
+        -1 * (a.winExpectancy - b.winExpectancy)       AS defensiveWinProbabilityAdded
+    FROM pbp
+    -- Join win expectancy for the state BEFORE the play
+    INNER JOIN we b
+        ON  pbp.majorLeagueId       = b.majorLeagueId
+        AND pbp.inning               = b.inning
+        AND pbp.menOnBaseBeforePlay  = b.menOnBase
+        AND pbp.outsBeforePlay       = b.outs
+        AND pbp.scoreBeforePlay      = b.score
+    -- Join win expectancy for the state AFTER the play
+    INNER JOIN we a
+        ON  pbp.majorLeagueId       = a.majorLeagueId
+        AND pbp.inning               = a.inning
+        AND pbp.menOnBaseAfterPlay   = a.menOnBase
+        AND pbp.outsAfterPlay        = a.outs
+        AND pbp.scoreAfterPlay       = a.score
+WHERE runnerId IS NOT NULL
+)
+SELECT
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        playerId,
+        SUM(offensiveWinProbabilityAdded) AS offensiveWinProbabilityAdded,
+        SUM(defensiveWinProbabilityAdded) AS defensiveWinProbabilityAdded,
+        2758182884        AS groupingId,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'    AS groupingDescription,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_RUNNERID'  AS groupingFields
+FROM data
+GROUP BY majorLeagueId, seasonId, gameType2, playerId;
+
+
+-- ── MAJORLEAGUEID_SEASONID_GAMETYPE2_BATTERID → MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID ──────────────────────────────────────────────
+INSERT INTO we_win_probability_added (
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        playerId,
+        offensiveWinProbabilityAdded,
+        defensiveWinProbabilityAdded,
+        groupingId,
+        groupingDescription,
+        groupingFields
+)
+WITH we AS (
+    -- Win expectancy aggregated across all seasons for the given game type
+    SELECT
+        majorLeagueId,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        menOnBase, outs, score,
+        SUM(wins) * 1.0 / SUM(games) AS winExpectancy
+    FROM we_win_expectancy
+    WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_INNING_GAMETYPE2_MENONBASE_OUTS'
+      AND gameType2 = 'RS'
+    GROUP BY majorLeagueId, inning, menOnBase, outs, score
+),
+pbp AS (
+    SELECT
+        majorLeagueId, seasonId, gameType2,
+        battingTeamId, pitchingTeamId, batterId, batSide,
+        runnerId, pitcherId, pitchHand,
+        menOnBaseBeforePlay,
+        outsBeforePlay,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        CASE
+            WHEN battingTeamScore - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN battingTeamScore - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreBeforePlay,
+        CASE WHEN outsAfterPlay >= 3 THEN 3 ELSE outsAfterPlay END AS outsAfterPlay,
+        CASE
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreAfterPlay,
+        -- menOnBaseAfterPlay is always 'Empty' when outsAfterPlay >= 3
+        'Empty' AS menOnBaseAfterPlay
+    FROM rem_play_by_play
+),
+data AS (
+    SELECT
+        pbp.majorLeagueId,
+        pbp.seasonId,
+        pbp.gameType2,
+        pbp.batterId AS playerId,
+        a.winExpectancy - b.winExpectancy              AS offensiveWinProbabilityAdded,
+        -1 * (a.winExpectancy - b.winExpectancy)       AS defensiveWinProbabilityAdded
+    FROM pbp
+    -- Join win expectancy for the state BEFORE the play
+    INNER JOIN we b
+        ON  pbp.majorLeagueId       = b.majorLeagueId
+        AND pbp.inning               = b.inning
+        AND pbp.menOnBaseBeforePlay  = b.menOnBase
+        AND pbp.outsBeforePlay       = b.outs
+        AND pbp.scoreBeforePlay      = b.score
+    -- Join win expectancy for the state AFTER the play
+    INNER JOIN we a
+        ON  pbp.majorLeagueId       = a.majorLeagueId
+        AND pbp.inning               = a.inning
+        AND pbp.menOnBaseAfterPlay   = a.menOnBase
+        AND pbp.outsAfterPlay        = a.outs
+        AND pbp.scoreAfterPlay       = a.score
+WHERE runnerId IS NULL
+)
+SELECT
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        playerId,
+        SUM(offensiveWinProbabilityAdded) AS offensiveWinProbabilityAdded,
+        SUM(defensiveWinProbabilityAdded) AS defensiveWinProbabilityAdded,
+        2758182884        AS groupingId,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'    AS groupingDescription,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_BATTERID'  AS groupingFields
+FROM data
+GROUP BY majorLeagueId, seasonId, gameType2, playerId;
+
+
+-- ── MAJORLEAGUEID_SEASONID_GAMETYPE2_PITCHERID → MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID ──────────────────────────────────────────────
+INSERT INTO we_win_probability_added (
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        playerId,
+        offensiveWinProbabilityAdded,
+        defensiveWinProbabilityAdded,
+        groupingId,
+        groupingDescription,
+        groupingFields
+)
+WITH we AS (
+    -- Win expectancy aggregated across all seasons for the given game type
+    SELECT
+        majorLeagueId,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        menOnBase, outs, score,
+        SUM(wins) * 1.0 / SUM(games) AS winExpectancy
+    FROM we_win_expectancy
+    WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_INNING_GAMETYPE2_MENONBASE_OUTS'
+      AND gameType2 = 'RS'
+    GROUP BY majorLeagueId, inning, menOnBase, outs, score
+),
+pbp AS (
+    SELECT
+        majorLeagueId, seasonId, gameType2,
+        battingTeamId, pitchingTeamId, batterId, batSide,
+        runnerId, pitcherId, pitchHand,
+        menOnBaseBeforePlay,
+        outsBeforePlay,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        CASE
+            WHEN battingTeamScore - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN battingTeamScore - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreBeforePlay,
+        CASE WHEN outsAfterPlay >= 3 THEN 3 ELSE outsAfterPlay END AS outsAfterPlay,
+        CASE
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreAfterPlay,
+        -- menOnBaseAfterPlay is always 'Empty' when outsAfterPlay >= 3
+        'Empty' AS menOnBaseAfterPlay
+    FROM rem_play_by_play
+),
+data AS (
+    SELECT
+        pbp.majorLeagueId,
+        pbp.seasonId,
+        pbp.gameType2,
+        pbp.pitcherId AS playerId,
+        a.winExpectancy - b.winExpectancy              AS offensiveWinProbabilityAdded,
+        -1 * (a.winExpectancy - b.winExpectancy)       AS defensiveWinProbabilityAdded
+    FROM pbp
+    -- Join win expectancy for the state BEFORE the play
+    INNER JOIN we b
+        ON  pbp.majorLeagueId       = b.majorLeagueId
+        AND pbp.inning               = b.inning
+        AND pbp.menOnBaseBeforePlay  = b.menOnBase
+        AND pbp.outsBeforePlay       = b.outs
+        AND pbp.scoreBeforePlay      = b.score
+    -- Join win expectancy for the state AFTER the play
+    INNER JOIN we a
+        ON  pbp.majorLeagueId       = a.majorLeagueId
+        AND pbp.inning               = a.inning
+        AND pbp.menOnBaseAfterPlay   = a.menOnBase
+        AND pbp.outsAfterPlay        = a.outs
+        AND pbp.scoreAfterPlay       = a.score
+)
+SELECT
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        playerId,
+        SUM(offensiveWinProbabilityAdded) AS offensiveWinProbabilityAdded,
+        SUM(defensiveWinProbabilityAdded) AS defensiveWinProbabilityAdded,
+        2758182884        AS groupingId,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_PLAYERID'    AS groupingDescription,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_PITCHERID'  AS groupingFields
+FROM data
+GROUP BY majorLeagueId, seasonId, gameType2, playerId;
+
+
+-- ── MAJORLEAGUEID_SEASONID_GAMETYPE2_BATTINGTEAMID → MAJORLEAGUEID_SEASONID_GAMETYPE2_TEAMID ──────────────────────────────────────────────
+INSERT INTO we_win_probability_added (
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        teamId,
+        offensiveWinProbabilityAdded,
+        defensiveWinProbabilityAdded,
+        groupingId,
+        groupingDescription,
+        groupingFields
+)
+WITH we AS (
+    -- Win expectancy aggregated across all seasons for the given game type
+    SELECT
+        majorLeagueId,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        menOnBase, outs, score,
+        SUM(wins) * 1.0 / SUM(games) AS winExpectancy
+    FROM we_win_expectancy
+    WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_INNING_GAMETYPE2_MENONBASE_OUTS'
+      AND gameType2 = 'RS'
+    GROUP BY majorLeagueId, inning, menOnBase, outs, score
+),
+pbp AS (
+    SELECT
+        majorLeagueId, seasonId, gameType2,
+        battingTeamId, pitchingTeamId, batterId, batSide,
+        runnerId, pitcherId, pitchHand,
+        menOnBaseBeforePlay,
+        outsBeforePlay,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        CASE
+            WHEN battingTeamScore - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN battingTeamScore - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreBeforePlay,
+        CASE WHEN outsAfterPlay >= 3 THEN 3 ELSE outsAfterPlay END AS outsAfterPlay,
+        CASE
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreAfterPlay,
+        -- menOnBaseAfterPlay is always 'Empty' when outsAfterPlay >= 3
+        'Empty' AS menOnBaseAfterPlay
+    FROM rem_play_by_play
+),
+data AS (
+    SELECT
+        pbp.majorLeagueId,
+        pbp.seasonId,
+        pbp.gameType2,
+        pbp.battingTeamId AS teamId,
+        a.winExpectancy - b.winExpectancy              AS offensiveWinProbabilityAdded,
+        -1 * (a.winExpectancy - b.winExpectancy)       AS defensiveWinProbabilityAdded
+    FROM pbp
+    -- Join win expectancy for the state BEFORE the play
+    INNER JOIN we b
+        ON  pbp.majorLeagueId       = b.majorLeagueId
+        AND pbp.inning               = b.inning
+        AND pbp.menOnBaseBeforePlay  = b.menOnBase
+        AND pbp.outsBeforePlay       = b.outs
+        AND pbp.scoreBeforePlay      = b.score
+    -- Join win expectancy for the state AFTER the play
+    INNER JOIN we a
+        ON  pbp.majorLeagueId       = a.majorLeagueId
+        AND pbp.inning               = a.inning
+        AND pbp.menOnBaseAfterPlay   = a.menOnBase
+        AND pbp.outsAfterPlay        = a.outs
+        AND pbp.scoreAfterPlay       = a.score
+)
+SELECT
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        teamId,
+        SUM(offensiveWinProbabilityAdded) AS offensiveWinProbabilityAdded,
+        SUM(defensiveWinProbabilityAdded) AS defensiveWinProbabilityAdded,
+        3215925615        AS groupingId,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_TEAMID'    AS groupingDescription,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_BATTINGTEAMID'  AS groupingFields
+FROM data
+GROUP BY majorLeagueId, seasonId, gameType2, teamId;
+
+
+-- ── MAJORLEAGUEID_SEASONID_GAMETYPE2_PITCHINGTEAMID → MAJORLEAGUEID_SEASONID_GAMETYPE2_TEAMID ──────────────────────────────────────────────
+INSERT INTO we_win_probability_added (
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        teamId,
+        offensiveWinProbabilityAdded,
+        defensiveWinProbabilityAdded,
+        groupingId,
+        groupingDescription,
+        groupingFields
+)
+WITH we AS (
+    -- Win expectancy aggregated across all seasons for the given game type
+    SELECT
+        majorLeagueId,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        menOnBase, outs, score,
+        SUM(wins) * 1.0 / SUM(games) AS winExpectancy
+    FROM we_win_expectancy
+    WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_INNING_GAMETYPE2_MENONBASE_OUTS'
+      AND gameType2 = 'RS'
+    GROUP BY majorLeagueId, inning, menOnBase, outs, score
+),
+pbp AS (
+    SELECT
+        majorLeagueId, seasonId, gameType2,
+        battingTeamId, pitchingTeamId, batterId, batSide,
+        runnerId, pitcherId, pitchHand,
+        menOnBaseBeforePlay,
+        outsBeforePlay,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        CASE
+            WHEN battingTeamScore - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN battingTeamScore - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreBeforePlay,
+        CASE WHEN outsAfterPlay >= 3 THEN 3 ELSE outsAfterPlay END AS outsAfterPlay,
+        CASE
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreAfterPlay,
+        -- menOnBaseAfterPlay is always 'Empty' when outsAfterPlay >= 3
+        'Empty' AS menOnBaseAfterPlay
+    FROM rem_play_by_play
+),
+data AS (
+    SELECT
+        pbp.majorLeagueId,
+        pbp.seasonId,
+        pbp.gameType2,
+        pbp.pitchingTeamId AS teamId,
+        a.winExpectancy - b.winExpectancy              AS offensiveWinProbabilityAdded,
+        -1 * (a.winExpectancy - b.winExpectancy)       AS defensiveWinProbabilityAdded
+    FROM pbp
+    -- Join win expectancy for the state BEFORE the play
+    INNER JOIN we b
+        ON  pbp.majorLeagueId       = b.majorLeagueId
+        AND pbp.inning               = b.inning
+        AND pbp.menOnBaseBeforePlay  = b.menOnBase
+        AND pbp.outsBeforePlay       = b.outs
+        AND pbp.scoreBeforePlay      = b.score
+    -- Join win expectancy for the state AFTER the play
+    INNER JOIN we a
+        ON  pbp.majorLeagueId       = a.majorLeagueId
+        AND pbp.inning               = a.inning
+        AND pbp.menOnBaseAfterPlay   = a.menOnBase
+        AND pbp.outsAfterPlay        = a.outs
+        AND pbp.scoreAfterPlay       = a.score
+)
+SELECT
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        teamId,
+        SUM(offensiveWinProbabilityAdded) AS offensiveWinProbabilityAdded,
+        SUM(defensiveWinProbabilityAdded) AS defensiveWinProbabilityAdded,
+        3215925615        AS groupingId,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_TEAMID'    AS groupingDescription,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_PITCHINGTEAMID'  AS groupingFields
+FROM data
+GROUP BY majorLeagueId, seasonId, gameType2, teamId;
+
+
+-- ── MAJORLEAGUEID_SEASONID_GAMETYPE2_BATTINGTEAMID_RUNNERID → MAJORLEAGUEID_SEASONID_GAMETYPE2_TEAMID_PLAYERID ──────────────────────────────────────────────
+INSERT INTO we_win_probability_added (
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        teamId,
+        playerId,
+        offensiveWinProbabilityAdded,
+        defensiveWinProbabilityAdded,
+        groupingId,
+        groupingDescription,
+        groupingFields
+)
+WITH we AS (
+    -- Win expectancy aggregated across all seasons for the given game type
+    SELECT
+        majorLeagueId,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        menOnBase, outs, score,
+        SUM(wins) * 1.0 / SUM(games) AS winExpectancy
+    FROM we_win_expectancy
+    WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_INNING_GAMETYPE2_MENONBASE_OUTS'
+      AND gameType2 = 'RS'
+    GROUP BY majorLeagueId, inning, menOnBase, outs, score
+),
+pbp AS (
+    SELECT
+        majorLeagueId, seasonId, gameType2,
+        battingTeamId, pitchingTeamId, batterId, batSide,
+        runnerId, pitcherId, pitchHand,
+        menOnBaseBeforePlay,
+        outsBeforePlay,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        CASE
+            WHEN battingTeamScore - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN battingTeamScore - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreBeforePlay,
+        CASE WHEN outsAfterPlay >= 3 THEN 3 ELSE outsAfterPlay END AS outsAfterPlay,
+        CASE
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreAfterPlay,
+        -- menOnBaseAfterPlay is always 'Empty' when outsAfterPlay >= 3
+        'Empty' AS menOnBaseAfterPlay
+    FROM rem_play_by_play
+),
+data AS (
+    SELECT
+        pbp.majorLeagueId,
+        pbp.seasonId,
+        pbp.gameType2,
+        pbp.battingTeamId AS teamId,
+        pbp.runnerId AS playerId,
+        a.winExpectancy - b.winExpectancy              AS offensiveWinProbabilityAdded,
+        -1 * (a.winExpectancy - b.winExpectancy)       AS defensiveWinProbabilityAdded
+    FROM pbp
+    -- Join win expectancy for the state BEFORE the play
+    INNER JOIN we b
+        ON  pbp.majorLeagueId       = b.majorLeagueId
+        AND pbp.inning               = b.inning
+        AND pbp.menOnBaseBeforePlay  = b.menOnBase
+        AND pbp.outsBeforePlay       = b.outs
+        AND pbp.scoreBeforePlay      = b.score
+    -- Join win expectancy for the state AFTER the play
+    INNER JOIN we a
+        ON  pbp.majorLeagueId       = a.majorLeagueId
+        AND pbp.inning               = a.inning
+        AND pbp.menOnBaseAfterPlay   = a.menOnBase
+        AND pbp.outsAfterPlay        = a.outs
+        AND pbp.scoreAfterPlay       = a.score
+WHERE runnerId IS NOT NULL
+)
+SELECT
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        teamId,
+        playerId,
+        SUM(offensiveWinProbabilityAdded) AS offensiveWinProbabilityAdded,
+        SUM(defensiveWinProbabilityAdded) AS defensiveWinProbabilityAdded,
+        2723138969        AS groupingId,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_TEAMID_PLAYERID'    AS groupingDescription,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_BATTINGTEAMID_RUNNERID'  AS groupingFields
+FROM data
+GROUP BY majorLeagueId, seasonId, gameType2, teamId, playerId;
+
+
+-- ── MAJORLEAGUEID_SEASONID_GAMETYPE2_BATTINGTEAMID_BATTERID → MAJORLEAGUEID_SEASONID_GAMETYPE2_TEAMID_PLAYERID ──────────────────────────────────────────────
+INSERT INTO we_win_probability_added (
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        teamId,
+        playerId,
+        offensiveWinProbabilityAdded,
+        defensiveWinProbabilityAdded,
+        groupingId,
+        groupingDescription,
+        groupingFields
+)
+WITH we AS (
+    -- Win expectancy aggregated across all seasons for the given game type
+    SELECT
+        majorLeagueId,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        menOnBase, outs, score,
+        SUM(wins) * 1.0 / SUM(games) AS winExpectancy
+    FROM we_win_expectancy
+    WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_INNING_GAMETYPE2_MENONBASE_OUTS'
+      AND gameType2 = 'RS'
+    GROUP BY majorLeagueId, inning, menOnBase, outs, score
+),
+pbp AS (
+    SELECT
+        majorLeagueId, seasonId, gameType2,
+        battingTeamId, pitchingTeamId, batterId, batSide,
+        runnerId, pitcherId, pitchHand,
+        menOnBaseBeforePlay,
+        outsBeforePlay,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        CASE
+            WHEN battingTeamScore - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN battingTeamScore - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreBeforePlay,
+        CASE WHEN outsAfterPlay >= 3 THEN 3 ELSE outsAfterPlay END AS outsAfterPlay,
+        CASE
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreAfterPlay,
+        -- menOnBaseAfterPlay is always 'Empty' when outsAfterPlay >= 3
+        'Empty' AS menOnBaseAfterPlay
+    FROM rem_play_by_play
+),
+data AS (
+    SELECT
+        pbp.majorLeagueId,
+        pbp.seasonId,
+        pbp.gameType2,
+        pbp.battingTeamId AS teamId,
+        pbp.batterId AS playerId,
+        a.winExpectancy - b.winExpectancy              AS offensiveWinProbabilityAdded,
+        -1 * (a.winExpectancy - b.winExpectancy)       AS defensiveWinProbabilityAdded
+    FROM pbp
+    -- Join win expectancy for the state BEFORE the play
+    INNER JOIN we b
+        ON  pbp.majorLeagueId       = b.majorLeagueId
+        AND pbp.inning               = b.inning
+        AND pbp.menOnBaseBeforePlay  = b.menOnBase
+        AND pbp.outsBeforePlay       = b.outs
+        AND pbp.scoreBeforePlay      = b.score
+    -- Join win expectancy for the state AFTER the play
+    INNER JOIN we a
+        ON  pbp.majorLeagueId       = a.majorLeagueId
+        AND pbp.inning               = a.inning
+        AND pbp.menOnBaseAfterPlay   = a.menOnBase
+        AND pbp.outsAfterPlay        = a.outs
+        AND pbp.scoreAfterPlay       = a.score
+WHERE runnerId IS NULL
+)
+SELECT
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        teamId,
+        playerId,
+        SUM(offensiveWinProbabilityAdded) AS offensiveWinProbabilityAdded,
+        SUM(defensiveWinProbabilityAdded) AS defensiveWinProbabilityAdded,
+        2723138969        AS groupingId,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_TEAMID_PLAYERID'    AS groupingDescription,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_BATTINGTEAMID_BATTERID'  AS groupingFields
+FROM data
+GROUP BY majorLeagueId, seasonId, gameType2, teamId, playerId;
+
+
+-- ── MAJORLEAGUEID_SEASONID_GAMETYPE2_PITCHINGTEAMID_PITCHERID → MAJORLEAGUEID_SEASONID_GAMETYPE2_TEAMID_PLAYERID ──────────────────────────────────────────────
+INSERT INTO we_win_probability_added (
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        teamId,
+        playerId,
+        offensiveWinProbabilityAdded,
+        defensiveWinProbabilityAdded,
+        groupingId,
+        groupingDescription,
+        groupingFields
+)
+WITH we AS (
+    -- Win expectancy aggregated across all seasons for the given game type
+    SELECT
+        majorLeagueId,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        menOnBase, outs, score,
+        SUM(wins) * 1.0 / SUM(games) AS winExpectancy
+    FROM we_win_expectancy
+    WHERE groupingDescription = 'MAJORLEAGUEID_SEASONID_INNING_GAMETYPE2_MENONBASE_OUTS'
+      AND gameType2 = 'RS'
+    GROUP BY majorLeagueId, inning, menOnBase, outs, score
+),
+pbp AS (
+    SELECT
+        majorLeagueId, seasonId, gameType2,
+        battingTeamId, pitchingTeamId, batterId, batSide,
+        runnerId, pitcherId, pitchHand,
+        menOnBaseBeforePlay,
+        outsBeforePlay,
+        CASE WHEN inning > 9 THEN 10 ELSE inning END AS inning,
+        CASE
+            WHEN battingTeamScore - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN battingTeamScore - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreBeforePlay,
+        CASE WHEN outsAfterPlay >= 3 THEN 3 ELSE outsAfterPlay END AS outsAfterPlay,
+        CASE
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore < 0 THEN 'LOSING'
+            WHEN (battingTeamScore + runsScoredInPlay) - pitchingTeamScore > 0 THEN 'WINNING'
+            ELSE 'TIE'
+        END AS scoreAfterPlay,
+        -- menOnBaseAfterPlay is always 'Empty' when outsAfterPlay >= 3
+        'Empty' AS menOnBaseAfterPlay
+    FROM rem_play_by_play
+),
+data AS (
+    SELECT
+        pbp.majorLeagueId,
+        pbp.seasonId,
+        pbp.gameType2,
+        pbp.pitchingTeamId AS teamId,
+        pbp.pitcherId AS playerId,
+        a.winExpectancy - b.winExpectancy              AS offensiveWinProbabilityAdded,
+        -1 * (a.winExpectancy - b.winExpectancy)       AS defensiveWinProbabilityAdded
+    FROM pbp
+    -- Join win expectancy for the state BEFORE the play
+    INNER JOIN we b
+        ON  pbp.majorLeagueId       = b.majorLeagueId
+        AND pbp.inning               = b.inning
+        AND pbp.menOnBaseBeforePlay  = b.menOnBase
+        AND pbp.outsBeforePlay       = b.outs
+        AND pbp.scoreBeforePlay      = b.score
+    -- Join win expectancy for the state AFTER the play
+    INNER JOIN we a
+        ON  pbp.majorLeagueId       = a.majorLeagueId
+        AND pbp.inning               = a.inning
+        AND pbp.menOnBaseAfterPlay   = a.menOnBase
+        AND pbp.outsAfterPlay        = a.outs
+        AND pbp.scoreAfterPlay       = a.score
+)
+SELECT
+        majorLeagueId,
+        seasonId,
+        gameType2,
+        teamId,
+        playerId,
+        SUM(offensiveWinProbabilityAdded) AS offensiveWinProbabilityAdded,
+        SUM(defensiveWinProbabilityAdded) AS defensiveWinProbabilityAdded,
+        2723138969        AS groupingId,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_TEAMID_PLAYERID'    AS groupingDescription,
+        'MAJORLEAGUEID_SEASONID_GAMETYPE2_PITCHINGTEAMID_PITCHERID'  AS groupingFields
+FROM data
+GROUP BY majorLeagueId, seasonId, gameType2, teamId, playerId;
+
+
+COMMIT;
