@@ -62,6 +62,7 @@
 
 -- Aggs
 .read ./data/agregados/pitching/tablas/agg_pitching_stats.sql
+.read ./data/agregados/pitching/tablas/agg_pitching_split_stats.sql
 .read ./data/agregados/pitching/tablas/agg_pitching_balls_in_play_heatmaps.sql
 .read ./data/agregados/batting/tablas/agg_batting_balls_in_play_heatmaps.sql
 .read ./data/agregados/batting/tablas/agg_batting_stats.sql
