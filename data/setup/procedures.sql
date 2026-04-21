@@ -176,11 +176,3 @@
 -- ========================
 .print "Running: update_table_attributes.sql"
 .read ./data/commons/procedimientos/update_table_attributes.sql
-
--- ========================
--- Clean Staging Tables
--- ========================
-.print "Running: clean_staging_tables.sql"
-.read ./data/staging/procedimientos/clean_staging_tables.sql
-
-.print "Done! All scripts completed."
