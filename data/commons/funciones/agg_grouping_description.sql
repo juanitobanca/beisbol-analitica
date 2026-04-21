@@ -1,6 +1,0 @@
--- Function: agg_grouping_description (MySQL UDF - not supported in SQLite)
--- Original logic: Takes a comma-separated grouping_fields string and returns
---   UPPER(REPLACE(p_grouping_fields, ',', '_'))
---   i.e., converts 'majorLeagueId,seasonId' to 'MAJORLEAGUEID_SEASONID'
--- This function was used by dynamic SQL procedures.
--- In SQLite, this logic must be implemented in the application layer.

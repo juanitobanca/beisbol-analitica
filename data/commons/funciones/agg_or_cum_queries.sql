@@ -1,8 +1,0 @@
--- Function: agg_or_cum_queries (MySQL UDF - not supported in SQLite)
--- Original logic: Takes an aggregation_clause, p_grouping_fields, and p_aggregation_type.
---   If p_aggregation_type = 'CUMULATIVE', returns:
---     aggregation_clause || ' OVER ( PARTITION BY ' || p_grouping_fields || ' ORDER BY gameDate )'
---   Otherwise (AGGREGATED), returns the aggregation_clause unchanged.
---   This converts a plain aggregate expression into a window function for cumulative stats.
--- This function was used by dynamic SQL procedures.
--- In SQLite, this logic must be implemented in the application layer.
