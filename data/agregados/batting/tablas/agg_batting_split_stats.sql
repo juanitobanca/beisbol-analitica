@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS agg_batting_split_stats;
+
 CREATE TABLE IF NOT EXISTS agg_batting_split_stats (
     -- Dimensions
     majorLeagueId       INTEGER,
