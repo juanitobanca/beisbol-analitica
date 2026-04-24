@@ -1,11 +1,14 @@
-# Ignore local virtualenv files
-.venv/
-# Ignore python runtime files
-*__pycache__
-*.DS_STORE
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-# Ignore any local files
-my_local.db
-scrapper/lookups/api
-scrapper/lookups/lists
-scrapper/lookups/mappings
+# Archivos de base de datos
+*.db
+
+# Entornos virtuales
+venv/
+.env/
+
+# Archivos de sistema
+.DS_Store
