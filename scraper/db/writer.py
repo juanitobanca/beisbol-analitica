@@ -77,7 +77,7 @@ def insert_dataset(
     data: Dataset,
     engine: Engine,
     table_name: str,
-    max_retries: int = 1,
+    max_retries: int = 10,
 ) -> None:
     """Convenience wrapper: validate alignment, convert to DataFrame and insert."""
     _validate_alignment(data, table_name)
