@@ -1,46 +1,18 @@
 """Field schema definitions for all MLB Stats API scrapers.
 
-Utilities and infrastructure that previously lived here have been split into
-focused modules:
+This module owns *only* field/flag name constants — the vocabulary of the
+MLB Stats API as used by the scrapers.  All infrastructure (HTTP, datasets,
+endpoints, mappings, table names) lives in its own focused module:
 
-    http_client  — HTTP session and retry logic
-    endpoints    — URL construction per endpoint
     dataset      — Dataset type, create_dataset(), json_is_valid()
+    endpoints    — URL construction per endpoint
+    http_client  — HTTP session and retry logic
     mappings     — SPORT_ID / LEAGUE_ID lookup tables
     table_names  — STG_* staging table name constants
-
-The imports below keep every existing ``import const as c`` call working
-without modification.  Once the rest of the codebase is updated to import
-from the focused modules directly, these re-exports can be removed.
 """
 
 # ---------------------------------------------------------------------------
-# Compatibility re-exports — remove once callers are updated
-# ---------------------------------------------------------------------------
-
-from dataset import Dataset, create_dataset, json_is_valid  # noqa: F401
-from endpoints import (  # noqa: F401
-    game_url,
-    people_url,
-    people_batch_url,
-    schedule_url,
-    transactions_url,
-)
-from http_client import http_client  # noqa: F401
-from mappings import SPORT_ID, LEAGUE_ID  # noqa: F401
-from table_names import (  # noqa: F401
-    STG_TRANSACTIONS, STG_GAME_CONTEXT,
-    STG_BOX_TEAM_BATTING, STG_BOX_TEAM_PITCHING, STG_BOX_TEAM_FIELDING,
-    STG_BOX_PLAYER_BATTING, STG_BOX_PLAYER_PITCHING, STG_BOX_PLAYER_FIELDING,
-    STG_PLAYERS, STG_OFFICIALS,
-    STG_BOX_TEAM_BATTING_ORDER, STG_BOX_TEAM, STG_BOX_PLAYER_GAME_POSITIONS,
-    STG_BOX_PLAYER_GAME_INFO, STG_BOX_INFO, STG_BOX_OFFICIALS,
-    STG_PLAY_ATBAT, STG_PLAY_RUNNER, STG_PLAY_CREDIT,
-    STG_PLAY_PITCH, STG_PLAY_ACTION, STG_PLAY_PICKOFF,
-)
-
-# ---------------------------------------------------------------------------
-# Endpoint string identifiers (used as keys inside game_url())
+# Endpoint string identifiers (used as keys inside endpoints.game_url())
 # ---------------------------------------------------------------------------
 
 ENDPOINT_PLAY_BY_PLAY = "playByPlay"
@@ -50,64 +22,6 @@ ENDPOINT_PEOPLE = "people"
 ENDPOINT_PEOPLE_BATCH = "people_batch"
 ENDPOINT_SCHEDULE = "schedule"
 ENDPOINT_TRANSACTIONS = "transactions"
-
-# ---------------------------------------------------------------------------
-# parse_json() — kept here during migration so callers don't break.
-# New code should build URLs via endpoints.py and fetch via http_client.py.
-# ---------------------------------------------------------------------------
-
-import logging  # noqa: E402  (after re-exports intentionally)
-
-logger = logging.getLogger(__name__)
-
-
-def parse_json(parsing_arg: str | int, endpoint: str) -> dict:
-    """Fetch JSON from the MLB Stats API.
-
-    .. deprecated::
-        Build URLs with :mod:`endpoints` and fetch with :mod:`http_client`
-        directly.  This wrapper exists only for backward compatibility.
-    """
-    from endpoints import (
-        game_url, people_url, people_batch_url, schedule_url, transactions_url,
-    )
-    from http_client import http_client as _client
-
-    if endpoint == ENDPOINT_PEOPLE_BATCH:
-        url = people_batch_url([int(i) for i in str(parsing_arg).split(",")])
-    elif endpoint == ENDPOINT_PEOPLE:
-        url = people_url(int(parsing_arg))
-    elif endpoint == ENDPOINT_TRANSACTIONS:
-        url = f"from_legacy:{parsing_arg}"  # transactions_url requires structured args
-        # Fall back to raw construction to avoid breaking the Transactions scraper
-        from config import settings
-        url = f"{settings.base_url}/transactions?{parsing_arg}"
-    elif endpoint == ENDPOINT_SCHEDULE:
-        url = schedule_url(str(parsing_arg))
-    else:
-        url = game_url(int(parsing_arg), endpoint)
-
-    return _client.get_json(url)
-
-
-# ---------------------------------------------------------------------------
-# default_missing_value — kept for backward compatibility only.
-# Use dict.get(key, default) directly in new code.
-# ---------------------------------------------------------------------------
-
-from typing import Any  # noqa: E402
-
-
-def default_missing_value(d: dict | None, k: str, v: Any = None) -> Any:
-    """Return ``d.get(k)`` or *v* if *d* is falsy.
-
-    .. deprecated::
-        Use ``d.get(k)`` or ``d.get(k, default)`` directly.
-    """
-    if not d:
-        return v
-    return d.get(k)
-
 
 # ---------------------------------------------------------------------------
 # Context metrics field definitions

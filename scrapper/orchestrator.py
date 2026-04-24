@@ -15,8 +15,22 @@ from base_scraper import Dataset
 from boxscore import Boxscore
 from context_metrics import ContextMetrics
 from config import settings
+from dataset import Dataset
+from endpoints import schedule_url
+from http_client import http_client
+from mappings import LEAGUE_ID, SPORT_ID
 from people import People
 from play_by_play import PlayByPlay
+from table_names import (
+    STG_TRANSACTIONS, STG_GAME_CONTEXT,
+    STG_BOX_TEAM_BATTING, STG_BOX_TEAM_PITCHING, STG_BOX_TEAM_FIELDING,
+    STG_BOX_PLAYER_BATTING, STG_BOX_PLAYER_PITCHING, STG_BOX_PLAYER_FIELDING,
+    STG_PLAYERS, STG_OFFICIALS,
+    STG_BOX_TEAM_BATTING_ORDER, STG_BOX_TEAM, STG_BOX_PLAYER_GAME_POSITIONS,
+    STG_BOX_PLAYER_GAME_INFO, STG_BOX_INFO, STG_BOX_OFFICIALS,
+    STG_PLAY_ATBAT, STG_PLAY_RUNNER, STG_PLAY_CREDIT,
+    STG_PLAY_PITCH, STG_PLAY_ACTION, STG_PLAY_PICKOFF,
+)
 from transactions import Transactions
 
 logger = logging.getLogger(__name__)
@@ -65,7 +79,7 @@ def get_schedule(
     else:
         parsing_arg = f"sportId={sport_id}{league_param}"
 
-    schedule = c.parse_json(parsing_arg, "schedule")
+    schedule = http_client.get_json(schedule_url(parsing_arg))
 
     for d in schedule["dates"]:
         for g in d["games"]:
@@ -182,39 +196,39 @@ def scrape_and_insert_data(
         seen_ppl |= chunk_ppl
         seen_officials |= chunk_officials
 
-        insert_to_database(to_pandas(cnt.context_metrics), engine, c.STG_GAME_CONTEXT)
-        insert_to_database(to_pandas(box_acc.info), engine, c.STG_BOX_INFO)
-        insert_to_database(to_pandas(box_acc.official_types), engine, c.STG_BOX_OFFICIALS)
+        insert_to_database(to_pandas(cnt.context_metrics), engine, STG_GAME_CONTEXT)
+        insert_to_database(to_pandas(box_acc.info), engine, STG_BOX_INFO)
+        insert_to_database(to_pandas(box_acc.official_types), engine, STG_BOX_OFFICIALS)
 
-        insert_to_database(to_pandas(box_acc.team_batting), engine, c.STG_BOX_TEAM_BATTING)
-        insert_to_database(to_pandas(box_acc.team_pitching), engine, c.STG_BOX_TEAM_PITCHING)
-        insert_to_database(to_pandas(box_acc.team_fielding), engine, c.STG_BOX_TEAM_FIELDING)
+        insert_to_database(to_pandas(box_acc.team_batting), engine, STG_BOX_TEAM_BATTING)
+        insert_to_database(to_pandas(box_acc.team_pitching), engine, STG_BOX_TEAM_PITCHING)
+        insert_to_database(to_pandas(box_acc.team_fielding), engine, STG_BOX_TEAM_FIELDING)
 
-        insert_to_database(to_pandas(box_acc.player_batting), engine, c.STG_BOX_PLAYER_BATTING)
-        insert_to_database(to_pandas(box_acc.player_pitching), engine, c.STG_BOX_PLAYER_PITCHING)
-        insert_to_database(to_pandas(box_acc.player_fielding), engine, c.STG_BOX_PLAYER_FIELDING)
+        insert_to_database(to_pandas(box_acc.player_batting), engine, STG_BOX_PLAYER_BATTING)
+        insert_to_database(to_pandas(box_acc.player_pitching), engine, STG_BOX_PLAYER_PITCHING)
+        insert_to_database(to_pandas(box_acc.player_fielding), engine, STG_BOX_PLAYER_FIELDING)
 
-        insert_to_database(to_pandas(box_acc.team_batting_order), engine, c.STG_BOX_TEAM_BATTING_ORDER)
-        insert_to_database(to_pandas(box_acc.team), engine, c.STG_BOX_TEAM)
-        insert_to_database(to_pandas(box_acc.player_game_positions), engine, c.STG_BOX_PLAYER_GAME_POSITIONS)
-        insert_to_database(to_pandas(box_acc.player_game_info), engine, c.STG_BOX_PLAYER_GAME_INFO)
+        insert_to_database(to_pandas(box_acc.team_batting_order), engine, STG_BOX_TEAM_BATTING_ORDER)
+        insert_to_database(to_pandas(box_acc.team), engine, STG_BOX_TEAM)
+        insert_to_database(to_pandas(box_acc.player_game_positions), engine, STG_BOX_PLAYER_GAME_POSITIONS)
+        insert_to_database(to_pandas(box_acc.player_game_info), engine, STG_BOX_PLAYER_GAME_INFO)
 
-        insert_to_database(to_pandas(play_acc.atbat), engine, c.STG_PLAY_ATBAT)
-        insert_to_database(to_pandas(play_acc.runner), engine, c.STG_PLAY_RUNNER)
-        insert_to_database(to_pandas(play_acc.credit), engine, c.STG_PLAY_CREDIT)
-        insert_to_database(to_pandas(play_acc.pitch), engine, c.STG_PLAY_PITCH)
-        insert_to_database(to_pandas(play_acc.action), engine, c.STG_PLAY_ACTION)
-        insert_to_database(to_pandas(play_acc.pickoff), engine, c.STG_PLAY_PICKOFF)
+        insert_to_database(to_pandas(play_acc.atbat), engine, STG_PLAY_ATBAT)
+        insert_to_database(to_pandas(play_acc.runner), engine, STG_PLAY_RUNNER)
+        insert_to_database(to_pandas(play_acc.credit), engine, STG_PLAY_CREDIT)
+        insert_to_database(to_pandas(play_acc.pitch), engine, STG_PLAY_PITCH)
+        insert_to_database(to_pandas(play_acc.action), engine, STG_PLAY_ACTION)
+        insert_to_database(to_pandas(play_acc.pickoff), engine, STG_PLAY_PICKOFF)
 
         people_scraper.set_data(new_ppl)
-        insert_to_database(to_pandas(people_scraper.people), engine, c.STG_PLAYERS)
+        insert_to_database(to_pandas(people_scraper.people), engine, STG_PLAYERS)
 
         people_scraper.set_data(new_officials)
-        insert_to_database(to_pandas(people_scraper.people), engine, c.STG_OFFICIALS)
+        insert_to_database(to_pandas(people_scraper.people), engine, STG_OFFICIALS)
 
         tm_set = set(cnt.context_metrics["homeId"])
         transaction_scraper.set_data(tm_set, start_date=start_date, end_date=end_date)
-        insert_to_database(to_pandas(transaction_scraper.transactions), engine, c.STG_TRANSACTIONS)
+        insert_to_database(to_pandas(transaction_scraper.transactions), engine, STG_TRANSACTIONS)
 
 
 if __name__ == "__main__":
@@ -238,12 +252,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     major_league = args.lg
-    major_league_id = c.LEAGUE_ID[args.lg]
-    sport_id = c.SPORT_ID[args.lg]
+    major_league_id = LEAGUE_ID[args.lg]
+    sport_id = SPORT_ID[args.lg]
 
     con = init_connection(args.con)
 
-    d = get_schedule( args.date, args.start_date, args.end_date, sport_id, major_league_id)
+    d = get_schedule(args.date, args.start_date, args.end_date, sport_id, major_league_id)
     scrape_and_insert_data(
         d, args.batch, con, args.start_date, args.end_date,
         major_league, major_league_id, max_workers=args.workers,

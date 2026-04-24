@@ -5,7 +5,10 @@ from typing import Any
 
 import const as c
 from base_scraper import BaseScraper, Dataset
+from dataset import create_dataset, json_is_valid
+from endpoints import game_url
 from extractor import extract_fields, nav, nav_id, nav_code, nav_name, nav_link
+from http_client import http_client
 
 logger = logging.getLogger(__name__)
 
@@ -102,30 +105,30 @@ class Boxscore(BaseScraper):
         extract_fields(node, fields, dataset, nav)
 
     def _init_datasets(self) -> None:
-        self.info = c.create_dataset(c.BOX_INFO_DETAILS, c.BOX_INFO_META)
-        self.official_types = c.create_dataset(c.BOX_OFFICIALS_DETAILS, c.BOX_OFFICIALS_META)
+        self.info = create_dataset(c.BOX_INFO_DETAILS, c.BOX_INFO_META)
+        self.official_types = create_dataset(c.BOX_OFFICIALS_DETAILS, c.BOX_OFFICIALS_META)
 
-        self.team = c.create_dataset(
+        self.team = create_dataset(
             c.BOX_TEAM_META2 + c.BOX_TEAM_LEAGUE + c.BOX_TEAM_VENUE + c.BOX_TEAM_DIVISION,
             c.BOX_TEAM_META,
         )
 
-        self.team_batting = c.create_dataset(c.BOX_TEAM_BATTING_STATS, c.BOX_TEAM_META)
-        self.team_pitching = c.create_dataset(c.BOX_TEAM_PITCHING_STATS, c.BOX_TEAM_META)
-        self.team_fielding = c.create_dataset(c.BOX_TEAM_FIELDING_STATS, c.BOX_TEAM_META)
+        self.team_batting = create_dataset(c.BOX_TEAM_BATTING_STATS, c.BOX_TEAM_META)
+        self.team_pitching = create_dataset(c.BOX_TEAM_PITCHING_STATS, c.BOX_TEAM_META)
+        self.team_fielding = create_dataset(c.BOX_TEAM_FIELDING_STATS, c.BOX_TEAM_META)
 
-        self.team_batting_order = c.create_dataset(c.BOX_TEAM_BATTING_ORDER_FIELDS, c.BOX_TEAM_BATTING_ORDER_META)
+        self.team_batting_order = create_dataset(c.BOX_TEAM_BATTING_ORDER_FIELDS, c.BOX_TEAM_BATTING_ORDER_META)
 
-        self.player_batting = c.create_dataset(c.BOX_PLAYER_BATTING_STATS, c.BOX_PLAYER_META)
-        self.player_pitching = c.create_dataset(c.BOX_PLAYER_PITCHING_STATS, c.BOX_PLAYER_META)
-        self.player_fielding = c.create_dataset(c.BOX_PLAYER_FIELDING_STATS, c.BOX_PLAYER_META)
+        self.player_batting = create_dataset(c.BOX_PLAYER_BATTING_STATS, c.BOX_PLAYER_META)
+        self.player_pitching = create_dataset(c.BOX_PLAYER_PITCHING_STATS, c.BOX_PLAYER_META)
+        self.player_fielding = create_dataset(c.BOX_PLAYER_FIELDING_STATS, c.BOX_PLAYER_META)
 
-        self.player_game_info = c.create_dataset(
+        self.player_game_info = create_dataset(
             c.BOX_PLAYER_GAME_STATUS + c.BOX_PLAYER_PERSON + c.BOX_PLAYER_POSITION,
             c.BOX_PLAYER_META,
         )
 
-        self.player_game_positions = c.create_dataset(c.BOX_PLAYER_ALL_POSITIONS, c.BOX_PLAYER_META)
+        self.player_game_positions = create_dataset(c.BOX_PLAYER_ALL_POSITIONS, c.BOX_PLAYER_META)
 
     def set_data(self, game_pks: list[int], **kwargs: Any) -> None:
         """Fetch and parse boxscore data for each game PK."""
@@ -133,9 +136,9 @@ class Boxscore(BaseScraper):
 
         for game_pk in game_pks:
             self.game_pk = game_pk
-            json_data = c.parse_json(game_pk, c.ENDPOINT_BOXSCORE)
+            json_data = http_client.get_json(game_url(game_pk, c.ENDPOINT_BOXSCORE))
 
-            if not c.json_is_valid(json_data):
+            if not json_is_valid(json_data):
                 logger.warning("Invalid JSON, skipping game %s.", game_pk)
                 continue
 

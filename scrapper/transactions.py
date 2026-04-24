@@ -5,6 +5,10 @@ from typing import Any
 
 import const as c
 from base_scraper import BaseScraper, Dataset
+from config import settings
+from dataset import create_dataset, json_is_valid
+from endpoints import transactions_url
+from http_client import http_client
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +38,7 @@ class Transactions(BaseScraper):
         dataset["teamId"].append(team_id)
 
     def _init_datasets(self) -> None:
-        self.transactions = c.create_dataset(
+        self.transactions = create_dataset(
             c.TRANSACTIONS_PERSON_ID + c.TRANSACTIONS_TO_TEAM_ID + c.TRANSACTIONS_TEAM_ID,
             c.TRANSACTIONS_META,
         )
@@ -53,10 +57,10 @@ class Transactions(BaseScraper):
             if not team_id:
                 continue
 
-            parsing_arg = f"teamId={team_id}&startDate={start_date}&endDate={end_date}"
-            json_data = c.parse_json(parsing_arg, c.ENDPOINT_TRANSACTIONS)
+            url = transactions_url(int(team_id), start_date, end_date)
+            json_data = http_client.get_json(url)
 
-            if not c.json_is_valid(json_data):
+            if not json_is_valid(json_data):
                 continue
 
             for transaction in json_data["transactions"]:

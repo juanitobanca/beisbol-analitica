@@ -5,7 +5,10 @@ from typing import Any
 
 import const as c
 from base_scraper import BaseScraper, Dataset
+from dataset import create_dataset, json_is_valid
+from endpoints import game_url
 from extractor import extract_fields, nav
+from http_client import http_client
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +56,7 @@ class ContextMetrics(BaseScraper):
         extract_fields(None, fields, dataset, resolver)
 
     def _init_datasets(self) -> None:
-        self.context_metrics = c.create_dataset(
+        self.context_metrics = create_dataset(
             c.CONTEXT_GAME + c.CONTEXT_GAME_STATUS + c.CONTEXT_GAME_AWAY + c.CONTEXT_GAME_HOME + c.CONTEXT_GAME_VENUE
             + ["majorLeague", "majorLeagueId"],
             None,
@@ -70,9 +73,9 @@ class ContextMetrics(BaseScraper):
         self._init_datasets()
 
         for game_pk in game_pks:
-            json_data = c.parse_json(game_pk, c.ENDPOINT_CONTEXT_METRICS)
+            json_data = http_client.get_json(game_url(game_pk, c.ENDPOINT_CONTEXT_METRICS))
 
-            if not c.json_is_valid(json_data):
+            if not json_is_valid(json_data):
                 continue
 
             self._set_context_metrics(json_data, c.CONTEXT_GAME_FLAG, c.CONTEXT_GAME, self.context_metrics)

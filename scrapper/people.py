@@ -6,6 +6,9 @@ from typing import Any
 import const as c
 from base_scraper import BaseScraper, Dataset
 from config import settings
+from dataset import create_dataset, json_is_valid
+from endpoints import people_batch_url
+from http_client import http_client
 
 logger = logging.getLogger(__name__)
 
@@ -23,21 +26,18 @@ class People(BaseScraper):
         for field in fields:
             try:
                 if flag == c.PEOPLE_PRIMARY_POSITION_FLAG:
-                    value = c.default_missing_value(person[flag], field, None)
+                    value = person[flag].get(field) if flag in person else None
                 elif flag in (c.PEOPLE_BAT_SIDE_FLAG, c.PEOPLE_PITCH_HAND_FLAG):
-                    if flag in person:
-                        value = c.default_missing_value(person[flag], "code", None)
-                    else:
-                        value = None
+                    value = person[flag].get("code") if flag in person else None
                 else:
-                    value = c.default_missing_value(person, field, None)
+                    value = person.get(field)
             except KeyError:
                 value = None
 
             dataset[field].append(value)
 
     def _init_datasets(self) -> None:
-        self.people = c.create_dataset(
+        self.people = create_dataset(
             c.PEOPLE_PRIMARY_POSITION + c.PEOPLE_BAT_SIDE + c.PEOPLE_PITCH_HAND,
             c.PEOPLE_META,
         )
@@ -51,11 +51,10 @@ class People(BaseScraper):
 
         for start in range(0, len(id_list), settings.people_batch_size):
             batch = id_list[start : start + settings.people_batch_size]
-            parsing_arg = ",".join(str(int(i)) for i in batch)
+            url = people_batch_url([int(i) for i in batch])
+            json_data = http_client.get_json(url)
 
-            json_data = c.parse_json(parsing_arg, c.ENDPOINT_PEOPLE_BATCH)
-
-            if not c.json_is_valid(json_data):
+            if not json_is_valid(json_data):
                 continue
 
             for person in json_data["people"]:

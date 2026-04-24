@@ -5,7 +5,10 @@ from typing import Any
 
 import const as c
 from base_scraper import BaseScraper, Dataset
+from dataset import create_dataset, json_is_valid
+from endpoints import game_url
 from extractor import extract_fields, nav, nav_id, nav_code, nav_description
+from http_client import http_client
 
 logger = logging.getLogger(__name__)
 
@@ -124,36 +127,36 @@ class PlayByPlay(BaseScraper):
         extract_fields(None, fields, dataset, resolver)
 
     def _init_datasets(self) -> None:
-        self.atbat = c.create_dataset(
+        self.atbat = create_dataset(
             c.PLAY_ABOUT + c.PLAY_RESULT + c.PLAY_COUNT
             + c.PLAY_MATCHUP_BATSIDE + c.PLAY_MATCHUP_PITCHHAND
             + c.PLAY_MATCHUP_PITCHER + c.PLAY_MATCHUP_BATTER + c.PLAY_MATCHUP_SPLITS,
             c.PLAY_ATBAT_META,
         )
 
-        self.pitch = c.create_dataset(
+        self.pitch = create_dataset(
             c.PITCH_DETAILS + c.PITCH_COUNT + c.PITCH_DATA
             + c.PITCH_DATA_COORD + c.PITCH_DATA_BREAKS
             + c.PITCH_HIT_DATA + c.PITCH_HIT_DATA_COORD,
             c.PITCH_META + c.PITCH_META2,
         )
 
-        self.action = c.create_dataset(
+        self.action = create_dataset(
             c.ACTION_DETAILS + c.ACTION_COUNT + c.ACTION_PLAYER + c.ACTION_POSITION,
             c.ACTION_META + c.ACTION_META2,
         )
 
-        self.pickoff = c.create_dataset(
+        self.pickoff = create_dataset(
             c.PICKOFF_DETAILS + c.PICKOFF_COUNT,
             c.PICKOFF_META + c.PICKOFF_META2,
         )
 
-        self.runner = c.create_dataset(
+        self.runner = create_dataset(
             c.PLAY_RUNNER_MOVEMENT + c.PLAY_RUNNER_DETAILS,
             c.PLAY_RUNNER_META,
         )
 
-        self.credit = c.create_dataset(
+        self.credit = create_dataset(
             c.PLAY_CREDIT_CREDIT + c.PLAY_CREDIT_PLAYER + c.PLAY_CREDIT_POSITION,
             c.PLAY_CREDIT_META,
         )
@@ -163,9 +166,9 @@ class PlayByPlay(BaseScraper):
         self._init_datasets()
 
         for game_pk in game_pks:
-            json_data = c.parse_json(game_pk, c.ENDPOINT_PLAY_BY_PLAY)
+            json_data = http_client.get_json(game_url(game_pk, c.ENDPOINT_PLAY_BY_PLAY))
 
-            if not c.json_is_valid(json_data):
+            if not json_is_valid(json_data):
                 continue
 
             for play in json_data["allPlays"]:
