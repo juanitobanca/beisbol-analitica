@@ -44,7 +44,6 @@ def _fetch_game(
 
 
 def get_schedule(
-    file: str | None,
     date: str | None,
     start_date: str | None,
     end_date: str | None,
@@ -231,7 +230,6 @@ if __name__ == "__main__":
     parser.add_argument("--date", default=date_str, help="Date Format: YYYY_MM_DD")
     parser.add_argument("--startDate", dest="start_date", default=None, help="Date Format: YYYY_MM_DD")
     parser.add_argument("--endDate", dest="end_date", default=None, help="Date Format: YYYY_MM_DD")
-    parser.add_argument("--file", default=None)
     parser.add_argument("--batch", default=settings.default_batch_size, type=int)
     parser.add_argument("--lg", default=None, help="League code (e.g. MLB, LMB, SDC)")
     parser.add_argument("--workers", default=settings.default_workers, type=int, help="Concurrent threads")
@@ -244,7 +242,7 @@ if __name__ == "__main__":
 
     con = init_connection(args.con)
 
-    d = get_schedule(args.file, args.date, args.start_date, args.end_date, sport_id, major_league_id)
+    d = get_schedule( args.date, args.start_date, args.end_date, sport_id, major_league_id)
     scrape_and_insert_data(
         d, args.batch, con, args.start_date, args.end_date,
         major_league, major_league_id, max_workers=args.workers,
