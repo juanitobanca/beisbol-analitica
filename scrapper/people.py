@@ -59,7 +59,7 @@ class people:
             # "123,456,789" — formato que espera ?personIds=
             parsing_arg = ','.join( str(int(i)) for i in batch )
 
-            self.json = c.parseJson( parsing_arg, c.people_batch_file )
+            self.json = c.parseJson( parsing_arg, c.ENDPOINT_PEOPLE_BATCH )
 
             if not c.jsonIsValid( self.json ):
                 continue

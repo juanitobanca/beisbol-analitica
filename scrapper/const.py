@@ -8,19 +8,19 @@ import time
 # playByPlay, people, etc.) comparten el mismo pool de conexiones.
 _session = r.Session()
 
-def createDataset( s, m ):
+def createDataset( fields, meta_fields ):
 
-    d = {}
+    dataset = {}
 
-    for s_ in s:
-        d[s_] = []
+    for field in fields:
+        dataset[field] = []
 
-    if m:
+    if meta_fields:
 
-        for m_ in m:
-            d[m_] = []
+        for meta_field in meta_fields:
+            dataset[meta_field] = []
 
-    return d
+    return dataset
 
 def defaultMissingValue( d, k, v ):
 
@@ -34,20 +34,20 @@ def defaultMissingValue( d, k, v ):
 
 def parseJson( parsing_arg, file ):
 
-    if file == people_batch_file:
+    if file == ENDPOINT_PEOPLE_BATCH:
         # parsing_arg es un string "123,456,789" ya construido por el caller
         url = 'http://statsapi.mlb.com/api/v1/people?personIds=' + parsing_arg
         print('Players (batch): '+parsing_arg+'. Parsing '+file+'. url: '+url)
 
-    elif file == people_file:
+    elif file == ENDPOINT_PEOPLE:
         url = 'http://statsapi.mlb.com/api/v1/people/' + str(int(parsing_arg))
         print('Player: '+str(int(parsing_arg))+'. Parsing '+file+'. url: '+url)
 
-    elif file == transactions_file:
+    elif file == ENDPOINT_TRANSACTIONS:
         url = 'http://statsapi.mlb.com/api/v1/transactions?' + parsing_arg
         print('Team: '+parsing_arg+'. Parsing '+file+'. url: '+url)
 
-    elif file == schedule_file:
+    elif file == ENDPOINT_SCHEDULE:
         url = 'http://statsapi.mlb.com/api/v1/schedule?'+ parsing_arg
         print('Schedule: '+parsing_arg+'. Parsing '+file+'. url: '+url)
     else:
@@ -58,8 +58,8 @@ def parseJson( parsing_arg, file ):
     while True:
 
         try:
-            req = _session.get(url)
-            return req.json()
+            response = _session.get(url)
+            return response.json()
         except Exception as e:
             print(f"Error parsing game {parsing_arg}, file {file}: {e}")
             time.sleep(20)
@@ -85,31 +85,31 @@ def jsonIsValid( json ):
 # LEAGUE - this is what gets inserted into the db
 # Example: https://statsapi.mlb.com/api/v1/gamePace?leagueIds=125&startDate=2019-07-28&endDate=2019-10-30
 
-sports_id_dic = { 'MLB' : 1
-                , 'LMB':  11 # 23
-                , 'DSL' : 16
-                , 'LIDOM': 17
-                , 'LMP': 17
-                , 'LBPRC': 17
-                , 'VSL' : 17
-                , 'LVBP': 17
-                , 'SDC' : 17
-                , 'WBCQ': 51
-                , 'WBC' : 51
-                }
+SPORT_ID = { 'MLB' : 1
+           , 'LMB':  11 # 23
+           , 'DSL' : 16
+           , 'LIDOM': 17
+           , 'LMP': 17
+           , 'LBPRC': 17
+           , 'VSL' : 17
+           , 'LVBP': 17
+           , 'SDC' : 17
+           , 'WBCQ': 51
+           , 'WBC' : 51
+           }
 
-major_id_dic = { 'MLB': 1
-               , 'LMB': 125
-               , 'DSL' : 130
-               , 'LIDOM': 131
-               , 'LMP': 132
-               , 'LBPRC': 133
-               , 'VSL' : 134
-               , 'LVBP': 135
-               , 'WBCQ': 159
-               , 'WBC' : 160
-               , 'SDC' : 162
-               }
+LEAGUE_ID = { 'MLB': 1
+            , 'LMB': 125
+            , 'DSL' : 130
+            , 'LIDOM': 131
+            , 'LMP': 132
+            , 'LBPRC': 133
+            , 'VSL' : 134
+            , 'LVBP': 135
+            , 'WBCQ': 159
+            , 'WBC' : 160
+            , 'SDC' : 162
+            }
 
 
 
@@ -118,52 +118,52 @@ major_id_dic = { 'MLB': 1
 # STAGING TABLE CONSTANTS
 
 # TRANSACTIONS
-s_transactions = 'stg_transactions'
+STG_TRANSACTIONS = 'stg_transactions'
 
 # CONTEXT METRICS
-s_game_context = 'stg_game_context'
+STG_GAME_CONTEXT = 'stg_game_context'
 
 # BOXSCORE
 
-s_box_team_batting  = 'stg_box_team_batting'
-s_box_team_pitching = 'stg_box_team_pitching'
-s_box_team_fielding = 'stg_box_team_fielding'
+STG_BOX_TEAM_BATTING  = 'stg_box_team_batting'
+STG_BOX_TEAM_PITCHING = 'stg_box_team_pitching'
+STG_BOX_TEAM_FIELDING = 'stg_box_team_fielding'
 
-s_box_player_batting  = 'stg_box_player_batting'
-s_box_player_pitching = 'stg_box_player_pitching'
-s_box_player_fielding = 'stg_box_player_fielding'
+STG_BOX_PLAYER_BATTING  = 'stg_box_player_batting'
+STG_BOX_PLAYER_PITCHING = 'stg_box_player_pitching'
+STG_BOX_PLAYER_FIELDING = 'stg_box_player_fielding'
 
-s_players              = 'stg_players'
-s_officials            = 'stg_officials'
+STG_PLAYERS              = 'stg_players'
+STG_OFFICIALS            = 'stg_officials'
 
 
-s_box_team_batting_order    = 'stg_box_team_batting_order'
-s_box_team                  = 'stg_box_team'
-s_box_player_game_positions = 'stg_box_player_game_positions'
-s_box_player_game_info      = 'stg_box_player_game_info'
-s_box_info                  = 'stg_box_info'
-s_box_officials             = 'stg_box_officials'
+STG_BOX_TEAM_BATTING_ORDER    = 'stg_box_team_batting_order'
+STG_BOX_TEAM                  = 'stg_box_team'
+STG_BOX_PLAYER_GAME_POSITIONS = 'stg_box_player_game_positions'
+STG_BOX_PLAYER_GAME_INFO      = 'stg_box_player_game_info'
+STG_BOX_INFO                  = 'stg_box_info'
+STG_BOX_OFFICIALS             = 'stg_box_officials'
 
 
 #PLAY BY PLAY
-s_play_atbat    = 'stg_play_atbat'
-s_play_runner   = 'stg_play_runner'
-s_play_credit   = 'stg_play_credit'
-s_play_pitch    = 'stg_play_pitch'
-s_play_action   = 'stg_play_action'
-s_play_pickoff  = 'stg_play_pickoff'
+STG_PLAY_ATBAT    = 'stg_play_atbat'
+STG_PLAY_RUNNER   = 'stg_play_runner'
+STG_PLAY_CREDIT   = 'stg_play_credit'
+STG_PLAY_PITCH    = 'stg_play_pitch'
+STG_PLAY_ACTION   = 'stg_play_action'
+STG_PLAY_PICKOFF  = 'stg_play_pickoff'
 
 
 #
 # FILES FOR URL
 #
-playByPlay_file   = 'playByPlay'
-boxscore_file     = 'boxscore'
-people_file       = 'people'
-people_batch_file = 'people_batch'   # endpoint batch: /api/v1/people?personIds=id1,id2,...
-context_file      = 'contextMetrics'
-schedule_file     = 'schedule'
-transactions_file = 'transactions'
+ENDPOINT_PLAY_BY_PLAY   = 'playByPlay'
+ENDPOINT_BOXSCORE       = 'boxscore'
+ENDPOINT_PEOPLE         = 'people'
+ENDPOINT_PEOPLE_BATCH   = 'people_batch'   # endpoint batch: /api/v1/people?personIds=id1,id2,...
+ENDPOINT_CONTEXT_METRICS = 'contextMetrics'
+ENDPOINT_SCHEDULE        = 'schedule'
+ENDPOINT_TRANSACTIONS    = 'transactions'
 
 #
 # GAME CONSTANTS

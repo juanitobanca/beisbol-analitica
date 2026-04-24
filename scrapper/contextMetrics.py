@@ -12,7 +12,7 @@ class contextMetrics:
     # Extracción de métricas de contexto
     # ------------------------------------------------------------------
 
-    def setContextMetrics(self, flag, fields, d):
+    def setContextMetrics(self, flag, fields, dataset):
         """
         Antes: un método con 5 ramas if/elif que hacían manipulación de
         strings para derivar el nombre de sub-clave (s_[4].lower()+s_[5:]).
@@ -27,14 +27,10 @@ class contextMetrics:
             return nav(game.get('status'), field)
 
         def resolver_venue(node, field):
-            # Campos como 'venueId', 'venueName', 'venueLink'
-            # → sub-clave sin el prefijo 'venue' y en minúsculas
             sub_key = field[5].lower() + field[6:]
             return nav(game.get('venue'), sub_key)
 
         def resolver_team_side(node, field):
-            # Campos como 'awayWins', 'homeScore', 'homeId', 'awayName'
-            # → quitar prefijo de 4 chars (away/home), primera letra en minúscula
             sub_key = field[4].lower() + field[5:]
             teams   = game.get('teams', {})
             side    = teams.get(flag, {})
@@ -53,7 +49,7 @@ class contextMetrics:
         }
 
         resolver = resolver_map.get(flag, lambda n, f: nav(self.json, f))
-        extract_fields(None, fields, d, resolver)
+        extract_fields(None, fields, dataset, resolver)
 
     # ------------------------------------------------------------------
     # Dataset init
@@ -76,8 +72,8 @@ class contextMetrics:
     def setData(self, game_pks, major_league=None, major_league_id=None):
         self._init_datasets()
 
-        for g_ in game_pks:
-            self.json = c.parseJson(g_, c.context_file)
+        for game_pk in game_pks:
+            self.json = c.parseJson(game_pk, c.ENDPOINT_CONTEXT_METRICS)
 
             if not c.jsonIsValid(self.json):
                 continue

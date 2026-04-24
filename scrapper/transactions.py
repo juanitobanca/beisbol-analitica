@@ -15,7 +15,7 @@ class transactions:
             , c.transactions_meta
         )
 
-    def _append_transaction(self, t, team_id, d):
+    def _append_transaction(self, transaction, team_id, dataset):
         """
         Escribe exactamente una fila en el dataset con todas sus columnas.
 
@@ -30,38 +30,38 @@ class transactions:
         """
 
         # --- campos de meta ---
-        d['id'].append(             t.get('id') )
-        d['transactionDate'].append(t.get('date') )          # la API usa 'date', no 'transactionDate'
-        d['effectiveDate'].append(  t.get('effectiveDate') )
-        d['resolutionDate'].append( t.get('resolutionDate') )
-        d['typeCode'].append(       t.get('typeCode') )
-        d['typeDesc'].append(       t.get('typeDesc') )
-        d['description'].append(    t.get('description') )
+        dataset['id'].append(             transaction.get('id') )
+        dataset['transactionDate'].append(transaction.get('date') )          # la API usa 'date', no 'transactionDate'
+        dataset['effectiveDate'].append(  transaction.get('effectiveDate') )
+        dataset['resolutionDate'].append( transaction.get('resolutionDate') )
+        dataset['typeCode'].append(       transaction.get('typeCode') )
+        dataset['typeDesc'].append(       transaction.get('typeDesc') )
+        dataset['description'].append(    transaction.get('description') )
 
         # --- ids de entidades relacionadas ---
-        person   = t.get(c.transactions_person_flag)
-        to_team  = t.get(c.transactions_toTeam_flag)
+        person   = transaction.get(c.transactions_person_flag)
+        to_team  = transaction.get(c.transactions_toTeam_flag)
 
-        d['personId'].append( person.get('id')  if person  else None )
-        d['toTeamId'].append( to_team.get('id') if to_team else None )
-        d['teamId'].append(   team_id )
+        dataset['personId'].append( person.get('id')  if person  else None )
+        dataset['toTeamId'].append( to_team.get('id') if to_team else None )
+        dataset['teamId'].append(   team_id )
 
     def setData(self, team_ids, startDate, endDate):
 
         self._init_datasets()
 
-        for tm_ in team_ids:
+        for team_id in team_ids:
 
-            if not tm_:
+            if not team_id:
                 continue
 
-            parsing_arg = 'teamId=' + str(tm_) + '&startDate=' + startDate + '&endDate=' + endDate
-            self.json   = c.parseJson(parsing_arg, c.transactions_file)
+            parsing_arg = 'teamId=' + str(team_id) + '&startDate=' + startDate + '&endDate=' + endDate
+            self.json   = c.parseJson(parsing_arg, c.ENDPOINT_TRANSACTIONS)
 
             if not c.jsonIsValid(self.json):
                 continue
 
-            for t in self.json['transactions']:
-                self._append_transaction(t, tm_, self.transactions)
+            for transaction in self.json['transactions']:
+                self._append_transaction(transaction, team_id, self.transactions)
 
         return self.transactions

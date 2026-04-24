@@ -24,28 +24,26 @@ class boxscore:
     # Metadata helpers (sin cambios de comportamiento)
     # ------------------------------------------------------------------
 
-    def setMetadata(self, d, t_, p_):
-        d['gamePk'].append(self.game_pk)
-        d['teamId'].append(self.json['teams'][t_]['team']['id'])
-        d['teamType'].append(t_)
-        if p_:
-            d['playerId'].append(self.json['teams'][t_]['players'][p_]['person']['id'])
+    def setMetadata(self, dataset, team_side, player_key):
+        dataset['gamePk'].append(self.game_pk)
+        dataset['teamId'].append(self.json['teams'][team_side]['team']['id'])
+        dataset['teamType'].append(team_side)
+        if player_key:
+            dataset['playerId'].append(self.json['teams'][team_side]['players'][player_key]['person']['id'])
 
     # ------------------------------------------------------------------
     # Officials
     # ------------------------------------------------------------------
 
-    def setOfficialTypes(self, official, d):
-        # Antes: dos appends manuales.
-        # Ahora: extract_fields con resolvers específicos por columna.
-        extract_fields(official,             ['officialId'], d, lambda n, f: nav_id(n.get('official')))
-        extract_fields(official,             ['position'],   d, lambda n, f: nav(n, 'officialType'))
+    def setOfficialTypes(self, official, dataset):
+        extract_fields(official,             ['officialId'], dataset, lambda n, f: nav_id(n.get('official')))
+        extract_fields(official,             ['position'],   dataset, lambda n, f: nav(n, 'officialType'))
 
     # ------------------------------------------------------------------
     # Game info (estructura especial: lista de dicts label/value)
     # ------------------------------------------------------------------
 
-    def setInfo(self, flag, fields, d):
+    def setInfo(self, flag, fields, dataset):
         """
         La estructura info es una lista [{label, value}, ...].
         Construimos un índice label->value una sola vez por juego,
@@ -62,19 +60,19 @@ class boxscore:
                     label_map[label] = item.get('value')
 
         for field in fields:
-            d[field].append(label_map.get(field))
+            dataset[field].append(label_map.get(field))
 
     # ------------------------------------------------------------------
     # Batting order
     # ------------------------------------------------------------------
 
-    def setBattingOrder(self, t_, d):
+    def setBattingOrder(self, team_side, dataset):
         try:
-            players = self.json['teams'][t_]['players']
+            players = self.json['teams'][team_side]['players']
             for pid_key, player in players.items():
-                self.setMetadata(d, t_, None)
-                d['playerId'].append(int(pid_key.replace('ID', '')))
-                d['battingOrder'].append(player.get('battingOrder'))
+                self.setMetadata(dataset, team_side, None)
+                dataset['playerId'].append(int(pid_key.replace('ID', '')))
+                dataset['battingOrder'].append(player.get('battingOrder'))
         except Exception as e:
             print(f'setBattingOrder error: {e}')
 
@@ -82,52 +80,50 @@ class boxscore:
     # Team data
     # ------------------------------------------------------------------
 
-    def setTeam(self, t_, flag, fields, d):
+    def setTeam(self, team_side, flag, fields, dataset):
         """
         Antes: un método con 5 ramas if/elif que inferían cómo navegar
         el JSON a partir de convenciones en el nombre del campo (ej. 'Id'
         en el nombre → extraer sub-clave 'id').  Esa magia implícita se
         reemplaza con resolvers explícitos según el flag.
         """
-        team_node = self.json['teams'][t_]
+        team_node = self.json['teams'][team_side]
 
         if flag == c.box_team_meta2_flag:
-            extract_fields(team_node.get('team'), fields, d, nav)
+            extract_fields(team_node.get('team'), fields, dataset, nav)
 
         else:
-            # venue / league / division: campos tipo venueId, venueName, venueLink
             sub_node = team_node.get('team', {}).get(flag)
 
             def resolver_sub(node, field):
                 if 'Id'   in field: return nav_id(sub_node)
                 if 'Name' in field: return nav_name(sub_node)
                 if 'Link' in field: return nav_link(sub_node)
-                # stats de equipo (batting/pitching/fielding) caen aquí si flag != meta2
                 return nav(team_node.get('teamStats', {}).get(flag), field)
 
-            extract_fields(sub_node, fields, d, resolver_sub)
+            extract_fields(sub_node, fields, dataset, resolver_sub)
 
     # ------------------------------------------------------------------
     # Player sub-nodos (gameStatus, person, position)
     # ------------------------------------------------------------------
 
-    def setPlayer(self, t_, p_, flag, fields, d):
-        node = self.json['teams'][t_]['players'][p_].get(flag)
-        extract_fields(node, fields, d, nav)
+    def setPlayer(self, team_side, player_key, flag, fields, dataset):
+        node = self.json['teams'][team_side]['players'][player_key].get(flag)
+        extract_fields(node, fields, dataset, nav)
 
     # ------------------------------------------------------------------
     # Stats (player y team comparten el mismo método)
     # ------------------------------------------------------------------
 
-    def setStats(self, t_, p_, flag, fields, d):
+    def setStats(self, team_side, player_key, flag, fields, dataset):
         try:
-            if p_:
-                node = self.json['teams'][t_]['players'][p_]['stats'].get(flag)
+            if player_key:
+                node = self.json['teams'][team_side]['players'][player_key]['stats'].get(flag)
             else:
-                node = self.json['teams'][t_]['teamStats'].get(flag)
+                node = self.json['teams'][team_side]['teamStats'].get(flag)
         except KeyError:
             node = None
-        extract_fields(node, fields, d, nav)
+        extract_fields(node, fields, dataset, nav)
 
     # ------------------------------------------------------------------
     # Dataset init — sin cambios
@@ -167,54 +163,54 @@ class boxscore:
     def setData(self, game_pks):
         self._init_datasets()
 
-        for g_ in game_pks:
-            self.game_pk = g_
-            self.json    = c.parseJson(g_, c.boxscore_file)
+        for game_pk in game_pks:
+            self.game_pk = game_pk
+            self.json    = c.parseJson(game_pk, c.ENDPOINT_BOXSCORE)
 
             if not c.jsonIsValid(self.json):
                 print('Invalid JSON, skipping.')
                 continue
 
-            self.info['gamePk'].append(g_)
+            self.info['gamePk'].append(game_pk)
             self.setInfo(c.box_info_flag, c.box_info_details, self.info)
 
-            for o in self.json['officials']:
-                self.official_types['gamePk'].append(g_)
-                self.setOfficialTypes(o, self.official_types)
+            for official in self.json['officials']:
+                self.official_types['gamePk'].append(game_pk)
+                self.setOfficialTypes(official, self.official_types)
 
-            for t_ in self.json['teams']:
-                self.setMetadata(self.team, t_, None)
-                self.setTeam(t_, c.box_team_meta2_flag,    c.box_team_meta2,    self.team)
-                self.setTeam(t_, c.box_team_league_flag,   c.box_team_league,   self.team)
-                self.setTeam(t_, c.box_team_venue_flag,    c.box_team_venue,    self.team)
-                self.setTeam(t_, c.box_team_division_flag, c.box_team_division, self.team)
+            for team_side in self.json['teams']:
+                self.setMetadata(self.team, team_side, None)
+                self.setTeam(team_side, c.box_team_meta2_flag,    c.box_team_meta2,    self.team)
+                self.setTeam(team_side, c.box_team_league_flag,   c.box_team_league,   self.team)
+                self.setTeam(team_side, c.box_team_venue_flag,    c.box_team_venue,    self.team)
+                self.setTeam(team_side, c.box_team_division_flag, c.box_team_division, self.team)
 
-                self.setMetadata(self.team_batting, t_, None)
-                self.setStats(t_, None, c.box_team_batting_flag,  c.box_team_batting_stats,  self.team_batting)
+                self.setMetadata(self.team_batting, team_side, None)
+                self.setStats(team_side, None, c.box_team_batting_flag,  c.box_team_batting_stats,  self.team_batting)
 
-                self.setMetadata(self.team_pitching, t_, None)
-                self.setStats(t_, None, c.box_team_pitching_flag, c.box_team_pitching_stats, self.team_pitching)
+                self.setMetadata(self.team_pitching, team_side, None)
+                self.setStats(team_side, None, c.box_team_pitching_flag, c.box_team_pitching_stats, self.team_pitching)
 
-                self.setMetadata(self.team_fielding, t_, None)
-                self.setStats(t_, None, c.box_team_fielding_flag, c.box_team_fielding_stats, self.team_fielding)
+                self.setMetadata(self.team_fielding, team_side, None)
+                self.setStats(team_side, None, c.box_team_fielding_flag, c.box_team_fielding_stats, self.team_fielding)
 
-                self.setBattingOrder(t_, self.team_batting_order)
+                self.setBattingOrder(team_side, self.team_batting_order)
 
-                for p_ in self.json['teams'][t_]['players']:
-                    self.setMetadata(self.player_batting,   t_, p_)
-                    self.setMetadata(self.player_pitching,  t_, p_)
-                    self.setMetadata(self.player_fielding,  t_, p_)
-                    self.setMetadata(self.player_game_info, t_, p_)
+                for player_key in self.json['teams'][team_side]['players']:
+                    self.setMetadata(self.player_batting,   team_side, player_key)
+                    self.setMetadata(self.player_pitching,  team_side, player_key)
+                    self.setMetadata(self.player_fielding,  team_side, player_key)
+                    self.setMetadata(self.player_game_info, team_side, player_key)
 
-                    self.setStats(t_, p_, c.box_player_batting_flag,  c.box_player_batting_stats,  self.player_batting)
-                    self.setStats(t_, p_, c.box_player_pitching_flag, c.box_player_pitching_stats, self.player_pitching)
-                    self.setStats(t_, p_, c.box_player_fielding_flag, c.box_player_fielding_stats, self.player_fielding)
+                    self.setStats(team_side, player_key, c.box_player_batting_flag,  c.box_player_batting_stats,  self.player_batting)
+                    self.setStats(team_side, player_key, c.box_player_pitching_flag, c.box_player_pitching_stats, self.player_pitching)
+                    self.setStats(team_side, player_key, c.box_player_fielding_flag, c.box_player_fielding_stats, self.player_fielding)
 
-                    self.setPlayer(t_, p_, c.box_player_player_gameStatus_flag, c.box_player_player_gameStatus, self.player_game_info)
-                    self.setPlayer(t_, p_, c.box_player_player_person_flag,     c.box_player_player_person,     self.player_game_info)
-                    self.setPlayer(t_, p_, c.box_player_player_position_flag,   c.box_player_player_position,   self.player_game_info)
+                    self.setPlayer(team_side, player_key, c.box_player_player_gameStatus_flag, c.box_player_player_gameStatus, self.player_game_info)
+                    self.setPlayer(team_side, player_key, c.box_player_player_person_flag,     c.box_player_player_person,     self.player_game_info)
+                    self.setPlayer(team_side, player_key, c.box_player_player_position_flag,   c.box_player_player_position,   self.player_game_info)
 
-                    player_node = self.json['teams'][t_]['players'][p_]
-                    for pos in player_node.get('allPositions', []):
-                        self.setMetadata(self.player_game_positions, t_, p_)
-                        extract_fields(pos, c.box_player_player_allPositions, self.player_game_positions, nav)
+                    player_node = self.json['teams'][team_side]['players'][player_key]
+                    for position in player_node.get('allPositions', []):
+                        self.setMetadata(self.player_game_positions, team_side, player_key)
+                        extract_fields(position, c.box_player_player_allPositions, self.player_game_positions, nav)
