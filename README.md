@@ -71,30 +71,86 @@ python orchestrator.py --lg MLB --date 2024-04-01
 
 4. Scraping concurrente
 
-* pipeline.scrape_chunk()
-* usa ThreadPoolExecutor
-* cada thread ejecuta scrapers independientes
+* `pipeline.scrape_chunk()`
+* usa `ThreadPoolExecutor`
+* cada `thread` ejecuta `scrapers` independientes
 
 ---
 
 5. Scrapers
 
-* Boxscore
-* PlayByPlay
-* ContextMetrics
+* `Boxscore`
+* `PlayByPlay`
+* `ContextMetrics`
+
+---
 
 6. Persistencia
 
-db_writer.insert_dataset():
+* `db_writer.insert_dataset():`
+* convierte a `pandas.DataFrame`
+* ejecuta `to_sql(if_exists="append")`
+* escribe ~19 tablas `staging`
 
-* convierte a pandas.DataFrame
-* ejecuta to_sql(if_exists="append")
-* escribe ~19 tablas staging
-
-⸻
+---
 
 7. Post-procesamiento
 
 * People
 * Transactions
-    (se disparan con nuevos IDs del chunk)
+
+--
+
+## Diagrama de Flujo de ejecucion
+
+sequenceDiagram
+
+    participant CLI as CLI / main
+
+    participant ORCH as Orchestrator
+
+    participant SCH as Scheduler
+
+    participant PIPE as Pipeline
+
+    participant SCR as Scrapers
+
+    participant DB as DB Writer
+
+    participant SQL as Database
+
+    CLI->>ORCH: run(date, league, batch)
+
+    ORCH->>SCH: get_schedule()
+
+    SCH-->>ORCH: list(game_pk)
+
+    ORCH->>ORCH: split into chunks
+
+    loop each chunk
+
+        ORCH->>PIPE: scrape_chunk(chunk)
+
+        par concurrent scraping
+
+            PIPE->>SCR: Boxscore
+
+            PIPE->>SCR: PlayByPlay
+
+            PIPE->>SCR: ContextMetrics
+
+        end
+
+        SCR-->>PIPE: datasets
+
+        PIPE-->>ORCH: ChunkResult
+
+        ORCH->>DB: insert_dataset(ChunkResult)
+
+        DB->>SQL: to_sql append
+
+        DB->>SCR: People (new ids)
+
+        DB->>SCR: Transactions (new ids)
+
+    end
