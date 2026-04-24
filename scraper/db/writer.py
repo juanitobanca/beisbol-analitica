@@ -21,7 +21,7 @@ def insert(
     dataframe: pd.DataFrame,
     engine: Engine,
     table_name: str,
-    max_retries: int = 1,
+    max_retries: int = 10,
 ) -> None:
     """Insert *dataframe* into *table_name*, retrying on failure.
 
