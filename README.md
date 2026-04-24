@@ -103,6 +103,8 @@ python orchestrator.py --lg MLB --date 2024-04-01
 
 ## Diagrama de Flujo de ejecucion
 
+```mermaid
+
 sequenceDiagram
 
     participant CLI as CLI / main
@@ -154,3 +156,4 @@ sequenceDiagram
         DB->>SCR: Transactions (new ids)
 
     end
+```
