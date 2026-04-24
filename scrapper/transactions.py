@@ -1,41 +1,52 @@
 import const as c
 
+
 class transactions:
 
-    def __init__( self ):
-        self.json    = None
-        self.transactions  = None
+    def __init__(self):
+        self.json         = None
+        self.transactions = None
 
-    def setTransactions( self, f, s, d ):
+    def _init_datasets(self):
+        self.transactions = c.createDataset(
+            c.transactions_personId
+            + c.transactions_toTeamId
+            + c.transactions_teamId
+            , c.transactions_meta
+        )
 
-        for t in self.json['transactions']:
+    def _append_transaction(self, t, team_id, d):
+        """
+        Escribe exactamente una fila en el dataset con todas sus columnas.
 
-            for s_ in s:
+        El bug original llamaba a setTransactions tres veces (una por flag),
+        y cada llamada iteraba self.json['transactions'] completo.  Eso
+        producía N×(número de flags) filas en unas columnas y N filas en
+        otras, desalineando el DataFrame resultante.
 
-                try:
-                    if f in [ c.transactions_person_flag,  c.transactions_toTeam_flag ]:
-                        v_ = c.defaultMissingValue( t[f], 'id', None )
+        Ahora hay una sola pasada por transacción que llena todas las
+        columnas a la vez, garantizando que cada lista del dataset crece
+        exactamente en 1 por llamada.
+        """
 
-                    elif s_ == 'transactionDate':
-                        v_ = c.defaultMissingValue( t, 'date', None )
+        # --- campos de meta ---
+        d['id'].append(             t.get('id') )
+        d['transactionDate'].append(t.get('date') )          # la API usa 'date', no 'transactionDate'
+        d['effectiveDate'].append(  t.get('effectiveDate') )
+        d['resolutionDate'].append( t.get('resolutionDate') )
+        d['typeCode'].append(       t.get('typeCode') )
+        d['typeDesc'].append(       t.get('typeDesc') )
+        d['description'].append(    t.get('description') )
 
-                    else:
-                        v_ = c.defaultMissingValue( t, s_, None )
+        # --- ids de entidades relacionadas ---
+        person   = t.get(c.transactions_person_flag)
+        to_team  = t.get(c.transactions_toTeam_flag)
 
-                except KeyError:
-                    v_ = None
+        d['personId'].append( person.get('id')  if person  else None )
+        d['toTeamId'].append( to_team.get('id') if to_team else None )
+        d['teamId'].append(   team_id )
 
-                d[s_].append( v_ )
-
-    def _init_datasets( self ):
-
-        self.transactions = c.createDataset( c.transactions_personId
-                                           + c.transactions_toTeamId
-                                           + c.transactions_teamId
-                                           , c.transactions_meta
-                                           )
-
-    def setData( self, team_ids, startDate, endDate ):
+    def setData(self, team_ids, startDate, endDate):
 
         self._init_datasets()
 
@@ -44,14 +55,13 @@ class transactions:
             if not tm_:
                 continue
 
-            parsing_arg = 'teamId='+str(tm_)+'&startDate='+startDate+'&endDate='+endDate
+            parsing_arg = 'teamId=' + str(tm_) + '&startDate=' + startDate + '&endDate=' + endDate
+            self.json   = c.parseJson(parsing_arg, c.transactions_file)
 
-            self.teamId = tm_
-            self.json    = c.parseJson( parsing_arg, c.transactions_file )
-            self.setTransactions( c.transactions_meta_flag,   c.transactions_meta,     self.transactions )
-            self.setTransactions( c.transactions_person_flag, c.transactions_personId, self.transactions )
-            self.setTransactions( c.transactions_toTeam_flag, c.transactions_toTeamId, self.transactions )
+            if not c.jsonIsValid(self.json):
+                continue
 
-            self.transactions['teamId'] += [tm_] * len(self.json['transactions'])
+            for t in self.json['transactions']:
+                self._append_transaction(t, tm_, self.transactions)
 
         return self.transactions
