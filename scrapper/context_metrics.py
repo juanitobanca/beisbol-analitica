@@ -54,7 +54,8 @@ class ContextMetrics(BaseScraper):
 
     def _init_datasets(self) -> None:
         self.context_metrics = c.create_dataset(
-            c.CONTEXT_GAME + c.CONTEXT_GAME_STATUS + c.CONTEXT_GAME_AWAY + c.CONTEXT_GAME_HOME + c.CONTEXT_GAME_VENUE,
+            c.CONTEXT_GAME + c.CONTEXT_GAME_STATUS + c.CONTEXT_GAME_AWAY + c.CONTEXT_GAME_HOME + c.CONTEXT_GAME_VENUE
+            + ["majorLeague", "majorLeagueId"],
             None,
         )
 
@@ -80,8 +81,7 @@ class ContextMetrics(BaseScraper):
             self._set_context_metrics(json_data, c.CONTEXT_GAME_HOME_FLAG, c.CONTEXT_GAME_HOME, self.context_metrics)
             self._set_context_metrics(json_data, c.CONTEXT_GAME_VENUE_FLAG, c.CONTEXT_GAME_VENUE, self.context_metrics)
 
-        n = len(self.context_metrics["gamePk"])
-        self.context_metrics["majorLeague"] = [major_league] * n
-        self.context_metrics["majorLeagueId"] = [major_league_id] * n
+            self.context_metrics["majorLeague"].append(major_league)
+            self.context_metrics["majorLeagueId"].append(major_league_id)
 
         return self.context_metrics
