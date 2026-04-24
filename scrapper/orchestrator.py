@@ -93,7 +93,7 @@ def insert_to_database(
     Raises:
         RuntimeError: if all retry attempts are exhausted.
     """
-    logger.info("%s: Inserting into database.", table_name)
+    logger.info(f"{table_name}: Inserting {len(dataframe)} records into database." )
 
     last_exc: Exception | None = None
 
