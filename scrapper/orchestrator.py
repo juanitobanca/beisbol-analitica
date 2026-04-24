@@ -35,7 +35,7 @@ def _fetch_game( game_pk, major_league, major_league_id ):
 
     return b, p, cm
 
-def getSchedule( p_file, p_date, p_startDate, p_endDate, p_sportId, p_leagueId ):
+def getSchedule( p_date, p_startDate, p_endDate, p_sportId, p_leagueId ):
 
     print("Getting Schedules")
 
