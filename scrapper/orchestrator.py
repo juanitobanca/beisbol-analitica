@@ -116,11 +116,11 @@ def scrapeAndInsertData( p_games, p_batch, p_con, start_date, end_date, major_le
 
        # Crear instancias vacías que recibirán los resultados fusionados
        box = boxscore()
-       box.setData( [] )          # inicializa todos los dicts con listas vacías
+       box._init_datasets()
        play = playByPlay()
-       play.setData( [] )
+       play._init_datasets()
        cnt = contextMetrics()
-       cnt.setData( [], major_league, major_league_id )
+       cnt._init_datasets()
 
        # Descargar todos los juegos del chunk en paralelo.
        # Cada worker opera sobre su propia instancia — sin estado compartido.
