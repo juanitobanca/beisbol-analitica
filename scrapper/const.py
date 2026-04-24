@@ -71,7 +71,7 @@ def parseJson( parsing_arg, file ):
 
 def jsonIsValid( json ):
 
-    if 'message' in json.keys() and ( json['message'] == "Comparison method violates its general contract!" or json['messageNumber'] in [1, 13] ):
+    if 'message' in json.keys() and ( json['message'] == "Comparison method violates its general contract!" or json.get('messageNumber') in [1, 13] ):
         return False
 
     elif not json.keys():
