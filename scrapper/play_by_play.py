@@ -163,12 +163,12 @@ class PlayByPlay(BaseScraper):
         self._init_datasets()
 
         for game_pk in game_pks:
-            self.json = c.parse_json(game_pk, c.ENDPOINT_PLAY_BY_PLAY)
+            json_data = c.parse_json(game_pk, c.ENDPOINT_PLAY_BY_PLAY)
 
-            if not c.json_is_valid(self.json):
+            if not c.json_is_valid(json_data):
                 continue
 
-            for play in self.json["allPlays"]:
+            for play in json_data["allPlays"]:
                 self.atbat["gamePk"].append(game_pk)
                 self._set_about_result_count(play, c.PLAY_ABOUT_FLAG, c.PLAY_ABOUT, self.atbat)
                 self._set_about_result_count(play, c.PLAY_RESULT_FLAG, c.PLAY_RESULT, self.atbat)

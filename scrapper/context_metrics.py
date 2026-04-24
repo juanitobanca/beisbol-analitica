@@ -17,9 +17,9 @@ class ContextMetrics(BaseScraper):
         self.context_metrics: Dataset = {}
         super().__init__()
 
-    def _set_context_metrics(self, flag: str, fields: list[str], dataset: Dataset) -> None:
+    def _set_context_metrics(self, json_data: dict, flag: str, fields: list[str], dataset: Dataset) -> None:
         """Extract context metrics using flag-specific JSON navigation."""
-        game = self.json.get("game", {})
+        game = json_data.get("game", {})
 
         def resolver_game(node: dict | None, field: str) -> Any:
             return nav(game, field)
@@ -49,7 +49,7 @@ class ContextMetrics(BaseScraper):
             c.CONTEXT_GAME_HOME_FLAG: resolver_team_side,
         }
 
-        resolver = resolver_map.get(flag, lambda n, f: nav(self.json, f))
+        resolver = resolver_map.get(flag, lambda n, f: nav(json_data, f))
         extract_fields(None, fields, dataset, resolver)
 
     def _init_datasets(self) -> None:
@@ -69,16 +69,16 @@ class ContextMetrics(BaseScraper):
         self._init_datasets()
 
         for game_pk in game_pks:
-            self.json = c.parse_json(game_pk, c.ENDPOINT_CONTEXT_METRICS)
+            json_data = c.parse_json(game_pk, c.ENDPOINT_CONTEXT_METRICS)
 
-            if not c.json_is_valid(self.json):
+            if not c.json_is_valid(json_data):
                 continue
 
-            self._set_context_metrics(c.CONTEXT_GAME_FLAG, c.CONTEXT_GAME, self.context_metrics)
-            self._set_context_metrics(c.CONTEXT_GAME_STATUS_FLAG, c.CONTEXT_GAME_STATUS, self.context_metrics)
-            self._set_context_metrics(c.CONTEXT_GAME_AWAY_FLAG, c.CONTEXT_GAME_AWAY, self.context_metrics)
-            self._set_context_metrics(c.CONTEXT_GAME_HOME_FLAG, c.CONTEXT_GAME_HOME, self.context_metrics)
-            self._set_context_metrics(c.CONTEXT_GAME_VENUE_FLAG, c.CONTEXT_GAME_VENUE, self.context_metrics)
+            self._set_context_metrics(json_data, c.CONTEXT_GAME_FLAG, c.CONTEXT_GAME, self.context_metrics)
+            self._set_context_metrics(json_data, c.CONTEXT_GAME_STATUS_FLAG, c.CONTEXT_GAME_STATUS, self.context_metrics)
+            self._set_context_metrics(json_data, c.CONTEXT_GAME_AWAY_FLAG, c.CONTEXT_GAME_AWAY, self.context_metrics)
+            self._set_context_metrics(json_data, c.CONTEXT_GAME_HOME_FLAG, c.CONTEXT_GAME_HOME, self.context_metrics)
+            self._set_context_metrics(json_data, c.CONTEXT_GAME_VENUE_FLAG, c.CONTEXT_GAME_VENUE, self.context_metrics)
 
         n = len(self.context_metrics["gamePk"])
         self.context_metrics["majorLeague"] = [major_league] * n

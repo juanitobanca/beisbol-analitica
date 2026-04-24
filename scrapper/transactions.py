@@ -54,12 +54,12 @@ class Transactions(BaseScraper):
                 continue
 
             parsing_arg = f"teamId={team_id}&startDate={start_date}&endDate={end_date}"
-            self.json = c.parse_json(parsing_arg, c.ENDPOINT_TRANSACTIONS)
+            json_data = c.parse_json(parsing_arg, c.ENDPOINT_TRANSACTIONS)
 
-            if not c.json_is_valid(self.json):
+            if not c.json_is_valid(json_data):
                 continue
 
-            for transaction in self.json["transactions"]:
+            for transaction in json_data["transactions"]:
                 self._append_transaction(transaction, team_id, self.transactions)
 
         return self.transactions

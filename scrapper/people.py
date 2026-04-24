@@ -53,12 +53,12 @@ class People(BaseScraper):
             batch = id_list[start : start + settings.people_batch_size]
             parsing_arg = ",".join(str(int(i)) for i in batch)
 
-            self.json = c.parse_json(parsing_arg, c.ENDPOINT_PEOPLE_BATCH)
+            json_data = c.parse_json(parsing_arg, c.ENDPOINT_PEOPLE_BATCH)
 
-            if not c.json_is_valid(self.json):
+            if not c.json_is_valid(json_data):
                 continue
 
-            for person in self.json["people"]:
+            for person in json_data["people"]:
                 self._set_people(person, c.PEOPLE_META_FLAG, c.PEOPLE_META, self.people)
                 self._set_people(person, c.PEOPLE_PRIMARY_POSITION_FLAG, c.PEOPLE_PRIMARY_POSITION, self.people)
                 self._set_people(person, c.PEOPLE_BAT_SIDE_FLAG, c.PEOPLE_BAT_SIDE, self.people)

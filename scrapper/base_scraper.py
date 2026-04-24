@@ -11,7 +11,6 @@ class BaseScraper(ABC):
     """Common interface for scrapers that fetch and parse MLB Stats API data."""
 
     def __init__(self) -> None:
-        self.json: dict | None = None
         self.datasets: dict[str, Dataset] = {}
         self._init_datasets()
 
