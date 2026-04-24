@@ -116,8 +116,7 @@ major_id_dic = { 'MLB': 1
                }
 
 
-major_league = None
-major_league_id = None
+
 
 
 # STAGING TABLE CONSTANTS

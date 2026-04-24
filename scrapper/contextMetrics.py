@@ -45,7 +45,7 @@ class contextMetrics:
             d[s_].append( v_ )
 
 
-    def setData( self, game_pk ):
+    def setData( self, game_pk, major_league=None, major_league_id=None ):
 
         self.contextMetrics = c.createDataset( c.contextGame
                                              + c.contextGameStatus
@@ -67,8 +67,7 @@ class contextMetrics:
             self.setContextMetrics( c.contextGameHome_flag,   c.contextGameHome,   self.contextMetrics )
             self.setContextMetrics( c.contextGameVenue_flag,  c.contextGameVenue,  self.contextMetrics )
 
-        self.contextMetrics['majorLeague'] = [c.major_league ] * len( self.contextMetrics['gamePk'] )
-        self.contextMetrics['majorLeagueId'] = [c.major_league_id ] * len( self.contextMetrics['gamePk'] )
-
+        self.contextMetrics['majorLeague']   = [major_league]    * len( self.contextMetrics['gamePk'] )
+        self.contextMetrics['majorLeagueId'] = [major_league_id] * len( self.contextMetrics['gamePk'] )
 
         return self.contextMetrics

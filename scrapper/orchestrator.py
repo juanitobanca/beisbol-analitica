@@ -15,7 +15,7 @@ def _merge_dicts( base, incoming ):
     for key in base:
         base[key].extend( incoming[key] )
 
-def _fetch_game( game_pk ):
+def _fetch_game( game_pk, major_league, major_league_id ):
     """
     Descarga y parsea los 3 endpoints de un juego usando instancias locales al thread.
 
@@ -31,7 +31,7 @@ def _fetch_game( game_pk ):
     p.setData( [game_pk] )
 
     cm = contextMetrics()
-    cm.setData( [game_pk] )
+    cm.setData( [game_pk], major_league, major_league_id )
 
     return b, p, cm
 
@@ -98,7 +98,7 @@ def toPandas( d ):
 
     return p
 
-def scrapeAndInsertData( p_games, p_batch, p_con, start_date, end_date, max_workers=10 ):
+def scrapeAndInsertData( p_games, p_batch, p_con, start_date, end_date, major_league, major_league_id, max_workers=10 ):
 
     print('Starting scrape and insert for '+str(len(p_games))+' games.')
 
@@ -120,12 +120,12 @@ def scrapeAndInsertData( p_games, p_batch, p_con, start_date, end_date, max_work
        play = playByPlay()
        play.setData( [] )
        cnt = contextMetrics()
-       cnt.setData( [] )
+       cnt.setData( [], major_league, major_league_id )
 
        # Descargar todos los juegos del chunk en paralelo.
        # Cada worker opera sobre su propia instancia — sin estado compartido.
        with ThreadPoolExecutor(max_workers=max_workers) as pool:
-           futures = { pool.submit(_fetch_game, gk): gk for gk in chunk_games }
+           futures = { pool.submit(_fetch_game, gk, major_league, major_league_id): gk for gk in chunk_games }
            for future in as_completed(futures):
                gk = futures[future]
                try:
@@ -227,15 +227,13 @@ if __name__ == '__main__':
     # Parse Arguments
     args = parser.parse_args()
 
-    # Here we assign the value thats gonna be inserted for major_league_id in the db.
-    # Kindly look at contextMetrics.py
-    c.major_league    = args.lg
-    c.major_league_id = c.major_id_dic[ args.lg ]
-    sportId           = c.sports_id_dic[ args.lg ]
+    major_league    = args.lg
+    major_league_id = c.major_id_dic[ args.lg ]
+    sportId         = c.sports_id_dic[ args.lg ]
 
     # Create connection
     con = initConnection( args.con )
 
     # Read and filter file
-    d = getSchedule( args.file, args.date, args.startDate, args.endDate, sportId, c.major_league_id )
-    scrapeAndInsertData( d, args.batch, con, args.startDate, args.endDate, max_workers=args.workers )
+    d = getSchedule( args.file, args.date, args.startDate, args.endDate, sportId, major_league_id )
+    scrapeAndInsertData( d, args.batch, con, args.startDate, args.endDate, major_league, major_league_id, max_workers=args.workers )
