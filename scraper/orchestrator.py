@@ -20,12 +20,10 @@ logger = logging.getLogger(__name__)
 def _scrape_and_insert_chunk(
     chunk: ChunkResult,
     engine,
-    start_date: str,
-    end_date: str,
     seen_ppl: set,
     seen_officials: set,
+    seen_teams: set,
     people_scraper: People,
-    transaction_scraper: Transactions,
 ) -> None:
     """Insert all datasets from a single chunk into the database."""
     for scraper in (chunk.ctx, chunk.box, chunk.play):
@@ -49,10 +47,7 @@ def _scrape_and_insert_chunk(
     db.insert_dataset(people_scraper.people, engine, STG_OFFICIALS)
 
     ctx = chunk.ctx
-    tm_set = set(ctx.context_metrics["homeId"])
-    transaction_scraper.set_data(tm_set, start_date=start_date, end_date=end_date)
-    for table_name, dataset in transaction_scraper.datasets.items():
-        db.insert_dataset(dataset, engine, table_name)
+    seen_teams.update(ctx.context_metrics["homeId"])
 
 
 def run(
@@ -70,6 +65,7 @@ def run(
 
     seen_ppl: set = set()
     seen_officials: set = set()
+    seen_teams: set = set()
     people_scraper = People()
     transaction_scraper = Transactions()
 
@@ -81,9 +77,15 @@ def run(
         chunk = scrape_chunk(chunk_games, major_league, major_league_id, max_workers)
 
         _scrape_and_insert_chunk(
-            chunk, engine, start_date, end_date,
-            seen_ppl, seen_officials, people_scraper, transaction_scraper,
+            chunk, engine,
+            seen_ppl, seen_officials, seen_teams, people_scraper,
         )
+
+    if seen_teams:
+        valid_teams = {t for t in seen_teams if t}
+        transaction_scraper.set_data(valid_teams, start_date=start_date, end_date=end_date)
+        for table_name, dataset in transaction_scraper.datasets.items():
+            db.insert_dataset(dataset, engine, table_name)
 
 
 if __name__ == "__main__":
