@@ -158,43 +158,4 @@ sequenceDiagram
     end
 ```
 
-## Diagrama de Directorioes
 
-```mermaid
-
-flowchart TD
-
-ROOT[mlb-scraper]
-
-ROOT --> ORCH[orchestrator.py]
-ROOT --> SCH[scheduler.py]
-ROOT --> PIPE[pipeline.py]
-ROOT --> DBW[db_writer.py]
-ROOT --> README[README.md]
-
-ROOT --> SCR[ scrapers/ ]
-SCR --> BASE[base_scraper.py]
-SCR --> BOX[boxscore.py]
-SCR --> PBP[play_by_play.py]
-SCR --> CTX[context_metrics.py]
-SCR --> PPL[people.py]
-SCR --> TRX[transactions.py]
-
-ROOT --> INF[ infra/ ]
-INF --> HTTP[http_client.py]
-INF --> END[endpoints.py]
-INF --> CFG[config.py]
-INF --> DATA[dataset.py]
-INF --> EXT[extractor.py]
-INF --> MAP[mappings.py]
-INF --> TBL[table_names.py]
-
-ROOT --> CONST[ const/ ]
-CONST --> CINIT[__init__.py]
-CONST --> CEND[endpoints.py]
-CONST --> CCTX[context_metrics.py]
-CONST --> CPPL[people.py]
-CONST --> CTRX[transactions.py]
-CONST --> CPBP[play_by_play.py]
-CONST --> CBOX[boxscore.py]
-```
