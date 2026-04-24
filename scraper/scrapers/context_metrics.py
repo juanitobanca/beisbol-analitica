@@ -4,6 +4,7 @@ import logging
 from typing import Any
 
 import constants as c
+from constants.table_names import STG_GAME_CONTEXT
 from core.dataset import Dataset, create_dataset, json_is_valid
 from core.endpoints import game_url
 from core.extractor import extract_fields, nav
@@ -57,11 +58,11 @@ class ContextMetrics(BaseScraper):
         extract_fields(None, fields, dataset, resolver)
 
     def _init_datasets(self) -> None:
-        self.context_metrics = create_dataset(
+        self.context_metrics = self._register(STG_GAME_CONTEXT, create_dataset(
             c.CONTEXT_GAME + c.CONTEXT_GAME_STATUS + c.CONTEXT_GAME_AWAY + c.CONTEXT_GAME_HOME + c.CONTEXT_GAME_VENUE
             + ["majorLeague", "majorLeagueId"],
             None,
-        )
+        ))
 
     def set_data(
         self,

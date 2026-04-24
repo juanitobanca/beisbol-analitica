@@ -5,6 +5,7 @@ from typing import Any
 
 import constants as c
 from core.config import settings
+from constants.table_names import STG_PLAYERS
 from core.dataset import Dataset, create_dataset, json_is_valid
 from core.endpoints import people_batch_url
 from core.http_client import http_client
@@ -37,10 +38,10 @@ class People(BaseScraper):
             dataset[field].append(value)
 
     def _init_datasets(self) -> None:
-        self.people = create_dataset(
+        self.people = self._register(STG_PLAYERS, create_dataset(
             c.PEOPLE_PRIMARY_POSITION + c.PEOPLE_BAT_SIDE + c.PEOPLE_PITCH_HAND,
             c.PEOPLE_META,
-        )
+        ))
 
     def set_data(self, people_ids: set | list, **kwargs: Any) -> Dataset:
         """Fetch and parse people data in batches."""

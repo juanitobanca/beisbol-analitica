@@ -4,6 +4,12 @@ import logging
 from typing import Any
 
 import constants as c
+from constants.table_names import (
+    STG_BOX_INFO, STG_BOX_OFFICIALS, STG_BOX_TEAM, STG_BOX_TEAM_BATTING,
+    STG_BOX_TEAM_PITCHING, STG_BOX_TEAM_FIELDING, STG_BOX_TEAM_BATTING_ORDER,
+    STG_BOX_PLAYER_BATTING, STG_BOX_PLAYER_PITCHING, STG_BOX_PLAYER_FIELDING,
+    STG_BOX_PLAYER_GAME_INFO, STG_BOX_PLAYER_GAME_POSITIONS,
+)
 from core.dataset import Dataset, create_dataset, json_is_valid
 from core.endpoints import game_url
 from core.extractor import extract_fields, nav, nav_id, nav_name, nav_link
@@ -106,30 +112,30 @@ class Boxscore(BaseScraper):
         extract_fields(node, fields, dataset, nav)
 
     def _init_datasets(self) -> None:
-        self.info = create_dataset(c.BOX_INFO_DETAILS, c.BOX_INFO_META)
-        self.official_types = create_dataset(c.BOX_OFFICIALS_DETAILS, c.BOX_OFFICIALS_META)
+        self.info = self._register(STG_BOX_INFO, create_dataset(c.BOX_INFO_DETAILS, c.BOX_INFO_META))
+        self.official_types = self._register(STG_BOX_OFFICIALS, create_dataset(c.BOX_OFFICIALS_DETAILS, c.BOX_OFFICIALS_META))
 
-        self.team = create_dataset(
+        self.team = self._register(STG_BOX_TEAM, create_dataset(
             c.BOX_TEAM_META2 + c.BOX_TEAM_LEAGUE + c.BOX_TEAM_VENUE + c.BOX_TEAM_DIVISION,
             c.BOX_TEAM_META,
-        )
+        ))
 
-        self.team_batting = create_dataset(c.BOX_TEAM_BATTING_STATS, c.BOX_TEAM_META)
-        self.team_pitching = create_dataset(c.BOX_TEAM_PITCHING_STATS, c.BOX_TEAM_META)
-        self.team_fielding = create_dataset(c.BOX_TEAM_FIELDING_STATS, c.BOX_TEAM_META)
+        self.team_batting = self._register(STG_BOX_TEAM_BATTING, create_dataset(c.BOX_TEAM_BATTING_STATS, c.BOX_TEAM_META))
+        self.team_pitching = self._register(STG_BOX_TEAM_PITCHING, create_dataset(c.BOX_TEAM_PITCHING_STATS, c.BOX_TEAM_META))
+        self.team_fielding = self._register(STG_BOX_TEAM_FIELDING, create_dataset(c.BOX_TEAM_FIELDING_STATS, c.BOX_TEAM_META))
 
-        self.team_batting_order = create_dataset(c.BOX_TEAM_BATTING_ORDER_FIELDS, c.BOX_TEAM_BATTING_ORDER_META)
+        self.team_batting_order = self._register(STG_BOX_TEAM_BATTING_ORDER, create_dataset(c.BOX_TEAM_BATTING_ORDER_FIELDS, c.BOX_TEAM_BATTING_ORDER_META))
 
-        self.player_batting = create_dataset(c.BOX_PLAYER_BATTING_STATS, c.BOX_PLAYER_META)
-        self.player_pitching = create_dataset(c.BOX_PLAYER_PITCHING_STATS, c.BOX_PLAYER_META)
-        self.player_fielding = create_dataset(c.BOX_PLAYER_FIELDING_STATS, c.BOX_PLAYER_META)
+        self.player_batting = self._register(STG_BOX_PLAYER_BATTING, create_dataset(c.BOX_PLAYER_BATTING_STATS, c.BOX_PLAYER_META))
+        self.player_pitching = self._register(STG_BOX_PLAYER_PITCHING, create_dataset(c.BOX_PLAYER_PITCHING_STATS, c.BOX_PLAYER_META))
+        self.player_fielding = self._register(STG_BOX_PLAYER_FIELDING, create_dataset(c.BOX_PLAYER_FIELDING_STATS, c.BOX_PLAYER_META))
 
-        self.player_game_info = create_dataset(
+        self.player_game_info = self._register(STG_BOX_PLAYER_GAME_INFO, create_dataset(
             c.BOX_PLAYER_GAME_STATUS + c.BOX_PLAYER_PERSON + c.BOX_PLAYER_POSITION,
             c.BOX_PLAYER_META,
-        )
+        ))
 
-        self.player_game_positions = create_dataset(c.BOX_PLAYER_ALL_POSITIONS, c.BOX_PLAYER_META)
+        self.player_game_positions = self._register(STG_BOX_PLAYER_GAME_POSITIONS, create_dataset(c.BOX_PLAYER_ALL_POSITIONS, c.BOX_PLAYER_META))
 
     def set_data(self, game_pks: list[int], **kwargs: Any) -> None:
         """Fetch and parse boxscore data for each game PK."""

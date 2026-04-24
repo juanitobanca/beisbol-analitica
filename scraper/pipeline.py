@@ -4,8 +4,8 @@ import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 
-from core.dataset import Dataset
 from scrapers import Boxscore, ContextMetrics, PlayByPlay
+from scrapers.base import BaseScraper
 
 logger = logging.getLogger(__name__)
 
@@ -18,10 +18,11 @@ class ChunkResult:
     ctx: ContextMetrics
 
 
-def _merge_datasets(base: Dataset, incoming: Dataset) -> None:
-    """Extend each list in *base* with the corresponding list from *incoming*."""
-    for key in base:
-        base[key].extend(incoming[key])
+def _merge_scraper(accumulator: BaseScraper, fetched: BaseScraper) -> None:
+    """Merge all registered datasets from *fetched* into *accumulator*."""
+    for table_name, dataset in accumulator.datasets.items():
+        for key in dataset:
+            dataset[key].extend(fetched.datasets[table_name][key])
 
 
 def _fetch_game(
@@ -40,29 +41,6 @@ def _fetch_game(
     ctx.set_data([game_pk], major_league, major_league_id)
 
     return box, play, ctx
-
-
-def _merge_into_accumulator(
-    box_acc: Boxscore,
-    play_acc: PlayByPlay,
-    ctx_acc: ContextMetrics,
-    fetched_box: Boxscore,
-    fetched_play: PlayByPlay,
-    fetched_ctx: ContextMetrics,
-) -> None:
-    """Merge a single game's results into the chunk accumulators."""
-    for attr in (
-        "info", "official_types", "team", "team_batting", "team_pitching",
-        "team_fielding", "team_batting_order", "player_batting",
-        "player_pitching", "player_fielding", "player_game_info",
-        "player_game_positions",
-    ):
-        _merge_datasets(getattr(box_acc, attr), getattr(fetched_box, attr))
-
-    for attr in ("atbat", "runner", "credit", "pitch", "action", "pickoff"):
-        _merge_datasets(getattr(play_acc, attr), getattr(fetched_play, attr))
-
-    _merge_datasets(ctx_acc.context_metrics, fetched_ctx.context_metrics)
 
 
 def scrape_chunk(
@@ -99,6 +77,8 @@ def scrape_chunk(
                 logger.error("Game %s failed: %s", gk, exc)
                 continue
 
-            _merge_into_accumulator(box_acc, play_acc, ctx_acc, fetched_box, fetched_play, fetched_ctx)
+            _merge_scraper(box_acc, fetched_box)
+            _merge_scraper(play_acc, fetched_play)
+            _merge_scraper(ctx_acc, fetched_ctx)
 
     return ChunkResult(box=box_acc, play=play_acc, ctx=ctx_acc)

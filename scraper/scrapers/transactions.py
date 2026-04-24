@@ -4,6 +4,7 @@ import logging
 from typing import Any
 
 import constants as c
+from constants.table_names import STG_TRANSACTIONS
 from core.dataset import Dataset, create_dataset, json_is_valid
 from core.endpoints import transactions_url
 from core.http_client import http_client
@@ -38,10 +39,10 @@ class Transactions(BaseScraper):
         dataset["teamId"].append(team_id)
 
     def _init_datasets(self) -> None:
-        self.transactions = create_dataset(
+        self.transactions = self._register(STG_TRANSACTIONS, create_dataset(
             c.TRANSACTIONS_PERSON_ID + c.TRANSACTIONS_TO_TEAM_ID + c.TRANSACTIONS_TEAM_ID,
             c.TRANSACTIONS_META,
-        )
+        ))
 
     def set_data(
         self,

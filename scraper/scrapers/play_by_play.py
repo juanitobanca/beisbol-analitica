@@ -4,6 +4,10 @@ import logging
 from typing import Any
 
 import constants as c
+from constants.table_names import (
+    STG_PLAY_ATBAT, STG_PLAY_PITCH, STG_PLAY_ACTION,
+    STG_PLAY_PICKOFF, STG_PLAY_RUNNER, STG_PLAY_CREDIT,
+)
 from core.dataset import Dataset, create_dataset, json_is_valid
 from core.endpoints import game_url
 from core.extractor import extract_fields, nav, nav_id, nav_code, nav_description
@@ -128,39 +132,39 @@ class PlayByPlay(BaseScraper):
         extract_fields(None, fields, dataset, resolver)
 
     def _init_datasets(self) -> None:
-        self.atbat = create_dataset(
+        self.atbat = self._register(STG_PLAY_ATBAT, create_dataset(
             c.PLAY_ABOUT + c.PLAY_RESULT + c.PLAY_COUNT
             + c.PLAY_MATCHUP_BATSIDE + c.PLAY_MATCHUP_PITCHHAND
             + c.PLAY_MATCHUP_PITCHER + c.PLAY_MATCHUP_BATTER + c.PLAY_MATCHUP_SPLITS,
             c.PLAY_ATBAT_META,
-        )
+        ))
 
-        self.pitch = create_dataset(
+        self.pitch = self._register(STG_PLAY_PITCH, create_dataset(
             c.PITCH_DETAILS + c.PITCH_COUNT + c.PITCH_DATA
             + c.PITCH_DATA_COORD + c.PITCH_DATA_BREAKS
             + c.PITCH_HIT_DATA + c.PITCH_HIT_DATA_COORD,
             c.PITCH_META + c.PITCH_META2,
-        )
+        ))
 
-        self.action = create_dataset(
+        self.action = self._register(STG_PLAY_ACTION, create_dataset(
             c.ACTION_DETAILS + c.ACTION_COUNT + c.ACTION_PLAYER + c.ACTION_POSITION,
             c.ACTION_META + c.ACTION_META2,
-        )
+        ))
 
-        self.pickoff = create_dataset(
+        self.pickoff = self._register(STG_PLAY_PICKOFF, create_dataset(
             c.PICKOFF_DETAILS + c.PICKOFF_COUNT,
             c.PICKOFF_META + c.PICKOFF_META2,
-        )
+        ))
 
-        self.runner = create_dataset(
+        self.runner = self._register(STG_PLAY_RUNNER, create_dataset(
             c.PLAY_RUNNER_MOVEMENT + c.PLAY_RUNNER_DETAILS,
             c.PLAY_RUNNER_META,
-        )
+        ))
 
-        self.credit = create_dataset(
+        self.credit = self._register(STG_PLAY_CREDIT, create_dataset(
             c.PLAY_CREDIT_CREDIT + c.PLAY_CREDIT_PLAYER + c.PLAY_CREDIT_POSITION,
             c.PLAY_CREDIT_META,
-        )
+        ))
 
     def set_data(self, game_pks: list[int], **kwargs: Any) -> None:
         """Fetch and parse play-by-play data for each game PK."""

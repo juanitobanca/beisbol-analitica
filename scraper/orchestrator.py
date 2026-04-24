@@ -8,16 +8,7 @@ from sqlalchemy import create_engine
 
 import db
 from constants import LEAGUE_ID, SPORT_ID
-from constants.table_names import (
-    STG_TRANSACTIONS, STG_GAME_CONTEXT,
-    STG_BOX_TEAM_BATTING, STG_BOX_TEAM_PITCHING, STG_BOX_TEAM_FIELDING,
-    STG_BOX_PLAYER_BATTING, STG_BOX_PLAYER_PITCHING, STG_BOX_PLAYER_FIELDING,
-    STG_PLAYERS, STG_OFFICIALS,
-    STG_BOX_TEAM_BATTING_ORDER, STG_BOX_TEAM, STG_BOX_PLAYER_GAME_POSITIONS,
-    STG_BOX_PLAYER_GAME_INFO, STG_BOX_INFO, STG_BOX_OFFICIALS,
-    STG_PLAY_ATBAT, STG_PLAY_RUNNER, STG_PLAY_CREDIT,
-    STG_PLAY_PITCH, STG_PLAY_ACTION, STG_PLAY_PICKOFF,
-)
+from constants.table_names import STG_OFFICIALS
 from core.config import settings
 from pipeline import ChunkResult, scrape_chunk
 from scrapers import People, Transactions
@@ -37,28 +28,11 @@ def _scrape_and_insert_chunk(
     transaction_scraper: Transactions,
 ) -> None:
     """Insert all datasets from a single chunk into the database."""
-    box, play, ctx = chunk.box, chunk.play, chunk.ctx
+    for scraper in (chunk.ctx, chunk.box, chunk.play):
+        for table_name, dataset in scraper.datasets.items():
+            db.insert_dataset(dataset, engine, table_name)
 
-    db.insert_dataset(ctx.context_metrics,        engine, STG_GAME_CONTEXT)
-    db.insert_dataset(box.info,                   engine, STG_BOX_INFO)
-    db.insert_dataset(box.official_types,          engine, STG_BOX_OFFICIALS)
-    db.insert_dataset(box.team_batting,            engine, STG_BOX_TEAM_BATTING)
-    db.insert_dataset(box.team_pitching,           engine, STG_BOX_TEAM_PITCHING)
-    db.insert_dataset(box.team_fielding,           engine, STG_BOX_TEAM_FIELDING)
-    db.insert_dataset(box.player_batting,          engine, STG_BOX_PLAYER_BATTING)
-    db.insert_dataset(box.player_pitching,         engine, STG_BOX_PLAYER_PITCHING)
-    db.insert_dataset(box.player_fielding,         engine, STG_BOX_PLAYER_FIELDING)
-    db.insert_dataset(box.team_batting_order,      engine, STG_BOX_TEAM_BATTING_ORDER)
-    db.insert_dataset(box.team,                    engine, STG_BOX_TEAM)
-    db.insert_dataset(box.player_game_positions,   engine, STG_BOX_PLAYER_GAME_POSITIONS)
-    db.insert_dataset(box.player_game_info,        engine, STG_BOX_PLAYER_GAME_INFO)
-    db.insert_dataset(play.atbat,                  engine, STG_PLAY_ATBAT)
-    db.insert_dataset(play.runner,                 engine, STG_PLAY_RUNNER)
-    db.insert_dataset(play.credit,                 engine, STG_PLAY_CREDIT)
-    db.insert_dataset(play.pitch,                  engine, STG_PLAY_PITCH)
-    db.insert_dataset(play.action,                 engine, STG_PLAY_ACTION)
-    db.insert_dataset(play.pickoff,                engine, STG_PLAY_PICKOFF)
-
+    box = chunk.box
     chunk_ppl = set(box.player_game_info["playerId"])
     chunk_officials = set(box.official_types["officialId"])
 
@@ -68,14 +42,17 @@ def _scrape_and_insert_chunk(
     seen_officials |= chunk_officials
 
     people_scraper.set_data(new_ppl)
-    db.insert_dataset(people_scraper.people, engine, STG_PLAYERS)
+    for table_name, dataset in people_scraper.datasets.items():
+        db.insert_dataset(dataset, engine, table_name)
 
     people_scraper.set_data(new_officials)
     db.insert_dataset(people_scraper.people, engine, STG_OFFICIALS)
 
+    ctx = chunk.ctx
     tm_set = set(ctx.context_metrics["homeId"])
     transaction_scraper.set_data(tm_set, start_date=start_date, end_date=end_date)
-    db.insert_dataset(transaction_scraper.transactions, engine, STG_TRANSACTIONS)
+    for table_name, dataset in transaction_scraper.datasets.items():
+        db.insert_dataset(dataset, engine, table_name)
 
 
 def run(
