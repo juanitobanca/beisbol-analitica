@@ -73,7 +73,7 @@ class boxscore:
             players = self.json['teams'][t_]['players']
             for pid_key, player in players.items():
                 self.setMetadata(d, t_, None)
-                d['playerId'].append(pid_key.replace('ID', ''))
+                d['playerId'].append(int(pid_key.replace('ID', '')))
                 d['battingOrder'].append(player.get('battingOrder'))
         except Exception as e:
             print(f'setBattingOrder error: {e}')
