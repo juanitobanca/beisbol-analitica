@@ -61,7 +61,7 @@ def get_schedule(
     if start_date and end_date:
         parsing_arg = f"sportId={sport_id}{league_param}&startDate={start_date}&endDate={end_date}"
     elif date:
-        parsing_arg = f"sportId={sport_id}{league_param}"
+        parsing_arg = f"sportId={sport_id}{league_param}&date={date}"
     else:
         parsing_arg = f"sportId={sport_id}{league_param}"
 
@@ -82,17 +82,40 @@ def init_connection(connection_string: str) -> Any:
     return create_engine(connection_string)
 
 
-def insert_to_database(dataframe: pd.DataFrame, engine: Any, table_name: str) -> None:
-    """Insert a DataFrame into the database, retrying on failure."""
+def insert_to_database(
+    dataframe: pd.DataFrame,
+    engine: Any,
+    table_name: str,
+    max_retries: int = 5,
+) -> None:
+    """Insert a DataFrame into the database, retrying up to *max_retries* times.
+
+    Raises:
+        RuntimeError: if all retry attempts are exhausted.
+    """
     logger.info("%s: Inserting into database.", table_name)
 
-    while True:
+    last_exc: Exception | None = None
+
+    for attempt in range(1, max_retries + 1):
         try:
             dataframe.to_sql(name=table_name, con=engine, if_exists="append", index=False)
-        except Exception as e:
-            logger.error("%s: Issue inserting into database: %s", table_name, e)
-            continue
-        break
+            return
+        except Exception as exc:
+            last_exc = exc
+            logger.error(
+                "%s: Insert attempt %d/%d failed: %s",
+                table_name,
+                attempt,
+                max_retries,
+                exc,
+            )
+            if attempt < max_retries:
+                time.sleep(settings.retry_delay_seconds)
+
+    raise RuntimeError(
+        f"{table_name}: all {max_retries} insert attempts exhausted"
+    ) from last_exc
 
 
 def to_pandas(data: Dataset) -> pd.DataFrame:
