@@ -424,9 +424,5 @@ box_team_pitching_stats = [ 'airOuts','atBats','baseOnBalls','battersFaced','cat
                           ]
 
 #   BATTING ORDER
-box_team_batting_order = { 'gamePk'  : []
-                         , 'teamId'  : []
-                         , 'playerId': []
-                         , 'teamType': []
-                         , 'battingOrder': []
-                         }
+box_team_batting_order_meta   = [ 'gamePk', 'teamId', 'teamType' ]
+box_team_batting_order_fields = [ 'playerId', 'battingOrder' ]

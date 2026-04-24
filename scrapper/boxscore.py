@@ -147,7 +147,7 @@ class boxscore:
         self.team_pitching = c.createDataset(c.box_team_pitching_stats, c.box_team_meta)
         self.team_fielding = c.createDataset(c.box_team_fielding_stats, c.box_team_meta)
 
-        self.team_batting_order = c.createDataset(c.box_team_batting_order, c.box_team_meta)
+        self.team_batting_order = c.createDataset(c.box_team_batting_order_fields, c.box_team_batting_order_meta)
 
         self.player_batting  = c.createDataset(c.box_player_batting_stats,  c.box_player_meta)
         self.player_pitching = c.createDataset(c.box_player_pitching_stats, c.box_player_meta)
