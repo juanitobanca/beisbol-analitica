@@ -154,7 +154,7 @@ class playByPlay:
 
             d[s_].append( v_ )
 
-    def setData( self, game_pk ):
+    def _init_datasets( self ):
         self.atbat = c.createDataset( c.play_about
                                     + c.play_result
                                     + c.play_count
@@ -200,6 +200,10 @@ class playByPlay:
                                      + c.play_credit_position
                                      , c.play_credit_meta
                                      )
+
+    def setData( self, game_pk ):
+
+        self._init_datasets()
 
         for g_ in game_pk:
 
@@ -277,13 +281,3 @@ class playByPlay:
                             self.setCredit( c_, c.play_credit_credit_flag,   c.play_credit_credit,   self.credit )
                             self.setCredit( c_, c.play_credit_player_flag,   c.play_credit_player,   self.credit )
                             self.setCredit( c_, c.play_credit_position_flag, c.play_credit_position, self.credit )
-'''
-a = playByPlay()
-a.setData( [ '587933' ] )
-
-d = a.pickoff
-#print( d )
-
-json = c.parseJson( 'http://statsapi.mlb.com/api/v1/game/583614/playByPlay' )
-ap = json['allPlays']
-'''

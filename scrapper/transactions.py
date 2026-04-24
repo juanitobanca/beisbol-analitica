@@ -27,13 +27,17 @@ class transactions:
 
                 d[s_].append( v_ )
 
-    def setData( self, team_ids, startDate, endDate ):
+    def _init_datasets( self ):
 
         self.transactions = c.createDataset( c.transactions_personId
                                            + c.transactions_toTeamId
                                            + c.transactions_teamId
                                            , c.transactions_meta
                                            )
+
+    def setData( self, team_ids, startDate, endDate ):
+
+        self._init_datasets()
 
         for tm_ in team_ids:
 

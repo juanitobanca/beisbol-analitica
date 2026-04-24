@@ -45,7 +45,7 @@ class contextMetrics:
             d[s_].append( v_ )
 
 
-    def setData( self, game_pk, major_league=None, major_league_id=None ):
+    def _init_datasets( self ):
 
         self.contextMetrics = c.createDataset( c.contextGame
                                              + c.contextGameStatus
@@ -54,6 +54,10 @@ class contextMetrics:
                                              + c.contextGameVenue
                                              , None
                                              )
+
+    def setData( self, game_pk, major_league=None, major_league_id=None ):
+
+        self._init_datasets()
 
         for g_ in game_pk:
             self.json    = c.parseJson( g_, c.context_file )

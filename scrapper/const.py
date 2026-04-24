@@ -8,10 +8,6 @@ import time
 # playByPlay, people, etc.) comparten el mismo pool de conexiones.
 _session = r.Session()
 
-def writeToCSV( d, file_name):
-    print('Writing to CSV...')
-    d.to_csv( file_name, sep = ',')
-
 def createDataset( s, m ):
 
     d = {}

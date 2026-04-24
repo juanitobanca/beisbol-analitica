@@ -124,7 +124,7 @@ class boxscore:
 
             d[s_].append( v_ )
 
-    def setData( self, game_pks ):
+    def _init_datasets( self ):
 
         self.info = c.createDataset( c.box_info_details
                                    , c.box_info_meta
@@ -177,6 +177,10 @@ class boxscore:
         self.player_game_positions = c.createDataset( c.box_player_player_allPositions
                                                     , c.box_player_meta
                                                     )
+
+    def setData( self, game_pks ):
+
+        self._init_datasets()
 
         for g_ in game_pks:
             self.game_pk = g_

@@ -36,13 +36,17 @@ class people:
             d[s_].append( v_ )
 
 
-    def setData( self, people_ids ):
+    def _init_datasets( self ):
 
         self.people = c.createDataset( c.people_primaryPosition
                                      + c.people_batSide
                                      + c.people_pitchHand
                                      , c.people_meta
                                      )
+
+    def setData( self, people_ids ):
+
+        self._init_datasets()
 
         # Filtrar None/vacíos que pueden llegar desde ppl_set/official_set
         valid_ids = [ i for i in people_ids if i ]
