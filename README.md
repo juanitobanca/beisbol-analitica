@@ -50,3 +50,51 @@ Componentes reutilizables y configuración.
 
 ```bash
 python orchestrator.py --lg MLB --date 2024-04-01
+```
+---
+
+2. Schedule
+
+* scheduler.get_schedule()
+* llama /schedule
+* retorna game_pk
+
+---
+
+3. Orquestación
+
+* orchestrator.run()
+* divide en chunks (--batch)
+* itera sobre juegos
+
+---
+
+4. Scraping concurrente
+
+* pipeline.scrape_chunk()
+* usa ThreadPoolExecutor
+* cada thread ejecuta scrapers independientes
+
+---
+
+5. Scrapers
+
+* Boxscore
+* PlayByPlay
+* ContextMetrics
+
+6. Persistencia
+
+db_writer.insert_dataset():
+
+* convierte a pandas.DataFrame
+* ejecuta to_sql(if_exists="append")
+* escribe ~19 tablas staging
+
+⸻
+
+7. Post-procesamiento
+
+* People
+* Transactions
+    (se disparan con nuevos IDs del chunk)
