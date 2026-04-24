@@ -66,6 +66,7 @@ def run(
     seen_ppl: set = set()
     seen_officials: set = set()
     seen_teams: set = set()
+    all_failed: list[int] = []
     people_scraper = People()
     transaction_scraper = Transactions()
 
@@ -75,6 +76,7 @@ def run(
         logger.info("Chunk %d: scraping %d games.", chunk_num, len(chunk_games))
 
         chunk = scrape_chunk(chunk_games, major_league, major_league_id, max_workers)
+        all_failed.extend(chunk.failed_game_pks)
 
         _scrape_and_insert_chunk(
             chunk, engine,
@@ -86,6 +88,14 @@ def run(
         transaction_scraper.set_data(valid_teams, start_date=start_date, end_date=end_date)
         for table_name, dataset in transaction_scraper.datasets.items():
             db.insert_dataset(dataset, engine, table_name)
+
+    if all_failed:
+        logger.error(
+            "Pipeline finished with %d/%d games failed: %s",
+            len(all_failed), len(game_pks), all_failed,
+        )
+    else:
+        logger.info("Pipeline finished successfully. %d games processed.", len(game_pks))
 
 
 if __name__ == "__main__":

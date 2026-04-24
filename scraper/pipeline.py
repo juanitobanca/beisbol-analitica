@@ -16,6 +16,7 @@ class ChunkResult:
     box: Boxscore
     play: PlayByPlay
     ctx: ContextMetrics
+    failed_game_pks: list[int]
 
 
 def _merge_scraper(accumulator: BaseScraper, fetched: BaseScraper) -> None:
@@ -63,6 +64,7 @@ def scrape_chunk(
     box_acc = Boxscore()
     play_acc = PlayByPlay()
     ctx_acc = ContextMetrics()
+    failed: list[int] = []
 
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         futures = {
@@ -75,10 +77,17 @@ def scrape_chunk(
                 fetched_box, fetched_play, fetched_ctx = future.result()
             except Exception as exc:
                 logger.error("Game %s failed: %s", gk, exc)
+                failed.append(gk)
                 continue
 
             _merge_scraper(box_acc, fetched_box)
             _merge_scraper(play_acc, fetched_play)
             _merge_scraper(ctx_acc, fetched_ctx)
 
-    return ChunkResult(box=box_acc, play=play_acc, ctx=ctx_acc)
+    if failed:
+        logger.warning(
+            "Chunk finished with %d/%d games failed: %s",
+            len(failed), len(game_pks), failed,
+        )
+
+    return ChunkResult(box=box_acc, play=play_acc, ctx=ctx_acc, failed_game_pks=failed)
