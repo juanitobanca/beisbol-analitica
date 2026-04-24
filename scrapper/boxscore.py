@@ -53,12 +53,7 @@ class boxscore:
 
                         break
 
-                d[s_].append( v_ )
-
-            else:
-
-                for s_ in s:
-                    d[s_] = None
+            d[s_].append( v_ )
 
     def setBattingOrder( self, t_, d ):
 
