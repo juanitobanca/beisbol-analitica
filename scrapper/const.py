@@ -1,161 +1,113 @@
-"""Constants and shared utilities for the MLB Stats API scrapper."""
+"""Field schema definitions for all MLB Stats API scrapers.
 
-import logging
-import time
-from typing import Any
+Utilities and infrastructure that previously lived here have been split into
+focused modules:
 
-import requests as r
+    http_client  — HTTP session and retry logic
+    endpoints    — URL construction per endpoint
+    dataset      — Dataset type, create_dataset(), json_is_valid()
+    mappings     — SPORT_ID / LEAGUE_ID lookup tables
+    table_names  — STG_* staging table name constants
 
-from config import settings
-
-logger = logging.getLogger(__name__)
-
-Dataset = dict[str, list[Any]]
-
-_session = r.Session()
-
-
-def create_dataset(fields: list[str], meta_fields: list[str] | None) -> Dataset:
-    """Build an empty dataset dict with a list per field name."""
-    dataset: Dataset = {}
-    for field in fields:
-        dataset[field] = []
-    if meta_fields:
-        for meta_field in meta_fields:
-            dataset[meta_field] = []
-    return dataset
-
-
-def default_missing_value(d: dict | None, k: str, v: Any = None) -> Any:
-    """Safely get a key from a dict, returning None if absent."""
-    if not d:
-        return None
-    return d.get(k)
-
-
-def parse_json(parsing_arg: str | int, file: str) -> dict:
-    """Fetch JSON from the MLB Stats API for the given endpoint."""
-    base = settings.base_url
-
-    if file == ENDPOINT_PEOPLE_BATCH:
-        url = f"{base}/people?personIds={parsing_arg}"
-        logger.info("Players (batch): %s. Parsing %s.", parsing_arg, file)
-
-    elif file == ENDPOINT_PEOPLE:
-        url = f"{base}/people/{int(parsing_arg)}"
-        logger.info("Player: %s. Parsing %s.", int(parsing_arg), file)
-
-    elif file == ENDPOINT_TRANSACTIONS:
-        url = f"{base}/transactions?{parsing_arg}"
-        logger.info("Team: %s. Parsing %s.", parsing_arg, file)
-
-    elif file == ENDPOINT_SCHEDULE:
-        url = f"{base}/schedule?{parsing_arg}"
-        logger.info("Schedule: %s. Parsing %s.", parsing_arg, file)
-
-    else:
-        url = f"{base}/game/{int(parsing_arg)}/{file}"
-        logger.info("Game: %s. Parsing %s.", int(parsing_arg), file)
-
-    while True:
-        try:
-            response = _session.get(url)
-            return response.json()
-        except Exception as e:
-            logger.error("Error parsing game %s, file %s: %s", parsing_arg, file, e)
-            time.sleep(settings.retry_delay_seconds)
-            continue
-
-
-def json_is_valid(json_data: dict) -> bool:
-    """Check if the API response represents valid game data."""
-    if not json_data.keys():
-        return False
-
-    if "message" in json_data and (
-        json_data["message"] == "Comparison method violates its general contract!"
-        or json_data.get("messageNumber") in [1, 13]
-    ):
-        return False
-
-    return True
-
+The imports below keep every existing ``import const as c`` call working
+without modification.  Once the rest of the codebase is updated to import
+from the focused modules directly, these re-exports can be removed.
+"""
 
 # ---------------------------------------------------------------------------
-# Endpoint identifiers
+# Compatibility re-exports — remove once callers are updated
+# ---------------------------------------------------------------------------
+
+from dataset import Dataset, create_dataset, json_is_valid  # noqa: F401
+from endpoints import (  # noqa: F401
+    game_url,
+    people_url,
+    people_batch_url,
+    schedule_url,
+    transactions_url,
+)
+from http_client import http_client  # noqa: F401
+from mappings import SPORT_ID, LEAGUE_ID  # noqa: F401
+from table_names import (  # noqa: F401
+    STG_TRANSACTIONS, STG_GAME_CONTEXT,
+    STG_BOX_TEAM_BATTING, STG_BOX_TEAM_PITCHING, STG_BOX_TEAM_FIELDING,
+    STG_BOX_PLAYER_BATTING, STG_BOX_PLAYER_PITCHING, STG_BOX_PLAYER_FIELDING,
+    STG_PLAYERS, STG_OFFICIALS,
+    STG_BOX_TEAM_BATTING_ORDER, STG_BOX_TEAM, STG_BOX_PLAYER_GAME_POSITIONS,
+    STG_BOX_PLAYER_GAME_INFO, STG_BOX_INFO, STG_BOX_OFFICIALS,
+    STG_PLAY_ATBAT, STG_PLAY_RUNNER, STG_PLAY_CREDIT,
+    STG_PLAY_PITCH, STG_PLAY_ACTION, STG_PLAY_PICKOFF,
+)
+
+# ---------------------------------------------------------------------------
+# Endpoint string identifiers (used as keys inside game_url())
 # ---------------------------------------------------------------------------
 
 ENDPOINT_PLAY_BY_PLAY = "playByPlay"
 ENDPOINT_BOXSCORE = "boxscore"
+ENDPOINT_CONTEXT_METRICS = "contextMetrics"
 ENDPOINT_PEOPLE = "people"
 ENDPOINT_PEOPLE_BATCH = "people_batch"
-ENDPOINT_CONTEXT_METRICS = "contextMetrics"
 ENDPOINT_SCHEDULE = "schedule"
 ENDPOINT_TRANSACTIONS = "transactions"
 
 # ---------------------------------------------------------------------------
-# Sport / League mappings
+# parse_json() — kept here during migration so callers don't break.
+# New code should build URLs via endpoints.py and fetch via http_client.py.
 # ---------------------------------------------------------------------------
 
-SPORT_ID: dict[str, int] = {
-    "MLB": 1,
-    "LMB": 11,
-    "DSL": 16,
-    "LIDOM": 17,
-    "LMP": 17,
-    "LBPRC": 17,
-    "VSL": 17,
-    "LVBP": 17,
-    "SDC": 17,
-    "WBCQ": 51,
-    "WBC": 51,
-}
+import logging  # noqa: E402  (after re-exports intentionally)
 
-LEAGUE_ID: dict[str, int] = {
-    "MLB": 1,
-    "LMB": 125,
-    "DSL": 130,
-    "LIDOM": 131,
-    "LMP": 132,
-    "LBPRC": 133,
-    "VSL": 134,
-    "LVBP": 135,
-    "WBCQ": 159,
-    "WBC": 160,
-    "SDC": 162,
-}
+logger = logging.getLogger(__name__)
+
+
+def parse_json(parsing_arg: str | int, endpoint: str) -> dict:
+    """Fetch JSON from the MLB Stats API.
+
+    .. deprecated::
+        Build URLs with :mod:`endpoints` and fetch with :mod:`http_client`
+        directly.  This wrapper exists only for backward compatibility.
+    """
+    from endpoints import (
+        game_url, people_url, people_batch_url, schedule_url, transactions_url,
+    )
+    from http_client import http_client as _client
+
+    if endpoint == ENDPOINT_PEOPLE_BATCH:
+        url = people_batch_url([int(i) for i in str(parsing_arg).split(",")])
+    elif endpoint == ENDPOINT_PEOPLE:
+        url = people_url(int(parsing_arg))
+    elif endpoint == ENDPOINT_TRANSACTIONS:
+        url = f"from_legacy:{parsing_arg}"  # transactions_url requires structured args
+        # Fall back to raw construction to avoid breaking the Transactions scraper
+        from config import settings
+        url = f"{settings.base_url}/transactions?{parsing_arg}"
+    elif endpoint == ENDPOINT_SCHEDULE:
+        url = schedule_url(str(parsing_arg))
+    else:
+        url = game_url(int(parsing_arg), endpoint)
+
+    return _client.get_json(url)
+
 
 # ---------------------------------------------------------------------------
-# Staging table names
+# default_missing_value — kept for backward compatibility only.
+# Use dict.get(key, default) directly in new code.
 # ---------------------------------------------------------------------------
 
-STG_TRANSACTIONS = "stg_transactions"
-STG_GAME_CONTEXT = "stg_game_context"
+from typing import Any  # noqa: E402
 
-STG_BOX_TEAM_BATTING = "stg_box_team_batting"
-STG_BOX_TEAM_PITCHING = "stg_box_team_pitching"
-STG_BOX_TEAM_FIELDING = "stg_box_team_fielding"
 
-STG_BOX_PLAYER_BATTING = "stg_box_player_batting"
-STG_BOX_PLAYER_PITCHING = "stg_box_player_pitching"
-STG_BOX_PLAYER_FIELDING = "stg_box_player_fielding"
+def default_missing_value(d: dict | None, k: str, v: Any = None) -> Any:
+    """Return ``d.get(k)`` or *v* if *d* is falsy.
 
-STG_PLAYERS = "stg_players"
-STG_OFFICIALS = "stg_officials"
+    .. deprecated::
+        Use ``d.get(k)`` or ``d.get(k, default)`` directly.
+    """
+    if not d:
+        return v
+    return d.get(k)
 
-STG_BOX_TEAM_BATTING_ORDER = "stg_box_team_batting_order"
-STG_BOX_TEAM = "stg_box_team"
-STG_BOX_PLAYER_GAME_POSITIONS = "stg_box_player_game_positions"
-STG_BOX_PLAYER_GAME_INFO = "stg_box_player_game_info"
-STG_BOX_INFO = "stg_box_info"
-STG_BOX_OFFICIALS = "stg_box_officials"
-
-STG_PLAY_ATBAT = "stg_play_atbat"
-STG_PLAY_RUNNER = "stg_play_runner"
-STG_PLAY_CREDIT = "stg_play_credit"
-STG_PLAY_PITCH = "stg_play_pitch"
-STG_PLAY_ACTION = "stg_play_action"
-STG_PLAY_PICKOFF = "stg_play_pickoff"
 
 # ---------------------------------------------------------------------------
 # Context metrics field definitions
