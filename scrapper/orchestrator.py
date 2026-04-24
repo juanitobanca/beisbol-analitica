@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime as dt, timedelta as td
 from typing import Any
@@ -85,7 +86,7 @@ def insert_to_database(
     dataframe: pd.DataFrame,
     engine: Any,
     table_name: str,
-    max_retries: int = 5,
+    max_retries: int = 1,
 ) -> None:
     """Insert a DataFrame into the database, retrying up to *max_retries* times.
 
