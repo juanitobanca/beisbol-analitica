@@ -7,7 +7,7 @@ import pandas as pd
 from sqlalchemy import Engine
 
 from core.config import settings
-from core.dataset import Dataset
+from core.dataset import Dataset, DatasetAlignmentError
 
 logger = logging.getLogger(__name__)
 
@@ -59,11 +59,26 @@ def insert(
     ) from last_exc
 
 
+def _validate_alignment(data: Dataset, table_name: str) -> None:
+    """Raise if any columns in *data* have different lengths."""
+    if not data:
+        return
+    lengths = {col: len(values) for col, values in data.items()}
+    expected = next(iter(lengths.values()))
+    mismatched = {col: n for col, n in lengths.items() if n != expected}
+    if mismatched:
+        raise DatasetAlignmentError(
+            f"{table_name}: column length mismatch (expected {expected}). "
+            f"Misaligned columns: {mismatched}"
+        )
+
+
 def insert_dataset(
     data: Dataset,
     engine: Engine,
     table_name: str,
     max_retries: int = 1,
 ) -> None:
-    """Convenience wrapper: convert *data* to DataFrame and insert it."""
+    """Convenience wrapper: validate alignment, convert to DataFrame and insert."""
+    _validate_alignment(data, table_name)
     insert(to_dataframe(data), engine, table_name, max_retries)

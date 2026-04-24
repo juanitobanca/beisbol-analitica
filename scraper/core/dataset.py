@@ -5,6 +5,10 @@ from typing import Any
 Dataset = dict[str, list[Any]]
 
 
+class DatasetAlignmentError(ValueError):
+    """Raised when dataset columns have mismatched lengths."""
+
+
 def create_dataset(fields: list[str], meta_fields: list[str] | None) -> Dataset:
     """Build an empty dataset dict with one empty list per field name.
 
