@@ -98,7 +98,7 @@ def toPandas( d ):
 
     return p
 
-def scrapeAndInsertData( p_games, p_batch, p_con, max_workers=10 ):
+def scrapeAndInsertData( p_games, p_batch, p_con, start_date, end_date, max_workers=10 ):
 
     print('Starting scrape and insert for '+str(len(p_games))+' games.')
 
@@ -201,42 +201,41 @@ def scrapeAndInsertData( p_games, p_batch, p_con, max_workers=10 ):
 
        # Transactions
        tm_set = set(cnt.contextMetrics['homeId'])
-       tr.setData( tm_set, args.startDate, args.endDate )
+       tr.setData( tm_set, start_date, end_date )
        insertToDatabase( toPandas( tr.transactions ), p_con, c.s_transactions )
 
 
-# Default variables
-date  = dt.today() - td(1)
-date  = date.strftime("%Y_%m_%d")
+if __name__ == '__main__':
 
-# Argument Parser
-parser = argparse.ArgumentParser(description="Whatever")
+    # Default variables
+    date  = dt.today() - td(1)
+    date  = date.strftime("%Y_%m_%d")
 
-# Add Arguments
-# 10.0.0.243
+    # Argument Parser
+    parser = argparse.ArgumentParser(description="Whatever")
 
-parser.add_argument("--con",       action="store"  , dest = "con"                                        , default = "sqlite:///baseball.db")
-parser.add_argument("--date",      action = "store", dest = "date",      help = "Date Format: YYYY_MM_DD", default = date)
-parser.add_argument("--startDate", action = "store", dest = "startDate", help = "Date Format: YYYY_MM_DD", default = None)
-parser.add_argument("--endDate",   action = "store", dest = "endDate",   help = "Date Format: YYYY_MM_DD", default = None)
-parser.add_argument("--file",      action = "store", dest = "file"                                       , default = None)
-parser.add_argument("--batch",     action = "store", dest = "batch"                                      , default = 500, type = int )
-parser.add_argument("--lg",        action = "store", dest = "lg",        help = "Pick aaa or win"        , default = None )
-parser.add_argument("--workers",   action = "store", dest = "workers",   help = "Threads concurrentes"   , default = 10,  type = int )
+    # Add Arguments
+    parser.add_argument("--con",       action="store"  , dest = "con"                                        , default = "sqlite:///baseball.db")
+    parser.add_argument("--date",      action = "store", dest = "date",      help = "Date Format: YYYY_MM_DD", default = date)
+    parser.add_argument("--startDate", action = "store", dest = "startDate", help = "Date Format: YYYY_MM_DD", default = None)
+    parser.add_argument("--endDate",   action = "store", dest = "endDate",   help = "Date Format: YYYY_MM_DD", default = None)
+    parser.add_argument("--file",      action = "store", dest = "file"                                       , default = None)
+    parser.add_argument("--batch",     action = "store", dest = "batch"                                      , default = 500, type = int )
+    parser.add_argument("--lg",        action = "store", dest = "lg",        help = "Pick aaa or win"        , default = None )
+    parser.add_argument("--workers",   action = "store", dest = "workers",   help = "Threads concurrentes"   , default = 10,  type = int )
 
+    # Parse Arguments
+    args = parser.parse_args()
 
-# Parse Arguments
-args = parser.parse_args()
+    # Here we assign the value thats gonna be inserted for major_league_id in the db.
+    # Kindly look at contextMetrics.py
+    c.major_league    = args.lg
+    c.major_league_id = c.major_id_dic[ args.lg ]
+    sportId           = c.sports_id_dic[ args.lg ]
 
-# Here we assign the value thats gonna be inerted for major_league_id in the db.
-# Kindly look at contextMetrics.py
-c.major_league = args.lg
-c.major_league_id = c.major_id_dic[ args.lg ]
-sportId = c.sports_id_dic[args.lg]
+    # Create connection
+    con = initConnection( args.con )
 
-# Create connection
-con  = initConnection( args.con )
-
-# Read and filter file
-d = getSchedule( args.file, args.date, args.startDate, args.endDate, sportId, c.major_league_id )
-scrapeAndInsertData( d, args.batch, con, max_workers=args.workers )
+    # Read and filter file
+    d = getSchedule( args.file, args.date, args.startDate, args.endDate, sportId, c.major_league_id )
+    scrapeAndInsertData( d, args.batch, con, args.startDate, args.endDate, max_workers=args.workers )
