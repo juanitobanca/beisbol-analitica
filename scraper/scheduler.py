@@ -2,8 +2,8 @@
 
 import logging
 
-from endpoints import schedule_url
-from http_client import http_client
+from core.endpoints import schedule_url
+from core.http_client import http_client
 
 logger = logging.getLogger(__name__)
 

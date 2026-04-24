@@ -2,7 +2,8 @@
 
 from typing import Any, Callable
 
-Dataset = dict[str, list[Any]]
+from .dataset import Dataset
+
 Resolver = Callable[[dict | None, str], Any]
 
 

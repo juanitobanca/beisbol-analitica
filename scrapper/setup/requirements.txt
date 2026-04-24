@@ -1,6 +1,0 @@
-pandas
-pydantic-settings
-pyyaml
-requests
-ruff
-sqlalchemy

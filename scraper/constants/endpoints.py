@@ -1,4 +1,4 @@
-"""Endpoint string identifiers used as keys inside endpoints.game_url()."""
+"""Endpoint string identifiers used as keys inside core.endpoints URL builders."""
 
 ENDPOINT_PLAY_BY_PLAY = "playByPlay"
 ENDPOINT_BOXSCORE = "boxscore"

@@ -3,8 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-
-Dataset = dict[str, list[Any]]
+from core.dataset import Dataset
 
 
 class BaseScraper(ABC):

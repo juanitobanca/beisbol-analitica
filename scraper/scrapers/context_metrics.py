@@ -3,12 +3,13 @@
 import logging
 from typing import Any
 
-import const as c
-from base_scraper import BaseScraper, Dataset
-from dataset import create_dataset, json_is_valid
-from endpoints import game_url
-from extractor import extract_fields, nav
-from http_client import http_client
+import constants as c
+from core.dataset import Dataset, create_dataset, json_is_valid
+from core.endpoints import game_url
+from core.extractor import extract_fields, nav
+from core.http_client import http_client
+
+from .base import BaseScraper
 
 logger = logging.getLogger(__name__)
 

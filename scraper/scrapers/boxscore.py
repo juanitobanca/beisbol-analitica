@@ -3,12 +3,13 @@
 import logging
 from typing import Any
 
-import const as c
-from base_scraper import BaseScraper, Dataset
-from dataset import create_dataset, json_is_valid
-from endpoints import game_url
-from extractor import extract_fields, nav, nav_id, nav_code, nav_name, nav_link
-from http_client import http_client
+import constants as c
+from core.dataset import Dataset, create_dataset, json_is_valid
+from core.endpoints import game_url
+from core.extractor import extract_fields, nav, nav_id, nav_name, nav_link
+from core.http_client import http_client
+
+from .base import BaseScraper
 
 logger = logging.getLogger(__name__)
 
@@ -160,14 +161,10 @@ class Boxscore(BaseScraper):
                 self._set_stats(json_data, team_side, None, c.BOX_TEAM_BATTING_FLAG, c.BOX_TEAM_BATTING_STATS, self.team_batting)
 
                 self._set_metadata(json_data, self.team_pitching, team_side, None)
-                self._set_stats(
-                    json_data, team_side, None, c.BOX_TEAM_PITCHING_FLAG, c.BOX_TEAM_PITCHING_STATS, self.team_pitching
-                )
+                self._set_stats(json_data, team_side, None, c.BOX_TEAM_PITCHING_FLAG, c.BOX_TEAM_PITCHING_STATS, self.team_pitching)
 
                 self._set_metadata(json_data, self.team_fielding, team_side, None)
-                self._set_stats(
-                    json_data, team_side, None, c.BOX_TEAM_FIELDING_FLAG, c.BOX_TEAM_FIELDING_STATS, self.team_fielding
-                )
+                self._set_stats(json_data, team_side, None, c.BOX_TEAM_FIELDING_FLAG, c.BOX_TEAM_FIELDING_STATS, self.team_fielding)
 
                 self._set_batting_order(json_data, team_side, self.team_batting_order)
 
@@ -177,31 +174,13 @@ class Boxscore(BaseScraper):
                     self._set_metadata(json_data, self.player_fielding, team_side, player_key)
                     self._set_metadata(json_data, self.player_game_info, team_side, player_key)
 
-                    self._set_stats(
-                        json_data, team_side, player_key, c.BOX_PLAYER_BATTING_FLAG,
-                        c.BOX_PLAYER_BATTING_STATS, self.player_batting,
-                    )
-                    self._set_stats(
-                        json_data, team_side, player_key, c.BOX_PLAYER_PITCHING_FLAG,
-                        c.BOX_PLAYER_PITCHING_STATS, self.player_pitching,
-                    )
-                    self._set_stats(
-                        json_data, team_side, player_key, c.BOX_PLAYER_FIELDING_FLAG,
-                        c.BOX_PLAYER_FIELDING_STATS, self.player_fielding,
-                    )
+                    self._set_stats(json_data, team_side, player_key, c.BOX_PLAYER_BATTING_FLAG, c.BOX_PLAYER_BATTING_STATS, self.player_batting)
+                    self._set_stats(json_data, team_side, player_key, c.BOX_PLAYER_PITCHING_FLAG, c.BOX_PLAYER_PITCHING_STATS, self.player_pitching)
+                    self._set_stats(json_data, team_side, player_key, c.BOX_PLAYER_FIELDING_FLAG, c.BOX_PLAYER_FIELDING_STATS, self.player_fielding)
 
-                    self._set_player(
-                        json_data, team_side, player_key, c.BOX_PLAYER_GAME_STATUS_FLAG,
-                        c.BOX_PLAYER_GAME_STATUS, self.player_game_info,
-                    )
-                    self._set_player(
-                        json_data, team_side, player_key, c.BOX_PLAYER_PERSON_FLAG,
-                        c.BOX_PLAYER_PERSON, self.player_game_info,
-                    )
-                    self._set_player(
-                        json_data, team_side, player_key, c.BOX_PLAYER_POSITION_FLAG,
-                        c.BOX_PLAYER_POSITION, self.player_game_info,
-                    )
+                    self._set_player(json_data, team_side, player_key, c.BOX_PLAYER_GAME_STATUS_FLAG, c.BOX_PLAYER_GAME_STATUS, self.player_game_info)
+                    self._set_player(json_data, team_side, player_key, c.BOX_PLAYER_PERSON_FLAG, c.BOX_PLAYER_PERSON, self.player_game_info)
+                    self._set_player(json_data, team_side, player_key, c.BOX_PLAYER_POSITION_FLAG, c.BOX_PLAYER_POSITION, self.player_game_info)
 
                     player_node = json_data["teams"][team_side]["players"][player_key]
                     for position in player_node.get("allPositions", []):

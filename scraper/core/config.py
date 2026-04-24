@@ -6,7 +6,7 @@ import yaml
 from pydantic_settings import BaseSettings
 
 
-_CONFIG_PATH = Path(__file__).parent / "config.yaml"
+_CONFIG_PATH = Path(__file__).parent.parent / "config.yaml"
 
 
 def _load_yaml() -> dict:

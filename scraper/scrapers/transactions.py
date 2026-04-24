@@ -3,12 +3,12 @@
 import logging
 from typing import Any
 
-import const as c
-from base_scraper import BaseScraper, Dataset
-from config import settings
-from dataset import create_dataset, json_is_valid
-from endpoints import transactions_url
-from http_client import http_client
+import constants as c
+from core.dataset import Dataset, create_dataset, json_is_valid
+from core.endpoints import transactions_url
+from core.http_client import http_client
+
+from .base import BaseScraper
 
 logger = logging.getLogger(__name__)
 

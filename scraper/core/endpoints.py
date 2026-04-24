@@ -1,6 +1,6 @@
 """URL builders for every MLB Stats API endpoint used by the scrapers."""
 
-from config import settings
+from .config import settings
 
 
 def _base() -> str:

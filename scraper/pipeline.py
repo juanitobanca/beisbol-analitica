@@ -4,10 +4,8 @@ import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 
-from boxscore import Boxscore
-from context_metrics import ContextMetrics
-from dataset import Dataset
-from play_by_play import PlayByPlay
+from core.dataset import Dataset
+from scrapers import Boxscore, ContextMetrics, PlayByPlay
 
 logger = logging.getLogger(__name__)
 

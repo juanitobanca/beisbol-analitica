@@ -6,13 +6,9 @@ from datetime import datetime as dt, timedelta as td
 
 from sqlalchemy import create_engine
 
-import db_writer as db
-from config import settings
-from mappings import LEAGUE_ID, SPORT_ID
-from people import People
-from pipeline import scrape_chunk
-from scheduler import get_schedule
-from table_names import (
+import db
+from constants import LEAGUE_ID, SPORT_ID
+from constants.table_names import (
     STG_TRANSACTIONS, STG_GAME_CONTEXT,
     STG_BOX_TEAM_BATTING, STG_BOX_TEAM_PITCHING, STG_BOX_TEAM_FIELDING,
     STG_BOX_PLAYER_BATTING, STG_BOX_PLAYER_PITCHING, STG_BOX_PLAYER_FIELDING,
@@ -22,13 +18,16 @@ from table_names import (
     STG_PLAY_ATBAT, STG_PLAY_RUNNER, STG_PLAY_CREDIT,
     STG_PLAY_PITCH, STG_PLAY_ACTION, STG_PLAY_PICKOFF,
 )
-from transactions import Transactions
+from core.config import settings
+from pipeline import ChunkResult, scrape_chunk
+from scrapers import People, Transactions
+from scheduler import get_schedule
 
 logger = logging.getLogger(__name__)
 
 
 def _scrape_and_insert_chunk(
-    chunk: "pipeline.ChunkResult",  # noqa: F821 — avoid circular import in type hint
+    chunk: ChunkResult,
     engine,
     start_date: str,
     end_date: str,
