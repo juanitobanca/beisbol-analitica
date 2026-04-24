@@ -1,7 +1,7 @@
 from_season=2006
 to_season=2025
 last_season_remaining=2026
-leagues="LIDOM"
+leagues="MLB LMB DSL LIDOM LMP LBPRC VSL LVBP WBCQ WBC SDC"
 
 run_league() {
   local l=$1
