@@ -1,74 +1,67 @@
+"""Scraper for MLB Stats API people (players/officials) data."""
+
+import logging
+from typing import Any
+
 import const as c
+from base_scraper import BaseScraper, Dataset
+from config import settings
 
-# La API de MLB acepta hasta ~500 ids por llamada, pero 100 es un tamaño conservador
-# que evita URLs demasiado largas y facilita el retry si un batch falla.
-PEOPLE_BATCH_SIZE = 100
+logger = logging.getLogger(__name__)
 
-class people:
 
-    def __init__( self ):
-        self.json    = None
-        self.game_pk = None
-        self.people  = None
+class People(BaseScraper):
+    """Fetches and parses player biographical data in batches."""
 
-    def setPeople( self, person, f, s, d ):
-        """
-        Extrae campos de un dict 'person' individual (un elemento de json['people']).
-        Antes recibía self.json['people'][0] implícitamente; ahora el caller
-        itera sobre todos los elementos y pasa cada uno aquí.
-        """
-        for s_ in s:
+    def __init__(self) -> None:
+        self.game_pk: int | None = None
+        self.people: Dataset = {}
+        super().__init__()
 
+    def _set_people(self, person: dict, flag: str, fields: list[str], dataset: Dataset) -> None:
+        """Extract fields from an individual person dict."""
+        for field in fields:
             try:
-                if f == c.people_primaryPosition_flag:
-                    v_ = c.defaultMissingValue( person[f], s_, None )
-                elif f in [ c.people_batSide_flag, c.people_pitchHand_flag ]:
-                    if f in person:
-                        v_ = c.defaultMissingValue( person[f], 'code', None )
+                if flag == c.PEOPLE_PRIMARY_POSITION_FLAG:
+                    value = c.default_missing_value(person[flag], field, None)
+                elif flag in (c.PEOPLE_BAT_SIDE_FLAG, c.PEOPLE_PITCH_HAND_FLAG):
+                    if flag in person:
+                        value = c.default_missing_value(person[flag], "code", None)
                     else:
-                        v_ = None
+                        value = None
                 else:
-                    v_ = c.defaultMissingValue( person, s_, None )
-
+                    value = c.default_missing_value(person, field, None)
             except KeyError:
-                v_ = None
+                value = None
 
-            d[s_].append( v_ )
+            dataset[field].append(value)
 
+    def _init_datasets(self) -> None:
+        self.people = c.create_dataset(
+            c.PEOPLE_PRIMARY_POSITION + c.PEOPLE_BAT_SIDE + c.PEOPLE_PITCH_HAND,
+            c.PEOPLE_META,
+        )
 
-    def _init_datasets( self ):
-
-        self.people = c.createDataset( c.people_primaryPosition
-                                     + c.people_batSide
-                                     + c.people_pitchHand
-                                     , c.people_meta
-                                     )
-
-    def setData( self, people_ids ):
-
+    def set_data(self, people_ids: set | list, **kwargs: Any) -> Dataset:
+        """Fetch and parse people data in batches."""
         self._init_datasets()
 
-        # Filtrar None/vacíos que pueden llegar desde ppl_set/official_set
-        valid_ids = [ i for i in people_ids if i ]
-
-        # Partir en batches para reducir ~1,500 llamadas a ~15
+        valid_ids = [i for i in people_ids if i]
         id_list = list(valid_ids)
-        for start in range( 0, len(id_list), PEOPLE_BATCH_SIZE ):
-            batch = id_list[ start : start + PEOPLE_BATCH_SIZE ]
 
-            # "123,456,789" — formato que espera ?personIds=
-            parsing_arg = ','.join( str(int(i)) for i in batch )
+        for start in range(0, len(id_list), settings.people_batch_size):
+            batch = id_list[start : start + settings.people_batch_size]
+            parsing_arg = ",".join(str(int(i)) for i in batch)
 
-            self.json = c.parseJson( parsing_arg, c.ENDPOINT_PEOPLE_BATCH )
+            self.json = c.parse_json(parsing_arg, c.ENDPOINT_PEOPLE_BATCH)
 
-            if not c.jsonIsValid( self.json ):
+            if not c.json_is_valid(self.json):
                 continue
 
-            # La respuesta batch devuelve una lista; iterar sobre cada persona
-            for person in self.json['people']:
-                self.setPeople( person, c.people_meta_flag,            c.people_meta,            self.people )
-                self.setPeople( person, c.people_primaryPosition_flag, c.people_primaryPosition, self.people )
-                self.setPeople( person, c.people_batSide_flag,         c.people_batSide,         self.people )
-                self.setPeople( person, c.people_pitchHand_flag,       c.people_pitchHand,       self.people )
+            for person in self.json["people"]:
+                self._set_people(person, c.PEOPLE_META_FLAG, c.PEOPLE_META, self.people)
+                self._set_people(person, c.PEOPLE_PRIMARY_POSITION_FLAG, c.PEOPLE_PRIMARY_POSITION, self.people)
+                self._set_people(person, c.PEOPLE_BAT_SIDE_FLAG, c.PEOPLE_BAT_SIDE, self.people)
+                self._set_people(person, c.PEOPLE_PITCH_HAND_FLAG, c.PEOPLE_PITCH_HAND, self.people)
 
         return self.people

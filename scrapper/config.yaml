@@ -1,0 +1,6 @@
+base_url: "http://statsapi.mlb.com/api/v1"
+retry_delay_seconds: 20
+people_batch_size: 100
+default_batch_size: 500
+default_workers: 10
+default_db_connection: "sqlite:///baseball.db"

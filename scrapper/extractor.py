@@ -1,56 +1,13 @@
-"""
-extractor.py — utilidad central de extracción de campos JSON.
+"""Central JSON field extraction utility."""
 
-Reemplaza los ~10 métodos set* dispersos en boxscore.py, playByPlay.py
-y contextMetrics.py con una sola función parametrizable.
+from typing import Any, Callable
 
-CONCEPTO
---------
-Cada método set* original hacía lo mismo:
-    para cada campo en una lista:
-        navegar el JSON de una forma específica al contexto
-        hacer append del valor (o None si no existe)
-
-La variación entre métodos estaba únicamente en *cómo navegar* el nodo
-raíz hasta llegar al dict que contiene el campo.  Esa navegación se
-expresa ahora como un callable `resolver(node, field) -> value` que se
-pasa como argumento.  extract_fields no sabe nada de MLB; solo itera
-campos, llama al resolver y hace append.
-
-USO
----
-    from extractor import extract_fields, nav, nav_id, nav_code
-
-    # Extraer campos directamente de un nodo
-    extract_fields(node, fields, dataset, nav)
-
-    # Extraer el sub-campo 'id' de un nodo anidado
-    extract_fields(node['person'], ['personId'], dataset,
-                   lambda n, f: nav_id(n))
-
-Resolvers predefinidos (los más comunes):
-    nav(node, field)        -> node.get(field)          caso base
-    nav_id(node, field)     -> node.get('id')           para claves *Id
-    nav_code(node, field)   -> node.get('code')         para claves *Code
-    nav_name(node, field)   -> node.get('name')
-    nav_link(node, field)   -> node.get('link')
-"""
+Dataset = dict[str, list[Any]]
+Resolver = Callable[[dict | None, str], Any]
 
 
-def extract_fields(node, fields, dataset, resolver):
-    """
-    Para cada campo en `fields` llama resolver(node, field),
-    hace append del resultado en dataset[field].
-
-    Parámetros
-    ----------
-    node     : dict | None   — nodo JSON ya navegado hasta el nivel correcto
-    fields   : list[str]     — nombres de columna destino
-    dataset  : dict[str, list] — acumulador (mismo formato que createDataset)
-    resolver : callable(node, field) -> value
-                 Debe devolver el valor deseado o None.
-                 Nunca debe lanzar excepciones — usa .get() o try/except interno.
-    """
+def extract_fields(node: dict | None, fields: list[str], dataset: Dataset, resolver: Resolver) -> None:
+    """Iterate fields, call resolver(node, field), and append each result to dataset[field]."""
     for field in fields:
         try:
             value = resolver(node, field)
@@ -59,44 +16,43 @@ def extract_fields(node, fields, dataset, resolver):
         dataset[field].append(value)
 
 
-# ---------------------------------------------------------------------------
-# Resolvers estándar
-# ---------------------------------------------------------------------------
-
-def nav(node, field):
-    """Acceso directo: node.get(field)."""
+def nav(node: dict | None, field: str) -> Any:
+    """Direct access: node.get(field)."""
     if node is None:
         return None
     return node.get(field)
 
 
-def nav_id(node, field=None):
-    """Extrae la clave 'id' del nodo (ignora field)."""
+def nav_id(node: dict | None, field: str | None = None) -> Any:
+    """Extract the 'id' key from node."""
     if node is None:
         return None
-    return node.get('id')
+    return node.get("id")
 
 
-def nav_code(node, field=None):
-    """Extrae la clave 'code' del nodo."""
+def nav_code(node: dict | None, field: str | None = None) -> Any:
+    """Extract the 'code' key from node."""
     if node is None:
         return None
-    return node.get('code')
+    return node.get("code")
 
 
-def nav_name(node, field=None):
+def nav_name(node: dict | None, field: str | None = None) -> Any:
+    """Extract the 'name' key from node."""
     if node is None:
         return None
-    return node.get('name')
+    return node.get("name")
 
 
-def nav_link(node, field=None):
+def nav_link(node: dict | None, field: str | None = None) -> Any:
+    """Extract the 'link' key from node."""
     if node is None:
         return None
-    return node.get('link')
+    return node.get("link")
 
 
-def nav_description(node, field=None):
+def nav_description(node: dict | None, field: str | None = None) -> Any:
+    """Extract the 'description' key from node."""
     if node is None:
         return None
-    return node.get('description')
+    return node.get("description")
