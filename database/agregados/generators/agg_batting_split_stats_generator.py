@@ -286,7 +286,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--output", required=False,
-        default="agg_batting_split_stats.sql",
+        default="../batting/procedimientos/agg_batting_split_stats.sql",
         help="Output .sql file path (default: agg_batting_split_stats.sql)",
     )
     args = parser.parse_args()

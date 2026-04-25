@@ -342,7 +342,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--output", required=False,
-        default="agg_pitching_stats.sql",
+        default="../pitching/procedimientos/agg_pitching_stats.sql",
         help="Output .sql file path (default: agg_pitching_stats.sql)",
     )
     args = parser.parse_args()

@@ -208,7 +208,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--output", required=False,
-        default="agg_fielding_stats.sql",
+        default="../fielding/procedimientos/agg_fielding_stats.sql",
         help="Output .sql file path (default: agg_fielding_stats.sql)",
     )
     args = parser.parse_args()

@@ -208,7 +208,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--output", required=False,
-        default="agg_batting_balls_in_play_heatmaps.sql",
+        default="../batting/procedimientos/agg_batting_balls_in_play_heatmaps.sql",
         help="Output .sql file path",
     )
     args = parser.parse_args()

@@ -282,7 +282,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate agg_batting_stats SQL for SQLite3")
     parser.add_argument(
         "--output", required=False,
-        default="agg_batting_stats.sql",
+        default="../batting/procedimientos/agg_batting_stats.sql",
         help="Output .sql file path (default: agg_batting_stats.sql)"
     )
     args = parser.parse_args()

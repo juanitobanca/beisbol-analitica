@@ -170,7 +170,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--output", required=False,
-        default="agg_team_performance_stats.sql",
+        default="../batting/team_performance/agg_team_performance_stats.sql",
         help="Output .sql file path (default: agg_team_performance_stats.sql)",
     )
     args = parser.parse_args()
