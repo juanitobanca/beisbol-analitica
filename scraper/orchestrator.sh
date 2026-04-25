@@ -1,7 +1,7 @@
 from_season=2018
 to_season=2026
 last_season_remaining=2026
-leagues="WBC"
+leagues="MLB LMB DSL LIDOM LMP LBPRC VSL LVBP WBCQ WBC SDC"
 
 run_league() {
   local l=$1
