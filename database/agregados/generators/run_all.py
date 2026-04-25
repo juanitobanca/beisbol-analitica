@@ -80,7 +80,7 @@ def main() -> None:
                 "agg_pitching_stats":                  "../pitching/procedimientos/agg_pitching_stats.sql",
                 "agg_pitching_split_stats":            "../pitching/procedimientos/agg_pitching_split_stats.sql",
                 "agg_pitching_balls_in_play_heatmaps": "../pitching/procedimientos/agg_pitching_balls_in_play_heatmaps.sql",
-                "agg_team_performance_stats":          "../team_performance/agg_team_performance_stats.sql",
+                "agg_team_performance_stats":          "../team_performance/procedimientos/agg_team_performance_stats.sql",
             }
             output_path = defaults[cube_name]
 
