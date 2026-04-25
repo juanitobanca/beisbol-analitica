@@ -44,11 +44,11 @@ game_runners AS (
   FROM games g
   INNER JOIN runners r
     ON g.gamePk = r.gamePk
-  WHERE g.gamePk NOT IN (
-      SELECT
-        gamePk
-      FROM rem_play_by_play
-    )
+  WHERE NOT EXISTS (
+    SELECT 1
+    FROM rem_play_by_play pbp
+    WHERE pbp.gamePk = g.gamePk
+  )
 ),
 /* Obtener movimiento de jugadores a lo largo del inning y hasta cierto punto( atBatIndex,playIndex) */
 runner_movements AS (
@@ -93,7 +93,11 @@ runner_max_movement AS (
     playIndex,
     event,
     runnerId,
-    MAX(runnerBase) runnerBase
+    MAX(runnerBase) OVER (
+        PARTITION BY gamePk, inning, halfInning, runnerId
+        ORDER BY atBatIndex, playIndex
+        ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING
+      ) AS runnerBase
   FROM runner_movements
   GROUP BY
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -223,7 +227,23 @@ INNER JOIN outs_and_runs_end_inning ore
   AND rb.inning = ore.inning
   AND rb.halfInning = ore.halfInning;
 
-/* Actualizar Runners After Play */
+/* Actualizar Runners After Play
+Este query actualiza la columna runnersAfterPlay (corredores después de la jugada) en una tabla de béisbol play-by-play.
+La lógica es: "los corredores después de esta jugada son los mismos que había antes de la siguiente jugada
+
+Cada turno al bate (atBatIndex) puede tener múltiples jugadas (playIndex). Entonces hay dos casos:
+
+Caso 1 — Hay otra jugada dentro del mismo turno al bate
+Si existe un playIndex mayor dentro del mismo atBatIndex, entonces:
+  * Se queda en el mismo atBatIndex
+  * El siguiente playIndex es ese mínimo mayor
+
+Caso 2 — Es la última jugada del turno al bate
+Si no hay más jugadas en este turno, salta al siguiente turno:
+  * atBatIndex + 1
+  * El playIndex mínimo de ese nuevo turno
+*/
+
 UPDATE rem_play_by_play
 SET runnersAfterPlay = (
   SELECT COALESCE(pbp2.runnersBeforePlay, '---')
