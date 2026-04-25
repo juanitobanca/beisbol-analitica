@@ -27,3 +27,6 @@ CREATE TABLE runners (
 CREATE INDEX IF NOT EXISTS idx_runners_gamePk ON runners(gamePk);
 CREATE INDEX IF NOT EXISTS idx_runners_atBatIndex ON runners(atBatIndex);
 CREATE INDEX IF NOT EXISTS idx_runners_runnerId ON runners(runnerId);
+
+-- For Run Expectancy
+CREATE INDEX IF NOT EXISTS idx_runners_game_inning_play ON runners(gamePk, inning, halfInning, atBatIndex, playIndex);

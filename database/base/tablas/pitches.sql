@@ -76,3 +76,6 @@ CREATE TABLE pitches (
 );
 
 CREATE INDEX IF NOT EXISTS idx_pitches_gamePk_atBatIndex ON pitches(gamePk, atBatIndex);
+
+-- For Run Expectancy
+CREATE INDEX IF NOT EXISTS idx_pitches_game_atbat_play ON pitches(gamePk, atBatIndex, playIndex);
