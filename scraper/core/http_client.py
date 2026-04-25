@@ -16,7 +16,7 @@ class MLBHttpClient:
     def __init__(self) -> None:
         self._session = requests.Session()
 
-    def get_json(self, url: str, max_retries: int = 1) -> dict:
+    def get_json(self, url: str, max_retries: int = 10) -> dict:
         """Fetch JSON from *url*, retrying up to *max_retries* times on failure.
 
         Raises:
