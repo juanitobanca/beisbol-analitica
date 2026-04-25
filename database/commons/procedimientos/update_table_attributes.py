@@ -107,7 +107,7 @@ SET opposingTeamName = (
     FROM games
     WHERE games.majorLeagueId = {tbl}.majorLeagueId
       AND games.seasonId      = {tbl}.seasonId
-      AND games.homeTeamId    = {tbl}.teamId
+      AND games.homeTeamId    = {tbl}.opposingTeamId
     LIMIT 1
 )
 WHERE {tbl}.teamId IS NOT NULL;""",
