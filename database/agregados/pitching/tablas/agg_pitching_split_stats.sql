@@ -84,3 +84,13 @@ CREATE TABLE IF NOT EXISTS agg_pitching_split_stats (
     groupingId             INTEGER,
     groupingDescription    TEXT
 );
+
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_split_stats_groupingId ON agg_pitching_split_stats (groupingId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_split_stats_groupingDescription ON agg_pitching_split_stats (groupingDescription);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_split_stats_majorLeagueId ON agg_pitching_split_stats (majorLeagueId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_split_stats_seasonId ON agg_pitching_split_stats (seasonId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_split_stats_teamId ON agg_pitching_split_stats (teamId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_split_stats_playerId ON agg_pitching_split_stats (playerId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_split_stats_venueId ON agg_pitching_split_stats (venueId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_split_stats_officialId ON agg_pitching_split_stats (officialId);
+CREATE INDEX IF NOT EXISTS idx_agg_pitching_split_stats_opposingTeamId ON agg_pitching_split_stats (opposingTeamId);

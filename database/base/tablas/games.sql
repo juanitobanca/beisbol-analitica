@@ -38,7 +38,11 @@ CREATE TABLE games (
   venueName TEXT,
   weather TEXT,
   wind TEXT,
-  attendance INTEGER
+  attendance INTEGER,
+  PRIMARY KEY (gamePk, majorLeagueId)
 );
 
-CREATE INDEX IF NOT EXISTS idx_games_gamePk ON games(gamePk, majorLeagueId);
+CREATE INDEX IF NOT EXISTS idx_games_seasonId ON games(seasonId);
+CREATE INDEX IF NOT EXISTS idx_games_homeTeamId ON games(homeTeamId);
+CREATE INDEX IF NOT EXISTS idx_games_awayTeamId ON games(awayTeamId);
+CREATE INDEX IF NOT EXISTS idx_games_venueId ON games(venueId);

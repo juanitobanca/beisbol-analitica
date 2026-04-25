@@ -24,4 +24,6 @@ CREATE TABLE runners (
   teamUnearned INTEGER
 );
 
-CREATE INDEX IF NOT EXISTS idx_runners_gamePk_atBatIndex ON runners(gamePk, atBatIndex);
+CREATE INDEX IF NOT EXISTS idx_runners_gamePk ON runners(gamePk);
+CREATE INDEX IF NOT EXISTS idx_runners_atBatIndex ON runners(atBatIndex);
+CREATE INDEX IF NOT EXISTS idx_runners_runnerId ON runners(runnerId);

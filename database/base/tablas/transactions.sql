@@ -12,3 +12,8 @@ CREATE TABLE transactions (
   typeDesc  TEXT,
   description  TEXT
 );
+
+CREATE INDEX IF NOT EXISTS idx_transactions_transactionId ON transactions(transactionId);
+CREATE INDEX IF NOT EXISTS idx_transactions_personId ON transactions(personId);
+CREATE INDEX IF NOT EXISTS idx_transactions_toTeamId ON transactions(toTeamId);
+CREATE INDEX IF NOT EXISTS idx_transactions_teamId ON transactions(teamId);
