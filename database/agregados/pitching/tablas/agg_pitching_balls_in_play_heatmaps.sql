@@ -4,7 +4,7 @@ CREATE TABLE agg_pitching_balls_in_play_heatmaps (
   groupingId INTEGER,
   groupingDescription TEXT,
   majorLeagueId INTEGER,
-  seasonId REAL,
+  seasonId INTEGER,
   gameDate TEXT,
   gameType2 TEXT,
   teamType TEXT,

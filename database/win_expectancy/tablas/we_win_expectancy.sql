@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS we_win_expectancy (
   groupingId INTEGER,
   groupingDescription TEXT,
   majorLeagueId INTEGER,
-  seasonId REAL,
+  seasonId INTEGER,
   gameType2 TEXT,
   inning INTEGER,
   menOnBase TEXT,

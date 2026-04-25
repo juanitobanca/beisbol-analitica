@@ -5,7 +5,7 @@ CREATE TABLE agg_fielding_stats (
   groupingDescription TEXT,
   aggregationType TEXT,
   majorLeagueId INTEGER,
-  seasonId REAL,
+  seasonId INTEGER,
   gameDate TEXT,
   gameType2 TEXT,
   teamType TEXT,

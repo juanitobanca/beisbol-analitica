@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS we_win_probability_added (
   groupingDescription TEXT,
   groupingFields TEXT,
   majorLeagueId INTEGER,
-  seasonId REAL,
+  seasonId INTEGER,
   gameType2 TEXT,
   teamId INTEGER,
   playerId INTEGER,

@@ -40,8 +40,10 @@ INSERT INTO games(
       gamePk,
       gameType,
       CASE WHEN majorLeague = 'WBC' THEN
-           CAST(SUBSTR(CAST(season AS TEXT),1,4) AS REAL )
-           ELSE season
+           CAST(SUBSTR(CAST(season AS TEXT),1,4) AS INTEGER )
+           WHEN majorLeague = 'LMB' THEN
+           CAST(REPLACE(season, ".", "") AS INTEGER)
+           ELSE CAST( season AS INTEGER)
       END seasonId,
       date(SUBSTR(gameDate, 1, 10)) gameDate,
       isTie,

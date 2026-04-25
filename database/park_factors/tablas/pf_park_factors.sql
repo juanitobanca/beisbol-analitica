@@ -4,7 +4,7 @@ CREATE TABLE pf_park_factors (
   groupingId INTEGER,
   groupingDescription TEXT,
   majorLeagueId INTEGER,
-  seasonId REAL,
+  seasonId INTEGER,
   venueId INTEGER,
   teamId INTEGER,
   homeGames INTEGER,

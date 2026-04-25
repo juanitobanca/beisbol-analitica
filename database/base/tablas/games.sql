@@ -4,7 +4,7 @@ CREATE TABLE games (
   gamePk INTEGER,
   gameType TEXT,
   gameType2 TEXT,
-  seasonId TEXT,
+  seasonId INTEGER,
   gameDate TEXT,
   isTie INTEGER,
   gameNumber INTEGER,

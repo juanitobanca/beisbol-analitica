@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS agg_pitching_split_stats (
     batSide                TEXT,
     pitchHand              TEXT,
     menOnBase              TEXT,
- atbats                 INTEGER,
+    atbats                 INTEGER,
     balks                  INTEGER,
     batterInterferences    INTEGER,
     bunts                  INTEGER,
