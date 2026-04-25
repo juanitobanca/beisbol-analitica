@@ -9,7 +9,7 @@ run_league() {
 
   for s in $(seq ${from_season} ${to_season}); do
     echo "${l} - ${s}"
-    python3 orchestrator.py --startDate=${s}-01-01 --endDate=${s}-12-31 --batch=10 --lg=${l}
+    python3 orchestrator.py --startDate=${s}-01-01 --endDate=${s}-12-31 --batch=5000 --lg=${l}
   done
 
   echo "${l} - ${last_season_remaining}"
