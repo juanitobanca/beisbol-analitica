@@ -41,5 +41,4 @@ CREATE TABLE games (
   attendance INTEGER
 );
 
-CREATE INDEX IF NOT EXISTS idx_games_gamePk ON games(gamePk);
--- ALTER TABLE games ADD PRIMARY KEY(gamePk); There's games that appear in more than one league. Hence, removing PK.
+CREATE INDEX IF NOT EXISTS idx_games_gamePk ON games(gamePk, majorLeagueId);
