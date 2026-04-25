@@ -30,6 +30,6 @@ CREATE TABLE atbats (
   PRIMARY KEY(gamePk, atBatIndex)
 );
 
-CREATE INDEX IF NOT EXISTS idx_atbats_gamePk ON atbats(seasonId);
+CREATE INDEX IF NOT EXISTS idx_atbats_gamePk ON atbats(gamePk);
 CREATE INDEX IF NOT EXISTS idx_atbats_batterId ON atbats(batterId);
 CREATE INDEX IF NOT EXISTS idx_atbats_pitcherId ON atbats(pitcherId);
