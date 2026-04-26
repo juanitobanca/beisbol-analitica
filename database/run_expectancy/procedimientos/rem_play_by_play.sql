@@ -246,36 +246,28 @@ Si no hay más jugadas en este turno, salta al siguiente turno:
 
 UPDATE rem_play_by_play
 SET runnersAfterPlay = (
-  SELECT COALESCE(pbp2.runnersBeforePlay, '---')
-  FROM rem_play_by_play pbp2
-  WHERE rem_play_by_play.gamePk = pbp2.gamePk
-    AND rem_play_by_play.inning = pbp2.inning
-    AND rem_play_by_play.halfInning = pbp2.halfInning
-    AND pbp2.atBatIndex = CASE
-      WHEN (SELECT MIN(a.playIndex) FROM rem_play_by_play a
-            WHERE rem_play_by_play.gamePk = a.gamePk
-              AND rem_play_by_play.atBatIndex = a.atBatIndex
-              AND rem_play_by_play.playIndex < a.playIndex) IS NOT NULL
-      THEN rem_play_by_play.atBatIndex
-      ELSE rem_play_by_play.atBatIndex + 1
-    END
-    AND pbp2.playIndex = CASE
-      WHEN (SELECT MIN(a.playIndex) FROM rem_play_by_play a
-            WHERE rem_play_by_play.gamePk = a.gamePk
-              AND rem_play_by_play.atBatIndex = a.atBatIndex
-              AND rem_play_by_play.playIndex < a.playIndex) IS NOT NULL
-      THEN (SELECT MIN(a.playIndex) FROM rem_play_by_play a
-            WHERE rem_play_by_play.gamePk = a.gamePk
-              AND rem_play_by_play.atBatIndex = a.atBatIndex
-              AND rem_play_by_play.playIndex < a.playIndex)
-      ELSE (SELECT MIN(a.playIndex) FROM rem_play_by_play a
-            WHERE rem_play_by_play.gamePk = a.gamePk
-              AND rem_play_by_play.inning = a.inning
-              AND rem_play_by_play.halfInning = a.halfInning
-              AND rem_play_by_play.atBatIndex + 1 = a.atBatIndex)
-    END
+  SELECT COALESCE(next_play.next_runners, '---')
+  FROM (
+    SELECT
+      gamePk,
+      inning,
+      halfInning,
+      atBatIndex,
+      playIndex,
+      LEAD(runnersBeforePlay) OVER (
+        PARTITION BY gamePk, inning, halfInning
+        ORDER BY atBatIndex, playIndex
+      ) AS next_runners
+    FROM rem_play_by_play
+  ) next_play
+  WHERE next_play.gamePk      = rem_play_by_play.gamePk
+    AND next_play.inning      = rem_play_by_play.inning
+    AND next_play.halfInning  = rem_play_by_play.halfInning
+    AND next_play.atBatIndex  = rem_play_by_play.atBatIndex
+    AND next_play.playIndex   = rem_play_by_play.playIndex
 )
 WHERE runnersAfterPlay IS NULL;
+
 
 UPDATE rem_play_by_play
 SET menOnBaseAfterPlay = CASE
