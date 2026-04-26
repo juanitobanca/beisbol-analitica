@@ -1,161 +1,66 @@
-# MLB Stats API Scraper
+# Beisbol Analitica
 
-## Overview
+Plataforma de datos para analisis de beisbol profesional. Extrae datos de la [MLB Stats API](http://statsapi.mlb.com/api/v1), los almacena en una base de datos relacional y los transforma en metricas analiticas avanzadas.
 
-Este proyecto implementa un pipeline de extracción de datos (ETL) para la MLB Stats API. Su objetivo es recolectar, transformar y persistir datos de juegos de béisbol en una base de datos (SQLite u otra vía SQLAlchemy).
+Cubre MLB y multiples ligas latinoamericanas e internacionales (LMB, LMP, LIDOM, LVBP, LBPRC, DSL, VSL, WBC, Serie del Caribe).
 
-El sistema está diseñado con separación de responsabilidades, concurrencia y modularidad para facilitar mantenimiento y escalabilidad.
+## Componentes
 
----
+El proyecto se divide en dos componentes principales:
 
-## Arquitectura
+### Scraper (`scraper/`)
 
-El sistema está dividido en tres capas principales:
+Pipeline ETL en Python que consume la MLB Stats API para extraer datos de juegos de beisbol. Para cada juego obtiene boxscore, play-by-play (incluyendo datos Statcast), contexto del juego, datos biograficos de jugadores y transacciones.
 
-### 1. Coordinación
-Responsable del flujo general del programa.
-
-- `orchestrator.py`: Punto de entrada y coordinación del pipeline
-- `scheduler.py`: Obtiene los `game_pk` desde la API
-- `pipeline.py`: Ejecuta scraping concurrente
-- `db_writer.py`: Inserta datos en la base de datos
-
-### 2. Scrapers
-Encargados de consumir endpoints específicos y transformar respuestas en datasets.
-
-- `Boxscore`
-- `PlayByPlay`
-- `ContextMetrics`
-- `People`
-- `Transactions`
-- `BaseScraper` (clase abstracta base)
-
-### 3. Infraestructura
-Componentes reutilizables y configuración.
-
-- `http_client`
-- `endpoints`
-- `config`
-- `dataset`
-- `extractor`
-- `mappings`
-- `table_names`
-- `const/` (package modularizado)
-
----
-
-## Flujo de ejecución
-
-1. El usuario ejecuta:
+- Scraping concurrente con `ThreadPoolExecutor`
+- Configurable por liga, rango de fechas, batch size y workers
+- Inserta datos en ~18 tablas staging via Pandas + SQLAlchemy
+- Compatible con SQLite, PostgreSQL y cualquier backend de SQLAlchemy
 
 ```bash
-python orchestrator.py --lg MLB --date 2024-04-01
-```
----
-
-2. Schedule
-
-* scheduler.get_schedule()
-* llama /schedule
-* retorna game_pk
-
----
-
-3. Orquestación
-
-* orchestrator.run()
-* divide en chunks (--batch)
-* itera sobre juegos
-
----
-
-4. Scraping concurrente
-
-* `pipeline.scrape_chunk()`
-* usa `ThreadPoolExecutor`
-* cada `thread` ejecuta `scrapers` independientes
-
----
-
-5. Scrapers
-
-* `Boxscore`
-* `PlayByPlay`
-* `ContextMetrics`
-
----
-
-6. Persistencia
-
-* `db_writer.insert_dataset():`
-* convierte a `pandas.DataFrame`
-* ejecuta `to_sql(if_exists="append")`
-* escribe ~19 tablas `staging`
-
----
-
-7. Post-procesamiento
-
-* People
-* Transactions
-
---
-
-## Diagrama de Flujo de ejecucion
-
-```mermaid
-
-sequenceDiagram
-
-    participant CLI as CLI / main
-
-    participant ORCH as Orchestrator
-
-    participant SCH as Scheduler
-
-    participant PIPE as Pipeline
-
-    participant SCR as Scrapers
-
-    participant DB as DB Writer
-
-    participant SQL as Database
-
-    CLI->>ORCH: run(date, league, batch)
-
-    ORCH->>SCH: get_schedule()
-
-    SCH-->>ORCH: list(game_pk)
-
-    ORCH->>ORCH: split into chunks
-
-    loop each chunk
-
-        ORCH->>PIPE: scrape_chunk(chunk)
-
-        par concurrent scraping
-
-            PIPE->>SCR: Boxscore
-
-            PIPE->>SCR: PlayByPlay
-
-            PIPE->>SCR: ContextMetrics
-
-        end
-
-        SCR-->>PIPE: datasets
-
-        PIPE-->>ORCH: ChunkResult
-
-        ORCH->>DB: insert_dataset(ChunkResult)
-
-        DB->>SQL: to_sql append
-
-        DB->>SCR: People (new ids)
-
-        DB->>SCR: Transactions (new ids)
-
-    end
+python scraper/orchestrator.py --lg MLB --startDate 2024_04_01 --endDate 2024_09_30
 ```
 
+Ver [`scraper/README.md`](scraper/README.md) para documentacion completa.
 
+### Database (`database/`)
+
+Base de datos SQLite con arquitectura de data warehouse por capas. Los datos crudos del scraper aterrizan en staging, se limpian y normalizan en tablas base, y se transforman en metricas agregadas y modelos analiticos.
+
+```
+Staging (datos crudos) → Base (datos limpios) → Agregados y modelos analiticos
+```
+
+**Capas analiticas:**
+
+- **Agregados** — estadisticas acumuladas de bateo, pitcheo, fildeo y rendimiento de equipos, con metricas derivadas (wOBA, wRAA, wRC, OPS+, FIP)
+- **Park Factors** — ajuste de estadisticas por estadio y zona del campo
+- **Run Expectancy** — matriz RE24 y valor en carreras por tipo de evento
+- **Win Expectancy** — probabilidad de victoria por situacion de juego y WPA por jugada
+
+Ver [`database/README.md`](database/README.md) para documentacion completa.
+
+## Requisitos
+
+- Python 3.10+
+- Dependencias: `requests`, `pandas`, `sqlalchemy`, `pydantic-settings`, `pyyaml`
+
+## Instalacion
+
+```bash
+cd scraper
+pip install .
+```
+
+## Uso rapido
+
+```bash
+# 1. Crear las tablas
+sqlite3 baseball.db < database/setup/tables.sql
+
+# 2. Scrapear datos
+python scraper/orchestrator.py --lg MLB --date 2024_07_15
+
+# 3. Transformar staging → base → agregados
+sqlite3 baseball.db < database/setup/procedures.sql
+```
