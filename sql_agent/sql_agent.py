@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
 SQLite Agent con Ollama — 100% local, sin costo
-Uso: python3 sql_agent.py --db ../baseball.db --contexto ../database 
+Uso: python3 sql_agent.py --db ../baseball.db --contexto ../database
 
 Requiere Ollama instalado: https://ollama.com
 Modelos recomendados:
+  ollama pull qwen2.5-coder   (5 GB RAM)  ← mejor para SQL  ✓ RECOMENDADO
   ollama pull llama3.2        (4 GB RAM)  ← buena opción general
-  ollama pull qwen2.5-coder   (5 GB RAM)  ← mejor para SQL
   ollama pull deepseek-r1     (5 GB RAM)  ← razonamiento fuerte
   ollama pull mistral         (4 GB RAM)  ← alternativa rápida
 """
@@ -27,11 +27,11 @@ except ImportError:
     sys.exit(1)
 
 # ── Configuración ──────────────────────────────────────────────────────────────
-OLLAMA_URL    = "http://localhost:11434"   # URL de tu servidor Ollama
-DEFAULT_MODEL = "llama3.2:latest"                # Cambia al modelo que tengas descargado
-MAX_ROWS_PREVIEW = 5                      # Filas de muestra en el esquema
-MAX_QUERY_ROWS   = 200                    # Filas máximas que se pasan al modelo
-HISTORY_TURNS    = 6                      # Turnos de contexto (menos = más rápido)
+OLLAMA_URL       = "http://localhost:11434"
+DEFAULT_MODEL    = "qwen2.5-coder"
+MAX_ROWS_PREVIEW = 5
+MAX_QUERY_ROWS   = 200
+HISTORY_TURNS    = 6
 
 # ── Colores ANSI ───────────────────────────────────────────────────────────────
 RESET  = "\033[0m"
@@ -47,7 +47,6 @@ def c(text, *codes): return "".join(codes) + str(text) + RESET
 # ── Ollama API ─────────────────────────────────────────────────────────────────
 
 def ollama_load_model(model: str) -> bool:
-    """Precarga el modelo en memoria antes de la primera pregunta."""
     try:
         resp = requests.post(
             f"{OLLAMA_URL}/api/chat",
@@ -60,7 +59,6 @@ def ollama_load_model(model: str) -> bool:
 
 
 def ollama_unload_model(model: str):
-    """Libera el modelo de memoria al salir."""
     try:
         requests.post(
             f"{OLLAMA_URL}/api/chat",
@@ -72,7 +70,6 @@ def ollama_unload_model(model: str):
 
 
 def ollama_list_models() -> list[str]:
-    """Retorna los modelos disponibles en Ollama."""
     try:
         r = requests.get(f"{OLLAMA_URL}/api/tags", timeout=5)
         return [m["name"] for m in r.json().get("models", [])]
@@ -81,24 +78,6 @@ def ollama_list_models() -> list[str]:
 
 
 def ollama_chat(model: str, messages: list, system: str) -> str:
-    """Llama a la API de Ollama (chat) con streaming y retorna el texto completo."""
-    payload = json.dumps({
-        "model": model,
-        "messages": [{"role": "system", "content": system}] + messages,
-        "stream": True,
-        "options": {
-            "temperature": 0.1,      # baja temperatura = más determinista para SQL
-            "num_ctx": 8192,         # ventana de contexto
-        }
-    }).encode()
-
-    req = urllib.request.Request(
-        f"{OLLAMA_URL}/api/chat",
-        data=payload,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-
     full_text = ""
     token_count = 0
     t_start = time.time()
@@ -107,7 +86,6 @@ def ollama_chat(model: str, messages: list, system: str) -> str:
     print(c("Agente: ", CYAN, BOLD), end="", flush=True)
 
     try:
-        # timeout=(10, None): 10s para conectar, sin límite para leer
         resp = requests.post(
             f"{OLLAMA_URL}/api/chat",
             json={
@@ -165,7 +143,6 @@ def ollama_chat(model: str, messages: list, system: str) -> str:
 # ── SQLite helpers ─────────────────────────────────────────────────────────────
 
 def get_schema(conn: sqlite3.Connection) -> str:
-    """Esquema completo: tablas, columnas, FKs, índices y muestra de datos."""
     cur = conn.cursor()
     lines = []
 
@@ -196,7 +173,6 @@ def get_schema(conn: sqlite3.Connection) -> str:
         for idx in cur.fetchall():
             lines.append(f"  ⊡ índice: {idx[1]}{' [UNIQUE]' if idx[2] else ''}")
 
-        # Muestra de datos
         try:
             col_names = [col[1] for col in cols]
             cur.execute(f'SELECT * FROM "{tbl}" LIMIT {MAX_ROWS_PREVIEW}')
@@ -211,7 +187,6 @@ def get_schema(conn: sqlite3.Connection) -> str:
         except Exception:
             pass
 
-    # Vistas
     cur.execute("SELECT name FROM sqlite_master WHERE type='view'")
     views = [r[0] for r in cur.fetchall()]
     if views:
@@ -221,7 +196,6 @@ def get_schema(conn: sqlite3.Connection) -> str:
 
 
 def run_query(conn: sqlite3.Connection, sql: str) -> tuple[str, bool]:
-    """Ejecuta SQL y devuelve (resultado, éxito)."""
     try:
         cur = conn.cursor()
         cur.execute(sql)
@@ -249,7 +223,6 @@ def extract_sql_blocks(text: str) -> list[str]:
 
 
 def load_sql_context(folder: str, max_bytes_per_file: int = 8000) -> str:
-    """Lee todos los .sql de una carpeta y los formatea como contexto."""
     folder = os.path.expanduser(folder)
     if not os.path.isdir(folder):
         print(c(f"ADVERTENCIA: Carpeta de contexto no encontrada: {folder}", YELLOW))
@@ -263,13 +236,13 @@ def load_sql_context(folder: str, max_bytes_per_file: int = 8000) -> str:
     all_files.sort()
 
     if not all_files:
-        print(c(f"ADVERTENCIA: No hay archivos .sql en {folder} (recursivo)", YELLOW))
+        print(c(f"ADVERTENCIA: No hay archivos .sql en {folder}", YELLOW))
         return ""
 
     sections = []
     total = 0
     for fpath in all_files:
-        fname = os.path.relpath(fpath, folder)  # ruta relativa para mostrar contexto
+        fname = os.path.relpath(fpath, folder)
         try:
             with open(fpath, "r", encoding="utf-8", errors="replace") as f:
                 raw = f.read(max_bytes_per_file)
@@ -283,49 +256,102 @@ def load_sql_context(folder: str, max_bytes_per_file: int = 8000) -> str:
     return "\n\n".join(sections)
 
 
-# ── Agente principal ───────────────────────────────────────────────────────────
+# ── System Prompt ──────────────────────────────────────────────────────────────
 
-SYSTEM_PROMPT = """Eres un agente experto en análisis de bases de datos SQLite.
-Respondes SIEMPRE en español.
+SYSTEM_PROMPT_TEMPLATE = """Eres un agente SQL con acceso DIRECTO y EN VIVO a una base de datos SQLite.
 
-INSTRUCCIONES:
-1. Analiza la pregunta del usuario
-2. Analiza la documentacion base de datos y sus tablas proporcionadas.
-3. Obten solamente el contexto basado en la documentacion base de datos y las tablas.
-4. Escribe las consultas SQL necesarias en bloques ```sql ... ``` si el usuario pide que lo hagas.
-   El sistema las ejecutará y te devolverá los resultados.
-5. Cuando veas los resultados, interprétalos y da un análisis claro.
+════════════════════════════════════════════════════════
+⚠️  REGLA CRÍTICA — LEE ESTO PRIMERO
+════════════════════════════════════════════════════════
+NUNCA digas frases como:
+  ✗ "no tengo acceso a datos en tiempo real"
+  ✗ "no puedo consultar la base de datos"
+  ✗ "te sugiero visitar un sitio web"
+  ✗ "busca en internet"
 
-REGLAS SQL:
-- Usa comillas dobles para nombres de tablas y columnas: "tabla"."columna"
-- Para tablas grandes, usa LIMIT y agrupaciones; evita SELECT * sin filtro.
-- Puedes encadenar múltiples consultas en un mismo mensaje.
+TODAS ESAS FRASES SON FALSAS. Tienes acceso completo y directo
+a la base de datos SQLite. Cuando escribes SQL en bloques ```sql```,
+el sistema LO EJECUTA AUTOMÁTICAMENTE y te devuelve los resultados reales.
 
-QUÉ DEBES DETECTAR:
-- Valores NULL inesperados
-- Duplicados y registros repetidos
-- Inconsistencias de tipos de datos
-- Outliers y valores atípicos (usa percentiles o stddev)
-- Registros huérfanos (claves foráneas rotas)
-- Tendencias en columnas de fecha/timestamp
+════════════════════════════════════════════════════════
+✅  CÓMO DEBES COMPORTARTE — EJEMPLO
+════════════════════════════════════════════════════════
+Usuario: "Dame partidos aleatorios"
+TÚ DEBES RESPONDER ASÍ:
 
-FORMATO DE RESPUESTA:
+Voy a consultar la base de datos ahora mismo:
+
+```sql
+SELECT * FROM "games" ORDER BY RANDOM() LIMIT 5;
+```
+
+(El sistema ejecuta eso y te devuelve filas reales. Luego las interpretas.)
+
+────────────────────────────────────────────────────────
+Usuario: "¿Cuántos equipos hay?"
+TÚ DEBES RESPONDER ASÍ:
+
+```sql
+SELECT COUNT(*) as total_equipos FROM "teams";
+```
+
+════════════════════════════════════════════════════════
+FLUJO OBLIGATORIO
+════════════════════════════════════════════════════════
+1. El usuario hace una pregunta sobre datos.
+2. Tu analiza la pregunta y la traduzcas a SQL para responder basado en el esquema de la base de datos.
+2. TÚ escribes SQL en bloques ```sql ... ```.
+3. El sistema ejecuta el SQL y te devuelve resultados REALES.
+4. TÚ interpretas esos resultados en español claro y conciso.
+5. Nunca te saltes el paso 2. Siempre consulta antes de responder.
+6. Nunca modificas la base de datos. SOLO lee y filtra.
+
+════════════════════════════════════════════════════════
+REGLAS SQL
+════════════════════════════════════════════════════════
+- Usa comillas dobles para nombres: "tabla"."columna"
+- Usa LIMIT en tablas grandes para no sobrecargar
+- Puedes encadenar múltiples consultas en un mismo mensaje
+- Para texto parcial: LIKE '%valor%'
+- Para aleatorio: ORDER BY RANDOM()
+
+════════════════════════════════════════════════════════
+ESQUEMA DE LA BASE DE DATOS (tus tablas disponibles)
+════════════════════════════════════════════════════════
+{schema}
+
+════════════════════════════════════════════════════════
+FORMATO DE RESPUESTA
+════════════════════════════════════════════════════════
 - Primero el hallazgo principal, luego el detalle.
-- Sugiere consultas correctivas cuando encuentres problemas.
-- Sé conciso y directo."""
+- Sé conciso y directo.
+- Responde SIEMPRE en español.
+{sql_context_section}"""
 
+
+def build_system_prompt(schema: str, sql_context: str = "") -> str:
+    sql_section = ""
+    if sql_context:
+        sql_section = (
+            "\n════════════════════════════════════════════════════════\n"
+            "PROCEDIMIENTOS Y CONSULTAS DE NEGOCIO (archivos SQL de referencia)\n"
+            "════════════════════════════════════════════════════════\n"
+            + sql_context
+        )
+    return SYSTEM_PROMPT_TEMPLATE.format(schema=schema, sql_context_section=sql_section)
+
+
+# ── Agente principal ───────────────────────────────────────────────────────────
 
 def agent_turn(model: str, history: list, schema: str,
                user_msg: str, conn: sqlite3.Connection,
-               sql_context: str = "") -> str:
+               sql_context: str = "", silent: bool = False) -> str:
     """Un turno del agente. Itera ejecutando SQL hasta obtener respuesta final."""
 
     history.append({"role": "user", "content": user_msg})
-    system = SYSTEM_PROMPT + f"\n\nESQUEMA DE LA BASE DE DATOS:\n{schema}"
-    if sql_context:
-        system += f"\n\nPROCEDIMIENTOS Y CONSULTAS DE NEGOCIO (archivos SQL de referencia):\n{sql_context}"
+    system = build_system_prompt(schema, sql_context)
 
-    for _ in range(5):  # máx 5 rondas SQL → resultado
+    for _ in range(5):
         ai_text = ollama_chat(model, history[-HISTORY_TURNS * 2:], system)
         if not ai_text:
             return ""
@@ -336,22 +362,56 @@ def agent_turn(model: str, history: list, schema: str,
             history.append({"role": "assistant", "content": ai_text})
             return ai_text
 
-        # Ejecutar consultas y recolectar resultados
         results = []
         for sql in sql_blocks:
             sql = sql.strip()
-            print(c(f"\n  ▶ SQL: {sql[:100]}{'…' if len(sql)>100 else ''}", DIM))
+            if not silent:
+                print(c(f"\n  ▶ SQL: {sql[:100]}{'…' if len(sql)>100 else ''}", DIM))
             result, ok = run_query(conn, sql)
             icon = c("✓", GREEN) if ok else c("✗", RED)
             preview = result[:400] + ("…" if len(result) > 400 else "")
-            print(f"  {icon} {c(preview, DIM)}\n")
+            if not silent:
+                print(f"  {icon} {c(preview, DIM)}\n")
             results.append(f"Consulta:\n```sql\n{sql}\n```\nResultado:\n{result}")
 
         history.append({"role": "assistant", "content": ai_text})
-        feedback = "Resultados:\n\n" + "\n\n---\n\n".join(results) + "\n\nAhora interpreta estos resultados en español."
+        feedback = (
+            "Resultados de tus consultas SQL:\n\n"
+            + "\n\n---\n\n".join(results)
+            + "\n\nAhora interpreta estos resultados reales en español."
+        )
         history.append({"role": "user", "content": feedback})
 
     return "⚠ El agente alcanzó el límite de iteraciones."
+
+
+def warmup_agent(model: str, history: list, schema: str,
+                 conn: sqlite3.Connection, sql_context: str = ""):
+    """Ejecuta un turno silencioso para verificar que el agente puede consultar la DB."""
+    print(c("  Verificando acceso a la base de datos...", DIM), end="", flush=True)
+
+    # Obtenemos la primera tabla del esquema para la prueba
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name LIMIT 1")
+    row = cur.fetchone()
+    if not row:
+        print(c(" sin tablas.", YELLOW))
+        return
+
+    tabla = row[0]
+    warmup_msg = (
+        f'Confirma que tienes acceso ejecutando: SELECT COUNT(*) FROM "{tabla}". '
+        f'Responde SOLO con el número que obtengas.'
+    )
+
+    # Ejecutamos silenciosamente (redirigimos stdout temporalmente)
+    import io, contextlib
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        agent_turn(model, history, schema, warmup_msg, conn, sql_context, silent=True)
+
+    history.clear()  # Limpiamos el historial del warmup
+    print(c(" listo.", GREEN))
 
 
 # ── Comandos rápidos ───────────────────────────────────────────────────────────
@@ -366,6 +426,7 @@ QUICK = {
     "/health":     "Health check completo: conteos, nulos, duplicados de PK, integridad FK y estadísticas numéricas.",
 }
 
+
 def print_help(model: str):
     print(c(f"\nModelo activo: {model}", GREEN))
     print(c("Comandos rápidos:", BOLD))
@@ -379,6 +440,7 @@ def print_help(model: str):
     for cmd, desc in zip(cmds, descs):
         print(f"  {c(cmd, YELLOW, BOLD):<18} {desc}")
     print()
+
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 
@@ -418,7 +480,6 @@ def main():
     print(c(f"\n  SQLite Agent (Ollama) — {os.path.basename(db_path)}", CYAN, BOLD))
     print(c(f"  {db_path}  ({os.path.getsize(db_path)/1e6:.1f} MB)", DIM))
 
-    # Verificar Ollama
     models_available = ollama_list_models()
     if not models_available:
         print(c("\nERROR: No se puede conectar con Ollama.", RED))
@@ -434,10 +495,9 @@ def main():
             model = models_available[0]
             print(c(f"Usando: {model}", GREEN))
         else:
-            print(c(f"Descarga uno con: ollama pull llama3.2", YELLOW))
+            print(c(f"Descarga uno con: ollama pull qwen2.5-coder", YELLOW))
             sys.exit(1)
 
-    # ── Conexión SQLite ──
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
@@ -456,6 +516,10 @@ def main():
     print(c(" listo.", GREEN))
 
     history: list = []
+
+    # ── Warm-up: verifica que el modelo sabe usar la DB antes de interactuar ──
+    warmup_agent(model, history, schema, conn, sql_context)
+
     print_help(model)
 
     while True:
@@ -465,14 +529,12 @@ def main():
             print(c("\nHasta luego.", DIM))
             break
 
-
         if not user_input:
             continue
 
         if user_input == "/salir":
             print(c("Hasta luego.", DIM))
             break
-
         elif user_input == "/ayuda":
             print_help(model)
             continue
@@ -491,8 +553,10 @@ def main():
             new_model = user_input.split(" ", 1)[1].strip()
             if new_model in ollama_list_models():
                 model = new_model
-                history = []  # reset del historial al cambiar modelo
+                history = []
                 print(c(f"Modelo cambiado a: {model}", GREEN))
+                # Re-ejecutar warmup con el nuevo modelo
+                warmup_agent(model, history, schema, conn, sql_context)
             else:
                 print(c(f"Modelo no disponible: {new_model}", RED))
             continue
