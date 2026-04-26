@@ -64,3 +64,7 @@ python scraper/orchestrator.py --lg MLB --date 2024_07_15
 # 3. Transformar staging → base → agregados
 sqlite3 baseball.db < database/setup/procedures.sql
 ```
+
+## Descarga la Base de Datos
+
+Para descargar directamente la base de datos, accede a este [link](https://drive.google.com/file/d/1QrVq4FhcwdEHcX-GKQhJ6xXFUXvQMzMQ/view?usp=drive_link).
