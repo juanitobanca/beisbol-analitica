@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 SQLite Agent con Ollama — 100% local, sin costo
-Uso: python sqlite_agent_ollama.py --db mi_base.db --modelo qwen2.5-coder
+Uso: python3 sql_agent.py --db ../baseball.db --contexto ../database 
 
 Requiere Ollama instalado: https://ollama.com
 Modelos recomendados:
@@ -28,7 +28,7 @@ except ImportError:
 
 # ── Configuración ──────────────────────────────────────────────────────────────
 OLLAMA_URL    = "http://localhost:11434"   # URL de tu servidor Ollama
-DEFAULT_MODEL = "llama3.2"                # Cambia al modelo que tengas descargado
+DEFAULT_MODEL = "llama3.2:latest"                # Cambia al modelo que tengas descargado
 MAX_ROWS_PREVIEW = 5                      # Filas de muestra en el esquema
 MAX_QUERY_ROWS   = 200                    # Filas máximas que se pasan al modelo
 HISTORY_TURNS    = 6                      # Turnos de contexto (menos = más rápido)
@@ -289,10 +289,12 @@ SYSTEM_PROMPT = """Eres un agente experto en análisis de bases de datos SQLite.
 Respondes SIEMPRE en español.
 
 INSTRUCCIONES:
-1. Analiza la pregunta del usuario.
-2. Escribe las consultas SQL necesarias en bloques ```sql ... ```.
+1. Analiza la pregunta del usuario
+2. Analiza la documentacion base de datos y sus tablas proporcionadas.
+3. Obten solamente el contexto basado en la documentacion base de datos y las tablas.
+4. Escribe las consultas SQL necesarias en bloques ```sql ... ``` si el usuario pide que lo hagas.
    El sistema las ejecutará y te devolverá los resultados.
-3. Cuando veas los resultados, interprétalos y da un análisis claro.
+5. Cuando veas los resultados, interprétalos y da un análisis claro.
 
 REGLAS SQL:
 - Usa comillas dobles para nombres de tablas y columnas: "tabla"."columna"
