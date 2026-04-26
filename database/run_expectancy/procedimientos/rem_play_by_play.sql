@@ -296,27 +296,53 @@ SET scheduledInnings = (SELECT g.scheduledInnings FROM games g WHERE rem_play_by
 WHERE EXISTS (SELECT 1 FROM games g WHERE rem_play_by_play.gamePk = g.gamePk);
 
 /* Actualizar score en cada momento del juego( battingTeamScoreStartInning, pitchingTeamScoreStartInning )*/
+-- 1. battingTeamScore
 UPDATE rem_play_by_play
-SET battingTeamScore = COALESCE((
-      SELECT SUM(b.runsScoredInPlay)
-      FROM rem_play_by_play b
-      WHERE rem_play_by_play.gamePk = b.gamePk
-        AND rem_play_by_play.battingTeamId = b.battingTeamId
-        AND (
-          rem_play_by_play.atBatIndex > b.atBatIndex
-          OR (
-            rem_play_by_play.atBatIndex = b.atBatIndex
-            AND rem_play_by_play.playIndex > b.playIndex
-          )
-        )
-    ), 0),
-    pitchingTeamScore = COALESCE((
-      SELECT SUM(p.runsScoredInPlay)
-      FROM rem_play_by_play p
-      WHERE rem_play_by_play.gamePk = p.gamePk
-        AND rem_play_by_play.pitchingTeamId = p.battingTeamId
-        AND rem_play_by_play.atBatIndex > p.atBatIndex
-    ), 0);
+SET battingTeamScore = (
+  SELECT COALESCE(b.cum_score, 0)
+  FROM (
+    SELECT
+      gamePk,
+      battingTeamId,
+      atBatIndex,
+      playIndex,
+      SUM(runsScoredInPlay) OVER (
+        PARTITION BY gamePk, battingTeamId
+        ORDER BY atBatIndex, playIndex
+        ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING
+      ) AS cum_score
+    FROM rem_play_by_play
+  ) b
+  WHERE b.gamePk        = rem_play_by_play.gamePk
+    AND b.battingTeamId = rem_play_by_play.battingTeamId
+    AND b.atBatIndex    = rem_play_by_play.atBatIndex
+    AND b.playIndex     = rem_play_by_play.playIndex
+);
+
+
+-- 2. pitchingTeamScore
+UPDATE rem_play_by_play
+SET pitchingTeamScore = (
+  SELECT COALESCE(p.cum_score, 0)
+  FROM (
+    SELECT
+      gamePk,
+      battingTeamId,
+      atBatIndex,
+      playIndex,
+      SUM(runsScoredInPlay) OVER (
+        PARTITION BY gamePk, battingTeamId
+        ORDER BY atBatIndex
+        ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING
+      ) AS cum_score
+    FROM rem_play_by_play
+  ) p
+  WHERE p.gamePk        = rem_play_by_play.gamePk
+    AND p.battingTeamId = rem_play_by_play.pitchingTeamId  -- cruce clave
+    AND p.atBatIndex    = rem_play_by_play.atBatIndex
+    AND p.playIndex     = rem_play_by_play.playIndex
+);
+
 
 /* Actualizar los strikes y bolas antes de la jugada */
 UPDATE rem_play_by_play
