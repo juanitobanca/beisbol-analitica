@@ -30,3 +30,4 @@ CREATE INDEX IF NOT EXISTS idx_runners_runnerId ON runners(runnerId);
 
 -- For Run Expectancy
 CREATE INDEX IF NOT EXISTS idx_runners_game_inning_play ON runners(gamePk, inning, halfInning, atBatIndex, playIndex);
+CREATE INDEX idx_runners_game_play_event_type ON runners(gamePk, atBatIndex, playIndex, event, eventType);
