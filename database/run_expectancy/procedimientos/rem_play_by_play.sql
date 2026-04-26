@@ -337,46 +337,19 @@ SET strikesBeforePlay = COALESCE((
 
 /* Actualizar corredor a cargo de la jugada y pitcher responsable de corredor. */
 UPDATE rem_play_by_play
-SET runnerId = (
-      SELECT r.runnerId FROM runners r
-      WHERE rem_play_by_play.gamePk = r.gamePk
-        AND rem_play_by_play.atBatIndex = r.atBatIndex
-        AND rem_play_by_play.playIndex = r.playIndex
-        AND rem_play_by_play.event = r.event
-        AND r.eventType IN (
-          'caught_stealing_2b','caught_stealing_3b','caught_stealing_home',
-          'pickoff_1b','pickoff_2b','pickoff_3b',
-          'pickoff_caught_stealing_2b','pickoff_caught_stealing_3b','pickoff_caught_stealing_home',
-          'stolen_base_2b','stolen_base_3b','stolen_base_home'
-        )
-      LIMIT 1
-    ),
-    responsiblePitcherId = (
-      SELECT r.responsiblePitcherId FROM runners r
-      WHERE rem_play_by_play.gamePk = r.gamePk
-        AND rem_play_by_play.atBatIndex = r.atBatIndex
-        AND rem_play_by_play.playIndex = r.playIndex
-        AND rem_play_by_play.event = r.event
-        AND r.eventType IN (
-          'caught_stealing_2b','caught_stealing_3b','caught_stealing_home',
-          'pickoff_1b','pickoff_2b','pickoff_3b',
-          'pickoff_caught_stealing_2b','pickoff_caught_stealing_3b','pickoff_caught_stealing_home',
-          'stolen_base_2b','stolen_base_3b','stolen_base_home'
-        )
-      LIMIT 1
-    )
-WHERE EXISTS (
-  SELECT 1 FROM runners r
-  WHERE rem_play_by_play.gamePk = r.gamePk
-    AND rem_play_by_play.atBatIndex = r.atBatIndex
-    AND rem_play_by_play.playIndex = r.playIndex
-    AND rem_play_by_play.event = r.event
-    AND r.eventType IN (
-      'caught_stealing_2b','caught_stealing_3b','caught_stealing_home',
-      'pickoff_1b','pickoff_2b','pickoff_3b',
-      'pickoff_caught_stealing_2b','pickoff_caught_stealing_3b','pickoff_caught_stealing_home',
-      'stolen_base_2b','stolen_base_3b','stolen_base_home'
-    )
+SET (runnerId, responsiblePitcherId) = (
+    SELECT r.runnerId, r.responsiblePitcherId
+    FROM runners r
+    WHERE rem_play_by_play.gamePk     = r.gamePk
+      AND rem_play_by_play.atBatIndex = r.atBatIndex
+      AND rem_play_by_play.playIndex  = r.playIndex
+      AND rem_play_by_play.event      = r.event
+      AND r.eventType IN (
+          'caught_stealing_2b',         'caught_stealing_3b',         'caught_stealing_home',
+          'pickoff_1b',                 'pickoff_2b',                 'pickoff_3b',
+          'pickoff_caught_stealing_2b', 'pickoff_caught_stealing_3b', 'pickoff_caught_stealing_home',
+          'stolen_base_2b',             'stolen_base_3b',             'stolen_base_home'
+      )
 );
 
 /*  Es aparicion al plato? */
