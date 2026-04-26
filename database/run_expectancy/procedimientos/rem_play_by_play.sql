@@ -280,13 +280,12 @@ WHERE runnersAfterPlay IS NOT NULL;
 
 /* Actualizar battingTeamId, pitchingTeamId, batterId, pitcherId */
 UPDATE rem_play_by_play
-SET battingTeamId = (SELECT ab.battingTeamId FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex),
-    pitchingTeamId = (SELECT ab.pitchingTeamId FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex),
-    batterId = (SELECT ab.batterId FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex),
-    pitcherId = (SELECT ab.pitcherId FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex),
-    batSide = (SELECT ab.batSide FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex),
-    pitchHand = (SELECT ab.pitchHand FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex)
-WHERE EXISTS (SELECT 1 FROM atbats ab WHERE rem_play_by_play.gamePk = ab.gamePk AND rem_play_by_play.atBatIndex = ab.atBatIndex);
+SET (battingTeamId, pitchingTeamId, batterId, pitcherId, batSide, pitchHand) = (
+    SELECT ab.battingTeamId, ab.pitchingTeamId, ab.batterId, ab.pitcherId, ab.batSide, ab.pitchHand
+    FROM atbats ab
+    WHERE rem_play_by_play.gamePk = ab.gamePk
+      AND rem_play_by_play.atBatIndex = ab.atBatIndex
+);
 
 /* Actualizar scheduledInnings, battingTeamScoreEndGame,  pitchingTeamScoreEndGame */
 UPDATE rem_play_by_play
