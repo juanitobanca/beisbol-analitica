@@ -41,3 +41,6 @@ CREATE TABLE IF NOT EXISTS rem_play_by_play (
 );
 
 CREATE INDEX IF NOT EXISTS idx_rem_play_by_play_gamePk_atBatIndex_playIndex ON rem_play_by_play(gamePk, atBatIndex, playIndex);
+
+-- For Win Probability Added
+CREATE INDEX IF NOT EXISTS idx_rem_play_by_play_majorLeague_inning ON rem_play_by_play(majorLeagueId, inning);
