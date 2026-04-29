@@ -19,7 +19,7 @@ from langgraph.prebuilt import create_react_agent
 # ──────────────────────────────────────────────
 # Configuración
 # ──────────────────────────────────────────────
-DB_PATH = "empresa.db"
+DB_PATH = "../baseball.db"
 OLLAMA_MODEL = "llama3.2"
 OLLAMA_BASE_URL = "http://localhost:11434"
 
