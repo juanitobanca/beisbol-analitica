@@ -1,19 +1,19 @@
 DROP TABLE IF EXISTS players;
 
-CREATE TABLE players (
-  playerId INTEGER,
-  firstName TEXT,
-  lastName TEXT,
-  fullName TEXT,
-  birthDate TEXT,
-  birthCity TEXT,
-  birthStateProvince TEXT,
-  birthCountry TEXT,
-  strikeZoneTop REAL,
-  strikeZoneBottom REAL,
-  positionAbbrev TEXT,
-  batSide TEXT,
-  pitchHand TEXT,
+-- Base: Catálogo de jugadores con datos biográficos esenciales (limpiado de stg_players)
+ CREATE TABLE players (
+  playerId INTEGER,            -- ID único del jugador
+  firstName TEXT,              -- Primer nombre
+  lastName TEXT,               -- Apellido
+  fullName TEXT,               -- Nombre completo
+  birthDate TEXT,              -- Fecha de nacimiento (YYYY-MM-DD)
+  birthCity TEXT,              -- Ciudad de nacimiento
+  birthStateProvince TEXT,     -- Estado o provincia de nacimiento
+  birthCountry TEXT,           -- País de nacimiento
+  strikeZoneTop REAL,          -- Límite superior personalizado de zona de strike (pies)
+  strikeZoneBottom REAL,       -- Límite inferior personalizado de zona de strike (pies)
+  positionAbbrev TEXT,         -- Abreviatura de posición principal (ej: "SS", "P", "CF")
+  batSide TEXT,                -- Lado de bateo: "L", "R" o "S" (switch)
+  pitchHand TEXT,              -- Mano de pitcheo: "L" o "R"
   PRIMARY KEY(playerId)
 );
-
